@@ -2,33 +2,27 @@ import React from 'react';
 import { Phone, MessageCircle } from 'lucide-react';
 
 export const MobileContactBar = () => {
-    const phoneNumber = '+351919190993';
-    const whatsappNumber = '351919190993';
-    const whatsappMessage = encodeURIComponent('Olá! Estou interessado em saber mais sobre as viaturas disponíveis na dANI.PT');
-
     return (
-        <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t border-[#E5E5E5] z-50">
-            <div className="grid grid-cols-2 divide-x divide-[#E5E5E5]">
+        <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t border-[#E8E8E8] z-50">
+            <div className="grid grid-cols-2">
                 {/* Phone */}
                 <a
-                    href={`tel:${phoneNumber}`}
-                    className="flex items-center justify-center gap-2 py-4 text-[#1A1A1A] active:bg-[#F4F4F4] transition-colors"
-                    data-testid="mobile-phone-cta"
+                    href="tel:+351919190993"
+                    className="flex items-center justify-center gap-2 py-4 text-[#1A1A1A] font-semibold text-sm active:bg-[#F5F5F5] transition-colors"
                 >
-                    <Phone size={20} />
-                    <span className="font-inter font-semibold text-sm">Ligar</span>
+                    <Phone size={18} />
+                    Ligar
                 </a>
 
                 {/* WhatsApp */}
                 <a
-                    href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
+                    href="https://wa.me/351919190993?text=Olá! Gostava de saber mais sobre as viaturas."
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 py-4 bg-[#25D366] text-white active:bg-[#1DA851] transition-colors"
-                    data-testid="mobile-whatsapp-cta"
+                    className="flex items-center justify-center gap-2 py-4 bg-[#E60000] text-white font-semibold text-sm active:bg-[#CC0000] transition-colors"
                 >
-                    <MessageCircle size={20} />
-                    <span className="font-inter font-semibold text-sm">WhatsApp</span>
+                    <MessageCircle size={18} />
+                    WhatsApp
                 </a>
             </div>
         </div>

@@ -1,194 +1,188 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowRight, Shield, Clock, Award } from 'lucide-react';
-import { Button } from '../components/ui/button';
+import { ArrowRight, Search } from 'lucide-react';
 import { VehicleCard } from '../components/VehicleCard';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export const Home = () => {
+    const [vehicles, setVehicles] = useState([]);
     const [featuredVehicles, setFeaturedVehicles] = useState([]);
-    const [campaigns, setCampaigns] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
+    // Search state
+    const [searchBrand, setSearchBrand] = useState('');
+    const [searchMaxPrice, setSearchMaxPrice] = useState('');
+
+    const brands = ['BMW', 'Mercedes-Benz', 'Volkswagen', 'Audi', 'Peugeot', 'Toyota', 'Renault', 'Tesla', 'Ford', 'Volvo'];
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [vehiclesRes, campaignsRes] = await Promise.all([
-                    axios.get(`${API_URL}/vehicles?is_featured=true`),
-                    axios.get(`${API_URL}/campaigns?active_only=true`)
-                ]);
-                setFeaturedVehicles(vehiclesRes.data.slice(0, 6));
-                setCampaigns(campaignsRes.data);
+                const response = await axios.get(`${API_URL}/vehicles`);
+                setVehicles(response.data);
+                setFeaturedVehicles(response.data.filter(v => v.is_featured).slice(0, 3));
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('Error fetching vehicles:', error);
             } finally {
                 setLoading(false);
             }
         };
-
         fetchData();
     }, []);
 
-    const features = [
-        {
-            icon: Shield,
-            title: 'Garantia Incluída',
-            description: 'Todas as nossas viaturas incluem garantia de qualidade.'
-        },
-        {
-            icon: Clock,
-            title: 'Financiamento Rápido',
-            description: 'Soluções de financiamento flexíveis e aprovação rápida.'
-        },
-        {
-            icon: Award,
-            title: 'Qualidade Certificada',
-            description: 'Viaturas inspecionadas e certificadas antes da venda.'
-        }
-    ];
+    const handleSearch = (e) => {
+        e.preventDefault();
+        const params = new URLSearchParams();
+        if (searchBrand) params.append('brand', searchBrand);
+        if (searchMaxPrice) params.append('max_price', searchMaxPrice);
+        navigate(`/viaturas?${params.toString()}`);
+    };
+
+    const totalVehicles = vehicles.length;
 
     return (
-        <main className="pt-16 md:pt-20 pb-20 md:pb-0">
-            {/* Hero Section */}
-            <section className="relative bg-[#1A1A1A] overflow-hidden">
-                <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-0 min-h-[70vh] items-center py-16 lg:py-0">
-                        {/* Content */}
-                        <div className="relative z-10 text-white animate-fade-in-up">
-                            <span className="inline-block font-mono text-xs uppercase tracking-widest text-[#E60000] mb-4">
-                                Stand de Automóveis em Coimbra
-                            </span>
-                            <h1 className="font-archivo font-black text-4xl sm:text-5xl lg:text-6xl xl:text-7xl tracking-tight leading-none mb-6">
-                                O seu próximo<br />
-                                carro está<br />
-                                <span className="text-[#E60000]">aqui.</span>
-                            </h1>
-                            <p className="text-gray-400 text-lg md:text-xl max-w-md mb-8">
-                                Viaturas usadas de qualidade com total transparência. 
-                                Encontre o carro perfeito para si.
-                            </p>
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <Link to="/viaturas">
-                                    <Button 
-                                        size="lg"
-                                        className="w-full sm:w-auto bg-[#E60000] hover:bg-[#CC0000] text-white rounded-[2px] font-semibold tracking-wide btn-lift"
-                                        data-testid="hero-cta-viaturas"
-                                    >
-                                        Ver Viaturas
-                                        <ArrowRight className="ml-2" size={18} />
-                                    </Button>
-                                </Link>
-                                <Link to="/contactos">
-                                    <Button 
-                                        variant="outline"
-                                        size="lg"
-                                        className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 rounded-[2px] font-semibold tracking-wide"
-                                        data-testid="hero-cta-contactos"
-                                    >
-                                        Contacte-nos
-                                    </Button>
-                                </Link>
-                            </div>
-                        </div>
+        <main className="pt-20">
+            {/* ============================================
+                HERO SECTION - Search Dominant
+                ============================================ */}
+            <section className="min-h-[90vh] flex flex-col justify-center bg-[#FAFAFA] relative overflow-hidden">
+                {/* Background Number */}
+                <div className="absolute -right-20 top-1/2 -translate-y-1/2 pointer-events-none select-none hidden lg:block">
+                    <span className="font-display text-[40rem] text-black/[0.02] leading-none">
+                        {totalVehicles}
+                    </span>
+                </div>
 
-                        {/* Hero Image */}
-                        <div className="relative lg:absolute lg:right-0 lg:top-0 lg:bottom-0 lg:w-1/2">
-                            <img
-                                src="https://images.unsplash.com/photo-1638850846828-fcb8f537180a?w=1200&q=80"
-                                alt="Viatura em destaque"
-                                className="w-full h-full object-cover opacity-80"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-r from-[#1A1A1A] via-transparent to-transparent lg:block hidden" />
+                <div className="container-site relative z-10 py-20">
+                    <div className="max-w-4xl">
+                        {/* Label */}
+                        <span className="label-style text-[#999] animate-fade-up">
+                            Stand de Automóveis · Coimbra
+                        </span>
+
+                        {/* Headline */}
+                        <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl text-[#1A1A1A] mt-4 animate-fade-up delay-100">
+                            Encontre<br/>
+                            o seu.
+                        </h1>
+
+                        {/* Subtext */}
+                        <p className="text-lg text-[#666] mt-6 max-w-md animate-fade-up delay-200">
+                            {totalVehicles} viaturas selecionadas.<br/>
+                            Qualidade sem compromissos.
+                        </p>
+
+                        {/* ================================
+                            SEARCH BLOCK - Premium Design
+                            ================================ */}
+                        <form 
+                            onSubmit={handleSearch}
+                            className="mt-12 bg-white border border-[#E8E8E8] p-6 md:p-8 animate-fade-up delay-300"
+                        >
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
+                                {/* Brand Select */}
+                                <div className="md:col-span-4">
+                                    <label className="label-style text-[#999] mb-2 block">
+                                        Marca
+                                    </label>
+                                    <select
+                                        value={searchBrand}
+                                        onChange={(e) => setSearchBrand(e.target.value)}
+                                        className="input-style"
+                                    >
+                                        <option value="">Todas</option>
+                                        {brands.map(b => (
+                                            <option key={b} value={b}>{b}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Price Input */}
+                                <div className="md:col-span-4">
+                                    <label className="label-style text-[#999] mb-2 block">
+                                        Preço Máximo
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={searchMaxPrice}
+                                        onChange={(e) => setSearchMaxPrice(e.target.value)}
+                                        placeholder="Ex: 30000"
+                                        className="input-style"
+                                    />
+                                </div>
+
+                                {/* Submit Button */}
+                                <div className="md:col-span-4 flex items-end">
+                                    <button
+                                        type="submit"
+                                        className="btn-primary w-full"
+                                    >
+                                        <Search size={18} />
+                                        Pesquisar
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        {/* Quick Stats */}
+                        <div className="mt-8 flex items-center gap-8 animate-fade-up delay-400">
+                            <div>
+                                <span className="text-3xl font-bold text-[#1A1A1A]">{totalVehicles}</span>
+                                <span className="block text-xs text-[#999] mt-1">Disponíveis</span>
+                            </div>
+                            <div className="w-px h-10 bg-[#E8E8E8]"></div>
+                            <div>
+                                <span className="text-3xl font-bold text-[#1A1A1A]">100%</span>
+                                <span className="block text-xs text-[#999] mt-1">Revistos</span>
+                            </div>
+                            <div className="w-px h-10 bg-[#E8E8E8]"></div>
+                            <div>
+                                <span className="text-3xl font-bold text-[#1A1A1A]">Garantia</span>
+                                <span className="block text-xs text-[#999] mt-1">Incluída</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Campaign Banner */}
-            {campaigns.length > 0 && (
-                <section className="bg-[#E60000] py-4">
-                    <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
-                        <div className="flex items-center justify-center gap-4 text-white text-center">
-                            <span className="font-mono text-xs uppercase tracking-widest">
-                                {campaigns[0].title}
-                            </span>
-                            <span className="hidden sm:block">—</span>
-                            <span className="text-sm">
-                                {campaigns[0].description}
-                            </span>
-                        </div>
-                    </div>
-                </section>
-            )}
-
-            {/* Features Section */}
-            <section className="py-16 md:py-24 bg-[#F4F4F4]">
-                <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {features.map((feature, index) => (
-                            <div 
-                                key={feature.title}
-                                className="bg-white border border-[#E5E5E5] rounded-[4px] p-8 animate-fade-in-up"
-                                style={{ animationDelay: `${index * 0.1}s` }}
-                            >
-                                <feature.icon 
-                                    size={32} 
-                                    className="text-[#E60000] mb-4" 
-                                    strokeWidth={1.5}
-                                />
-                                <h3 className="font-archivo font-bold text-lg text-[#1A1A1A] mb-2">
-                                    {feature.title}
-                                </h3>
-                                <p className="text-[#666666] text-sm leading-relaxed">
-                                    {feature.description}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Featured Vehicles */}
-            <section className="py-16 md:py-24">
-                <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-12">
+            {/* ============================================
+                FEATURED VEHICLES
+                ============================================ */}
+            <section className="py-24 md:py-32">
+                <div className="container-site">
+                    {/* Section Header */}
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                         <div>
-                            <span className="font-mono text-xs uppercase tracking-widest text-[#999999]">
-                                Viaturas em Destaque
-                            </span>
-                            <h2 className="font-archivo font-black text-3xl md:text-4xl text-[#1A1A1A] mt-2">
-                                As nossas melhores<br />ofertas
+                            <span className="label-style text-[#999]">Seleção</span>
+                            <h2 className="font-display text-5xl md:text-6xl text-[#1A1A1A] mt-2">
+                                Em destaque
                             </h2>
                         </div>
-                        <Link to="/viaturas">
-                            <Button 
-                                variant="outline"
-                                className="rounded-[2px] border-[#E5E5E5] hover:border-[#1A1A1A] font-semibold"
-                                data-testid="view-all-vehicles"
-                            >
-                                Ver Todas
-                                <ArrowRight className="ml-2" size={16} />
-                            </Button>
+                        <Link 
+                            to="/viaturas"
+                            className="group flex items-center gap-2 text-sm font-semibold text-[#1A1A1A] hover:text-[#E60000] transition-colors"
+                        >
+                            Ver todas
+                            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </div>
 
+                    {/* Vehicles Grid */}
                     {loading ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             {[1, 2, 3].map((i) => (
-                                <div 
-                                    key={i}
-                                    className="bg-[#F4F4F4] rounded-[4px] h-96 animate-pulse"
-                                />
+                                <div key={i} className="aspect-[4/3] bg-[#F5F5F5] animate-pulse" />
                             ))}
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             {featuredVehicles.map((vehicle, index) => (
                                 <div 
                                     key={vehicle.id}
-                                    className="animate-fade-in-up"
+                                    className="animate-fade-up"
                                     style={{ animationDelay: `${index * 0.1}s` }}
                                 >
                                     <VehicleCard vehicle={vehicle} />
@@ -199,41 +193,94 @@ export const Home = () => {
                 </div>
             </section>
 
-            {/* CTA Section */}
-            <section className="py-16 md:py-24 bg-[#1A1A1A]">
-                <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 text-center">
-                    <h2 className="font-archivo font-black text-3xl md:text-4xl lg:text-5xl text-white mb-6">
-                        Pronto para encontrar<br />
-                        o seu carro ideal?
-                    </h2>
-                    <p className="text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
-                        Entre em contacto connosco ou visite o nosso stand em Coimbra. 
-                        Estamos aqui para ajudar.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a href="tel:+351919190993">
-                            <Button 
-                                size="lg"
-                                className="w-full sm:w-auto bg-[#E60000] hover:bg-[#CC0000] text-white rounded-[2px] font-semibold tracking-wide btn-lift"
-                                data-testid="cta-phone"
-                            >
-                                Ligar Agora
-                            </Button>
-                        </a>
-                        <a 
-                            href="https://wa.me/351919190993?text=Olá! Estou interessado em saber mais sobre as viaturas disponíveis."
-                            target="_blank"
-                            rel="noopener noreferrer"
+            {/* ============================================
+                DIVIDER - Brand Statement
+                ============================================ */}
+            <section className="bg-[#1A1A1A] py-24 md:py-32">
+                <div className="container-site">
+                    <div className="max-w-3xl">
+                        <span className="label-style text-white/30">Filosofia</span>
+                        <p className="font-display text-4xl md:text-5xl lg:text-6xl text-white mt-4 leading-tight">
+                            Não vendemos carros.<br/>
+                            <span className="text-[#E60000]">Entregamos confiança.</span>
+                        </p>
+                        <p className="text-white/50 mt-8 text-lg max-w-lg">
+                            Cada viatura é cuidadosamente inspecionada antes de chegar ao nosso stand. 
+                            Sem surpresas. Sem promessas vazias.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            {/* ============================================
+                ALL VEHICLES PREVIEW
+                ============================================ */}
+            <section className="py-24 md:py-32 bg-[#FAFAFA]">
+                <div className="container-site">
+                    {/* Header */}
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                        <div>
+                            <span className="label-style text-[#999]">Stock</span>
+                            <h2 className="font-display text-5xl md:text-6xl text-[#1A1A1A] mt-2">
+                                Últimas entradas
+                            </h2>
+                        </div>
+                        <Link 
+                            to="/viaturas"
+                            className="btn-secondary"
                         >
-                            <Button 
-                                size="lg"
-                                variant="outline"
-                                className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 rounded-[2px] font-semibold tracking-wide"
-                                data-testid="cta-whatsapp"
+                            Ver catálogo completo
+                            <ArrowRight size={16} />
+                        </Link>
+                    </div>
+
+                    {/* Grid - 4 columns on desktop */}
+                    {!loading && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {vehicles.slice(0, 8).map((vehicle, index) => (
+                                <div 
+                                    key={vehicle.id}
+                                    className="animate-fade-up"
+                                    style={{ animationDelay: `${index * 0.05}s` }}
+                                >
+                                    <VehicleCard vehicle={vehicle} />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </section>
+
+            {/* ============================================
+                CTA SECTION
+                ============================================ */}
+            <section className="py-24 md:py-32">
+                <div className="container-site">
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 lg:gap-24">
+                        <div className="lg:max-w-xl">
+                            <span className="label-style text-[#999]">Visite-nos</span>
+                            <h2 className="font-display text-5xl md:text-6xl text-[#1A1A1A] mt-2">
+                                Pronto para<br/>conduzir?
+                            </h2>
+                            <p className="text-[#666] mt-6 text-lg">
+                                Marque uma visita ao nosso stand ou ligue-nos diretamente. 
+                                Estamos em Coimbra, prontos para o receber.
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <a href="tel:+351919190993" className="btn-primary">
+                                Ligar agora
+                            </a>
+                            <a 
+                                href="https://wa.me/351919190993?text=Olá! Gostava de saber mais sobre as viaturas disponíveis."
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn-outline"
                             >
                                 WhatsApp
-                            </Button>
-                        </a>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </section>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, Phone, MessageCircle, Fuel, Calendar, Gauge, Settings, Palette, Zap, Check } from 'lucide-react';
-import { Button } from '../components/ui/button';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -18,44 +17,32 @@ export const VehicleDetail = () => {
                 const response = await axios.get(`${API_URL}/vehicles/${id}`);
                 setVehicle(response.data);
             } catch (error) {
-                console.error('Error fetching vehicle:', error);
+                console.error('Error:', error);
             } finally {
                 setLoading(false);
             }
         };
-
         fetchVehicle();
     }, [id]);
 
     const formatPrice = (price) => {
-        return new Intl.NumberFormat('pt-PT', {
-            style: 'currency',
-            currency: 'EUR',
-            minimumFractionDigits: 0,
-        }).format(price);
+        return new Intl.NumberFormat('pt-PT', { minimumFractionDigits: 0 }).format(price);
     };
 
     const formatMileage = (mileage) => {
-        return new Intl.NumberFormat('pt-PT').format(mileage) + ' km';
+        return new Intl.NumberFormat('pt-PT').format(mileage);
     };
-
-    const whatsappMessage = vehicle 
-        ? encodeURIComponent(`Olá! Estou interessado no ${vehicle.brand} ${vehicle.model} (${vehicle.year}) anunciado no vosso site.`)
-        : '';
 
     if (loading) {
         return (
-            <main className="pt-16 md:pt-20 pb-20 md:pb-0">
-                <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-12">
-                    <div className="animate-pulse">
-                        <div className="h-8 w-32 bg-[#F4F4F4] rounded mb-8" />
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                            <div className="aspect-[4/3] bg-[#F4F4F4] rounded-[4px]" />
-                            <div className="space-y-4">
-                                <div className="h-6 w-24 bg-[#F4F4F4] rounded" />
-                                <div className="h-10 w-64 bg-[#F4F4F4] rounded" />
-                                <div className="h-12 w-32 bg-[#F4F4F4] rounded" />
-                            </div>
+            <main className="pt-20 min-h-screen">
+                <div className="container-site py-12">
+                    <div className="h-8 w-32 bg-[#F5F5F5] animate-pulse mb-8"></div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <div className="aspect-[4/3] bg-[#F5F5F5] animate-pulse"></div>
+                        <div className="space-y-4">
+                            <div className="h-6 w-24 bg-[#F5F5F5] animate-pulse"></div>
+                            <div className="h-12 w-64 bg-[#F5F5F5] animate-pulse"></div>
                         </div>
                     </div>
                 </div>
@@ -65,57 +52,59 @@ export const VehicleDetail = () => {
 
     if (!vehicle) {
         return (
-            <main className="pt-16 md:pt-20 pb-20 md:pb-0">
-                <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-12 text-center">
-                    <h1 className="font-archivo font-bold text-2xl text-[#1A1A1A] mb-4">
+            <main className="pt-20 min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <h1 className="font-display text-4xl text-[#1A1A1A] mb-4">
                         Viatura não encontrada
                     </h1>
-                    <Link to="/viaturas">
-                        <Button className="bg-[#E60000] hover:bg-[#CC0000] rounded-[2px]">
-                            Voltar às Viaturas
-                        </Button>
+                    <Link to="/viaturas" className="btn-primary">
+                        Ver todas as viaturas
                     </Link>
                 </div>
             </main>
         );
     }
 
+    const images = vehicle.images?.length > 0 
+        ? vehicle.images 
+        : ['https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1200'];
+
     const specs = [
         { icon: Calendar, label: 'Ano', value: vehicle.year },
         { icon: Fuel, label: 'Combustível', value: vehicle.fuel_type },
-        { icon: Gauge, label: 'Quilómetros', value: formatMileage(vehicle.mileage) },
-        { icon: Settings, label: 'Transmissão', value: vehicle.transmission },
+        { icon: Gauge, label: 'Quilómetros', value: `${formatMileage(vehicle.mileage)} km` },
+        { icon: Settings, label: 'Caixa', value: vehicle.transmission },
         { icon: Palette, label: 'Cor', value: vehicle.color },
         { icon: Zap, label: 'Potência', value: vehicle.power },
     ];
 
-    const images = vehicle.images?.length > 0 
-        ? vehicle.images 
-        : ['https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800'];
+    const whatsappMsg = encodeURIComponent(
+        `Olá! Estou interessado no ${vehicle.brand} ${vehicle.model} (${vehicle.year}) a ${formatPrice(vehicle.price)}€.`
+    );
 
     return (
-        <main className="pt-16 md:pt-20 pb-20 md:pb-0">
-            <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-8 md:py-12">
+        <main className="pt-20">
+            <div className="container-site py-8 md:py-12">
                 {/* Back Link */}
                 <Link 
                     to="/viaturas"
-                    className="inline-flex items-center gap-2 text-sm text-[#666666] hover:text-[#1A1A1A] transition-colors mb-8"
-                    data-testid="back-to-vehicles"
+                    className="inline-flex items-center gap-2 text-sm text-[#666] hover:text-[#1A1A1A] transition-colors mb-8"
                 >
                     <ArrowLeft size={16} />
-                    Voltar às Viaturas
+                    Voltar
                 </Link>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-                    {/* Image Gallery */}
-                    <div className="space-y-4">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+                    {/* ============================================
+                        IMAGE GALLERY - Left Side
+                        ============================================ */}
+                    <div className="lg:col-span-7 space-y-4">
                         {/* Main Image */}
-                        <div className="aspect-[4/3] bg-[#F4F4F4] rounded-[4px] overflow-hidden">
+                        <div className="aspect-[4/3] bg-[#F5F5F5] overflow-hidden">
                             <img
                                 src={images[selectedImage]}
                                 alt={`${vehicle.brand} ${vehicle.model}`}
                                 className="w-full h-full object-cover"
-                                data-testid="main-vehicle-image"
                             />
                         </div>
 
@@ -126,16 +115,15 @@ export const VehicleDetail = () => {
                                     <button
                                         key={index}
                                         onClick={() => setSelectedImage(index)}
-                                        className={`aspect-[4/3] rounded-[2px] overflow-hidden border-2 transition-colors ${
-                                            selectedImage === index
-                                                ? 'border-[#E60000]'
-                                                : 'border-transparent hover:border-[#E5E5E5]'
-                                        }`}
-                                        data-testid={`thumbnail-${index}`}
+                                        className={`aspect-[4/3] overflow-hidden ${
+                                            selectedImage === index 
+                                                ? 'ring-2 ring-[#E60000]' 
+                                                : 'opacity-60 hover:opacity-100'
+                                        } transition-all`}
                                     >
                                         <img
                                             src={img}
-                                            alt={`${vehicle.brand} ${vehicle.model} - Imagem ${index + 1}`}
+                                            alt={`Imagem ${index + 1}`}
                                             className="w-full h-full object-cover"
                                         />
                                     </button>
@@ -144,94 +132,80 @@ export const VehicleDetail = () => {
                         )}
                     </div>
 
-                    {/* Details */}
-                    <div>
-                        {/* Header */}
-                        <div className="mb-6">
-                            <span className="font-mono text-xs uppercase tracking-widest text-[#999999]">
-                                {vehicle.brand}
-                            </span>
-                            <h1 className="font-archivo font-black text-3xl md:text-4xl text-[#1A1A1A] mt-1">
-                                {vehicle.model}
-                            </h1>
-                        </div>
+                    {/* ============================================
+                        DETAILS - Right Side
+                        ============================================ */}
+                    <div className="lg:col-span-5">
+                        {/* Brand */}
+                        <span className="label-style text-[#999]">
+                            {vehicle.brand}
+                        </span>
+
+                        {/* Model */}
+                        <h1 className="font-display text-5xl md:text-6xl text-[#1A1A1A] mt-2 leading-none">
+                            {vehicle.model}
+                        </h1>
 
                         {/* Price */}
-                        <div className="mb-8">
-                            <span className="font-archivo font-black text-4xl md:text-5xl text-[#E60000]">
-                                {formatPrice(vehicle.price)}
+                        <div className="mt-6 pb-6 border-b border-[#E8E8E8]">
+                            <span className="text-4xl md:text-5xl font-bold text-[#1A1A1A]">
+                                {formatPrice(vehicle.price)}€
                             </span>
                         </div>
 
                         {/* CTAs */}
-                        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                            <a href="tel:+351919190993" className="flex-1">
-                                <Button 
-                                    size="lg"
-                                    className="w-full bg-[#E60000] hover:bg-[#CC0000] text-white rounded-[2px] font-semibold btn-lift"
-                                    data-testid="vehicle-phone-cta"
-                                >
-                                    <Phone size={18} className="mr-2" />
-                                    Ligar Agora
-                                </Button>
+                        <div className="py-6 flex flex-col sm:flex-row gap-3 border-b border-[#E8E8E8]">
+                            <a href="tel:+351919190993" className="btn-primary flex-1 justify-center">
+                                <Phone size={18} />
+                                Ligar
                             </a>
                             <a 
-                                href={`https://wa.me/351919190993?text=${whatsappMessage}`}
+                                href={`https://wa.me/351919190993?text=${whatsappMsg}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex-1"
+                                className="btn-outline flex-1 justify-center"
                             >
-                                <Button 
-                                    size="lg"
-                                    variant="outline"
-                                    className="w-full border-[#E5E5E5] hover:border-[#1A1A1A] rounded-[2px] font-semibold"
-                                    data-testid="vehicle-whatsapp-cta"
-                                >
-                                    <MessageCircle size={18} className="mr-2" />
-                                    WhatsApp
-                                </Button>
+                                <MessageCircle size={18} />
+                                WhatsApp
                             </a>
                         </div>
 
                         {/* Specs Grid */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8 p-6 bg-[#F4F4F4] rounded-[4px]">
-                            {specs.map((spec) => (
-                                <div key={spec.label} className="flex items-start gap-3">
-                                    <spec.icon size={18} className="text-[#999999] mt-0.5" />
-                                    <div>
-                                        <span className="block text-xs text-[#999999] uppercase tracking-wider">
-                                            {spec.label}
-                                        </span>
-                                        <span className="block text-sm font-medium text-[#1A1A1A]">
-                                            {spec.value}
-                                        </span>
+                        <div className="py-6 border-b border-[#E8E8E8]">
+                            <div className="grid grid-cols-2 gap-4">
+                                {specs.map((spec) => (
+                                    <div key={spec.label} className="flex items-center gap-3">
+                                        <spec.icon size={18} className="text-[#999]" />
+                                        <div>
+                                            <span className="block text-xs text-[#999] uppercase tracking-wider">
+                                                {spec.label}
+                                            </span>
+                                            <span className="text-sm font-medium text-[#1A1A1A]">
+                                                {spec.value || '—'}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
 
                         {/* Description */}
-                        <div className="mb-8">
-                            <h3 className="font-archivo font-bold text-lg text-[#1A1A1A] mb-3">
-                                Descrição
-                            </h3>
-                            <p className="text-[#666666] leading-relaxed">
-                                {vehicle.description}
-                            </p>
-                        </div>
+                        {vehicle.description && (
+                            <div className="py-6 border-b border-[#E8E8E8]">
+                                <h3 className="label-style text-[#999] mb-3">Descrição</h3>
+                                <p className="text-[#666] leading-relaxed">
+                                    {vehicle.description}
+                                </p>
+                            </div>
+                        )}
 
                         {/* Features */}
                         {vehicle.features?.length > 0 && (
-                            <div>
-                                <h3 className="font-archivo font-bold text-lg text-[#1A1A1A] mb-3">
-                                    Equipamento
-                                </h3>
+                            <div className="py-6">
+                                <h3 className="label-style text-[#999] mb-3">Equipamento</h3>
                                 <div className="grid grid-cols-2 gap-2">
-                                    {vehicle.features.map((feature, index) => (
-                                        <div 
-                                            key={index}
-                                            className="flex items-center gap-2 text-sm text-[#666666]"
-                                        >
+                                    {vehicle.features.map((feature, i) => (
+                                        <div key={i} className="flex items-center gap-2 text-sm text-[#666]">
                                             <Check size={14} className="text-[#E60000]" />
                                             {feature}
                                         </div>

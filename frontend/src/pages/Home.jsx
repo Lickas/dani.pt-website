@@ -581,9 +581,10 @@ export const Home = () => {
                         >
                             {campaigns.length > 0 ? (
                                 campaigns.map((campaign, index) => (
-                                    <div 
+                                    <Link 
+                                        to={`/campanhas/${campaign.id}`}
                                         key={campaign.id}
-                                        className="flex-shrink-0 w-[350px] md:w-[400px] bg-white rounded-sm overflow-hidden group hover:shadow-2xl transition-shadow snap-start animate-fade-up"
+                                        className="flex-shrink-0 w-[350px] md:w-[400px] bg-white rounded-sm overflow-hidden group hover:shadow-2xl transition-shadow snap-start animate-fade-up block"
                                         style={{ animationDelay: `${index * 0.1}s` }}
                                     >
                                         {campaign.image_url && (
@@ -601,21 +602,18 @@ export const Home = () => {
                                                     -{campaign.discount_percentage}%
                                                 </span>
                                             )}
-                                            <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#E60000] transition-colors">
                                                 {campaign.title}
                                             </h3>
                                             <p className="text-gray-500 text-sm line-clamp-2">
                                                 {campaign.description}
                                             </p>
-                                            <Link 
-                                                to="/campanhas"
-                                                className="inline-flex items-center gap-1 mt-4 text-[#E60000] font-semibold text-sm hover:underline"
-                                            >
-                                                Saber mais
-                                                <ChevronRight size={14} />
-                                            </Link>
+                                            <span className="inline-flex items-center gap-1 mt-4 text-[#E60000] font-semibold text-sm group-hover:underline">
+                                                Ver detalhes
+                                                <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                                            </span>
                                         </div>
-                                    </div>
+                                    </Link>
                                 ))
                             ) : (
                                 <div className="w-full text-center py-12">

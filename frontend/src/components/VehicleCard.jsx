@@ -125,9 +125,12 @@ export const VehicleCard = ({ vehicle }) => {
 
             {/* Content */}
             <div className="space-y-2">
-                <span className="label-style text-[#999] dark:text-[#666]">
-                    {vehicle.brand}
-                </span>
+                <div className="flex items-center gap-3">
+                    <div className="w-6 h-[2px] bg-[#E60000] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <span className="label-style text-[#999] dark:text-[#666]">
+                        {vehicle.brand}
+                    </span>
+                </div>
                 
                 <h3 className="text-xl font-semibold text-[#1A1A1A] dark:text-white group-hover:text-[#E60000] transition-colors leading-tight">
                     {vehicle.model}

@@ -71,7 +71,7 @@ export const Vehicles = () => {
 
     const brands = ['BMW', 'Mercedes-Benz', 'Volkswagen', 'Audi', 'Peugeot', 'Toyota', 'Renault', 'Tesla', 'Ford', 'Volvo'];
     const fuelTypes = ['Gasolina', 'Diesel', 'Híbrido', 'Elétrico'];
-    const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i);
+    const years = Array.from({ length: new Date().getFullYear() - 1994 }, (_, i) => new Date().getFullYear() - i);
 
     useEffect(() => {
         fetchVehicles();

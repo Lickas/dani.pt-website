@@ -3,7 +3,7 @@ import sys
 from datetime import datetime
 import json
 
-class dANIAPITester:
+class dANISupabaseAPITester:
     def __init__(self, base_url="https://file-path-fix-1.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.token = None

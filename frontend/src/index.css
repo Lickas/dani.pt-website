@@ -5,14 +5,14 @@
 @tailwind utilities;
 
 :root {
-    --primary: #E60000;
-    --primary-hover: #CC0000;
-    --background: #FFFFFF;
-    --background-subtle: #F4F4F4;
-    --text-primary: #1A1A1A;
+    --primary-red: #E60000;
+    --primary-red-hover: #CC0000;
+    --bg-white: #FFFFFF;
+    --bg-subtle: #F4F4F4;
+    --text-dark: #1A1A1A;
     --text-secondary: #666666;
     --text-muted: #999999;
-    --border: #E5E5E5;
+    --border-color: #E5E5E5;
     --border-strong: #1A1A1A;
 }
 
@@ -26,8 +26,8 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: var(--background);
-    color: var(--text-primary);
+    background-color: var(--bg-white);
+    color: var(--text-dark);
     line-height: 1.6;
 }
 
@@ -49,11 +49,11 @@ code {
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--background-subtle);
+    background: var(--bg-subtle);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--border);
+    background: var(--border-color);
     border-radius: 2px;
 }
 
@@ -63,7 +63,7 @@ code {
 
 /* Selection */
 ::selection {
-    background-color: var(--primary);
+    background-color: var(--primary-red);
     color: white;
 }
 
@@ -88,16 +88,13 @@ code {
         --border: 0 0% 90%;
         --input: 0 0% 90%;
         --ring: 0 0% 10%;
-        --radius: 2px;
+        --radius: 0.125rem;
     }
 }
 
 @layer base {
     * {
         @apply border-border;
-    }
-    body {
-        @apply bg-background text-foreground;
     }
 }
 
@@ -139,11 +136,44 @@ code {
 
 /* Utility classes */
 .container-custom {
-    @apply max-w-7xl mx-auto px-6 md:px-12 lg:px-24;
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .container-custom {
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container-custom {
+        padding-left: 6rem;
+        padding-right: 6rem;
+    }
 }
 
 .section-padding {
-    @apply py-16 md:py-24 lg:py-32;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+@media (min-width: 768px) {
+    .section-padding {
+        padding-top: 6rem;
+        padding-bottom: 6rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .section-padding {
+        padding-top: 8rem;
+        padding-bottom: 8rem;
+    }
 }
 
 /* Button hover lift effect */
@@ -161,7 +191,7 @@ code {
 }
 
 .card-hover:hover {
-    border-color: var(--text-primary);
+    border-color: var(--text-dark);
     transform: translateY(-4px);
 }
 

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
 import { toast } from 'sonner';
 
 export const AdminLogin = () => {
@@ -28,62 +26,60 @@ export const AdminLogin = () => {
     };
 
     return (
-        <main className="min-h-screen bg-[#F4F4F4] flex items-center justify-center p-6">
+        <main className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
             <div className="w-full max-w-md">
-                {/* Logo */}
                 <div className="text-center mb-8">
-                    <h1 className="font-archivo font-black text-3xl text-[#1A1A1A]">
-                        dANI<span className="text-[#E60000]">.PT</span>
+                    <h1 className="text-3xl font-bold text-gray-900">
+                        dANI<span className="text-red-600">.PT</span>
                     </h1>
-                    <p className="text-[#666666] mt-2">Painel de Administração</p>
+                    <p className="text-gray-600 mt-2">Painel de Administração</p>
                 </div>
 
-                {/* Form */}
-                <div className="bg-white border border-[#E5E5E5] rounded-[4px] p-8">
-                    <h2 className="font-archivo font-bold text-xl text-[#1A1A1A] mb-6">
+                <div className="bg-white border border-gray-200 rounded p-8">
+                    <h2 className="text-xl font-bold text-gray-900 mb-6">
                         Iniciar Sessão
                     </h2>
 
                     <form onSubmit={handleSubmit} className="space-y-4" data-testid="admin-login-form">
                         <div>
-                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
+                            <label className="block text-xs uppercase tracking-wide text-gray-500 mb-2">
                                 Email
                             </label>
-                            <Input
+                            <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="rounded-[2px] border-[#E5E5E5] focus:border-[#1A1A1A]"
+                                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-gray-900"
                                 placeholder="admin@dani.pt"
                                 data-testid="admin-email-input"
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
+                            <label className="block text-xs uppercase tracking-wide text-gray-500 mb-2">
                                 Password
                             </label>
-                            <Input
+                            <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className="rounded-[2px] border-[#E5E5E5] focus:border-[#1A1A1A]"
+                                className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-gray-900"
                                 placeholder="••••••••"
                                 data-testid="admin-password-input"
                             />
                         </div>
-                        <Button
+                        <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-[#E60000] hover:bg-[#CC0000] text-white rounded-[2px] font-semibold mt-6"
+                            className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded transition-colors mt-6"
                             data-testid="admin-login-btn"
                         >
                             {loading ? 'A entrar...' : 'Entrar'}
-                        </Button>
+                        </button>
                     </form>
 
-                    <p className="text-xs text-[#999999] text-center mt-6">
+                    <p className="text-xs text-gray-500 text-center mt-6">
                         Credenciais de teste: admin@dani.pt / admin123
                     </p>
                 </div>

@@ -16,6 +16,7 @@ import { VehicleDetail } from './pages/VehicleDetail';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
 import { Campaigns } from './pages/Campaigns';
+import { CampaignDetail } from './pages/CampaignDetail';
 
 // Admin Pages
 import { AdminLogin } from './pages/admin/AdminLogin';

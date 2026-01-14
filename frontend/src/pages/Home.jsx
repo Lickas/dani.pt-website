@@ -37,7 +37,7 @@ export const Home = () => {
         { label: 'Até 75.000€', value: '75000' },
         { label: 'Sem limite', value: '' },
     ];
-    const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i);
+    const years = Array.from({ length: new Date().getFullYear() - 1994 }, (_, i) => new Date().getFullYear() - i);
 
     useEffect(() => {
         const fetchData = async () => {

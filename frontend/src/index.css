@@ -384,6 +384,42 @@ body {
     transform: scale(1.05);
 }
 
+/* dANI Hover Effects - Distintos e minimalistas */
+.dani-hover-lift {
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dani-hover-lift:hover {
+    transform: translateY(-2px);
+}
+
+.dani-hover-underline {
+    position: relative;
+}
+
+.dani-hover-underline::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 2px;
+    background-color: var(--red);
+    transition: width 0.3s ease;
+}
+
+.dani-hover-underline:hover::after {
+    width: 100%;
+}
+
+.dani-hover-weight {
+    transition: font-weight 0.2s ease;
+}
+
+.dani-hover-weight:hover {
+    font-weight: 600;
+}
+
 /* ================================
    MOBILE BOTTOM BAR SPACING
    ================================ */

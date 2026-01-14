@@ -45,13 +45,16 @@ export const Navbar = () => {
                             <Link
                                 key={link.href}
                                 to={link.href}
-                                className={`text-sm font-medium tracking-wide transition-colors ${
+                                className={`relative text-sm font-medium tracking-wide transition-colors ${
                                     isActive(link.href)
                                         ? 'text-[#E60000]'
                                         : 'text-[#1A1A1A] dark:text-white/80 hover:text-[#666] dark:hover:text-white'
                                 }`}
                             >
                                 {link.label}
+                                {isActive(link.href) && (
+                                    <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-[#E60000]"></span>
+                                )}
                             </Link>
                         ))}
                     </div>

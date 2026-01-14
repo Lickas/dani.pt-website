@@ -532,8 +532,18 @@ async def admin_login(login_data: LoginRequest, db: AsyncSession = Depends(get_d
             await db.commit()
             await db.refresh(admin_user)
         
+        # Create our own JWT token (HS256) for internal use
+        token_payload = {
+            "sub": admin_user.id,
+            "email": admin_user.email,
+            "name": admin_user.name,
+            "exp": datetime.now(timezone.utc) + timedelta(hours=24),
+            "iat": datetime.now(timezone.utc)
+        }
+        custom_token = jwt.encode(token_payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+        
         return TokenResponse(
-            token=response.session.access_token,
+            token=custom_token,
             user={
                 "id": admin_user.id,
                 "email": admin_user.email,

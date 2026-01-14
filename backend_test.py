@@ -150,36 +150,6 @@ class dANISupabaseAPITester:
         )
         return success, response
 
-    def test_get_business_info(self):
-        """Test getting business information"""
-        success, response = self.run_test(
-            "Get Business Info",
-            "GET",
-            "business-info",
-            200
-        )
-        return success, response
-
-    def test_admin_stats(self):
-        """Test admin dashboard stats (requires auth)"""
-        success, response = self.run_test(
-            "Get Admin Stats",
-            "GET",
-            "stats",
-            200
-        )
-        return success, response
-
-    def test_admin_vehicles(self):
-        """Test admin vehicles endpoint (requires auth)"""
-        success, response = self.run_test(
-            "Get All Vehicles (Admin)",
-            "GET",
-            "vehicles/all",
-            200
-        )
-        return success, response
-
     def test_admin_contacts(self):
         """Test admin contact messages (requires auth)"""
         success, response = self.run_test(

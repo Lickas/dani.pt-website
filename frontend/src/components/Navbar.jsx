@@ -25,6 +25,9 @@ export const Navbar = () => {
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-[#0A0A0A]/95 backdrop-blur-sm border-b border-transparent dark:border-[#1A1A1A]">
+            {/* Linha vermelha superior - assinatura dANI */}
+            <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#E60000]"></div>
+            
             <div className="container-site">
                 <div className="flex items-center justify-between h-20">
                     {/* Logo */}

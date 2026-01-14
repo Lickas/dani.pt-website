@@ -272,26 +272,28 @@ export const Home = () => {
             <section className="py-24 md:py-32">
                 <div className="container-site">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12 lg:gap-24">
-                        <div className="lg:max-w-xl">
-                            <span className="label-style text-[#999]">Visite-nos</span>
-                            <h2 className="font-display text-5xl md:text-6xl text-[#1A1A1A] mt-2">
-                                Pronto para<br/>conduzir?
-                            </h2>
-                            <p className="text-[#666] mt-6 text-lg">
-                                Marque uma visita ao nosso stand ou ligue-nos diretamente. 
-                                Estamos em Coimbra, prontos para o receber.
-                            </p>
+                        <div className="lg:max-w-xl flex items-start gap-6">
+                            <span className="section-number pt-1">04</span>
+                            <div>
+                                <span className="label-style text-[#999]">Contacto</span>
+                                <h2 className="font-display text-5xl md:text-6xl text-[#1A1A1A] mt-2">
+                                    Pronto para<br/>conduzir?
+                                </h2>
+                                <p className="dani-quote mt-6">
+                                    Coimbra. Antanhol. Desde sempre.
+                                </p>
+                            </div>
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-4">
-                            <a href="tel:+351919190993" className="btn-primary">
+                            <a href="tel:+351919190993" className="btn-primary dani-hover-lift">
                                 Ligar agora
                             </a>
                             <a 
                                 href="https://wa.me/351919190993?text=Olá! Gostava de saber mais sobre as viaturas disponíveis."
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="btn-outline"
+                                className="btn-outline dani-hover-lift"
                             >
                                 WhatsApp
                             </a>

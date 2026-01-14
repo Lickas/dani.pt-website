@@ -25,6 +25,7 @@ import { AdminVehicles } from './pages/admin/AdminVehicles';
 import { AdminVehicleForm } from './pages/admin/AdminVehicleForm';
 import { AdminCampaigns } from './pages/admin/AdminCampaigns';
 import { AdminCampaignForm } from './pages/admin/AdminCampaignForm';
+import { AdminCampaignDetail } from './pages/admin/AdminCampaignDetail';
 import { AdminMessages } from './pages/admin/AdminMessages';
 import { AdminSettings } from './pages/admin/AdminSettings';
 

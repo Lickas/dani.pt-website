@@ -204,9 +204,26 @@ export const Home = () => {
                                         className="input-style"
                                     >
                                         <option value="">Qualquer ano</option>
-                                        {years.map(y => (
-                                            <option key={y} value={y}>{y}</option>
-                                        ))}
+                                        <optgroup label="Recentes (2020+)">
+                                            {years.filter(y => y >= 2020).map(y => (
+                                                <option key={y} value={y}>{y}</option>
+                                            ))}
+                                        </optgroup>
+                                        <optgroup label="2010 - 2019">
+                                            {years.filter(y => y >= 2010 && y < 2020).map(y => (
+                                                <option key={y} value={y}>{y}</option>
+                                            ))}
+                                        </optgroup>
+                                        <optgroup label="2000 - 2009">
+                                            {years.filter(y => y >= 2000 && y < 2010).map(y => (
+                                                <option key={y} value={y}>{y}</option>
+                                            ))}
+                                        </optgroup>
+                                        <optgroup label="Clássicos (antes de 2000)">
+                                            {years.filter(y => y < 2000).map(y => (
+                                                <option key={y} value={y}>{y}</option>
+                                            ))}
+                                        </optgroup>
                                     </select>
                                 </div>
 

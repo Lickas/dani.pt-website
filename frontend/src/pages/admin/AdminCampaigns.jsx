@@ -10,7 +10,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Plus, Pencil, Trash2, Calendar, Percent } from 'lucide-react';
+import { Plus, Pencil, Trash2, Calendar, Percent, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;

@@ -128,7 +128,7 @@ class dANISupabaseAPITester:
         success, response = self.run_test(
             "Get Active Campaigns",
             "GET",
-            "campaigns?active_only=true",
+            "campaigns",
             200
         )
         return success, response

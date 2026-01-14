@@ -68,12 +68,22 @@ class dANISupabaseAPITester:
             print(f"❌ Failed - Error: {str(e)}")
             return False, {}
 
-    def test_auth_login(self, email, password):
-        """Test admin login"""
+    def test_health_check(self):
+        """Test health check endpoint"""
         success, response = self.run_test(
-            "Admin Login",
+            "Health Check",
+            "GET",
+            "health",
+            200
+        )
+        return success, response
+
+    def test_admin_login(self, email, password):
+        """Test admin login with Supabase Auth"""
+        success, response = self.run_test(
+            "Admin Login (Supabase)",
             "POST",
-            "auth/login",
+            "admin/login",
             200,
             data={"email": email, "password": password}
         )

@@ -103,134 +103,162 @@
 #====================================================================================================
 
 ## user_problem_statement: 
-Aplicar melhorias de identidade visual e personalidade ao site dANI.PT, sem alterar estrutura ou funcionalidades.
-Objetivo: Tornar o site único e reconhecível através de micro-decisões visuais e de conteúdo.
-
-## frontend:
-  - task: "Adicionar elementos gráficos de assinatura (linhas vermelhas 2px)"
-    implemented: true
-    working: true
-    file: "frontend/src/index.css, frontend/src/components/*.jsx"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: true
-          agent: "main"
-          comment: "Adicionadas classes CSS: .dani-line, .dani-line-horizontal, .dani-line-short para linha vermelha como elemento de assinatura em todo o site"
-
-  - task: "Implementar frases autorais curtas e diretas"
-    implemented: true
-    working: true
-    file: "frontend/src/pages/Home.jsx, About.jsx, Contact.jsx, Campaigns.jsx, Vehicles.jsx"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: true
-          agent: "main"
-          comment: "Frases implementadas: 'Escolhidos um a um. Sem ruído. Só carros.', 'Nada escondido. Tudo verificado.', 'Coimbra. Antanhol. Desde sempre.', 'Perguntas diretas. Respostas diretas.', etc."
-
-  - task: "Adicionar numeração discreta de seções"
-    implemented: true
-    working: true
-    file: "frontend/src/pages/Home.jsx, About.jsx"
-    stuck_count: 0
-    priority: "medium"
-    needs_retesting: false
-    status_history:
-        - working: true
-          agent: "main"
-          comment: "Classe CSS .section-number criada e aplicada nas seções principais (01, 02, 03, 04) para criar hierarquia visual"
-
-  - task: "Implementar hover states distintos e minimalistas"
-    implemented: true
-    working: true
-    file: "frontend/src/index.css, frontend/src/components/*.jsx"
-    stuck_count: 0
-    priority: "medium"
-    needs_retesting: false
-    status_history:
-        - working: true
-          agent: "main"
-          comment: "Criadas classes: .dani-hover-lift (movimento Y), .dani-hover-underline (linha vermelha), .dani-hover-weight (mudança de peso)"
-
-  - task: "Aplicar linha vermelha no Navbar como elemento de topo"
-    implemented: true
-    working: true
-    file: "frontend/src/components/Navbar.jsx"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: true
-          agent: "main"
-          comment: "Linha vermelha (2px) adicionada no topo do navbar + underline vermelho em nav items ativos"
-
-  - task: "Melhorar VehicleCard com linha vermelha de assinatura"
-    implemented: true
-    working: true
-    file: "frontend/src/components/VehicleCard.jsx"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: true
-          agent: "main"
-          comment: "Linha vermelha aparece no topo da imagem e ao lado do brand no hover, criando identidade visual consistente"
-
-  - task: "Atualizar Footer com frases autorais"
-    implemented: true
-    working: true
-    file: "frontend/src/components/Footer.jsx"
-    stuck_count: 0
-    priority: "medium"
-    needs_retesting: false
-    status_history:
-        - working: true
-          agent: "main"
-          comment: "Footer atualizado com: 'Escolhidos um a um. Revistos. Testados. Prontos.' + linha vermelha decorativa"
-
-  - task: "Aplicar consistência visual em todas as páginas"
-    implemented: true
-    working: true
-    file: "frontend/src/pages/*.jsx"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: true
-          agent: "main"
-          comment: "Todas as páginas (Home, Vehicles, Campaigns, About, Contact, VehicleDetail) receberam linha vermelha vertical, frases autorais e espaçamentos consistentes"
+1. Aplicar melhorias de identidade visual e personalidade ao site dANI.PT (CONCLUÍDO)
+2. Integrar Supabase completamente substituindo MongoDB - Database, Auth e Storage
 
 ## backend:
-  - task: "Nenhuma alteração no backend"
+  - task: "Instalar dependências Supabase"
+    implemented: true
+    working: true
+    file: "backend/requirements.txt"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Instaladas: supabase (2.27.2), sqlalchemy[asyncio], asyncpg (0.31.0), alembic (1.18.0), psycopg2-binary (2.9.11), python-jose"
+
+  - task: "Configurar Supabase Database (PostgreSQL)"
+    implemented: true
+    working: true
+    file: "backend/database.py, backend/.env"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Transaction Pooler configurado, async engine criado com statement_cache_size=0"
+
+  - task: "Criar modelos SQLAlchemy"
+    implemented: true
+    working: true
+    file: "backend/models.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Criados modelos: Vehicle, Campaign, Contact, AdminUser com indexes apropriados"
+
+  - task: "Configurar Alembic e criar migrações"
+    implemented: true
+    working: true
+    file: "backend/alembic/"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Alembic configurado, migração inicial aplicada (9c886cc84ac2), todas as tabelas criadas no Supabase"
+
+  - task: "Configurar Supabase Auth"
+    implemented: true
+    working: true
+    file: "backend/supabase_client.py, backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Admin e Public clients criados, JWT verification implementado, rotas /admin/login e /admin/register funcionais"
+
+  - task: "Configurar Supabase Storage"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Buckets criados automaticamente: vehicle-images e campaign-images (públicos), rotas de upload implementadas"
+
+  - task: "Reescrever todas as rotas para usar Supabase"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Todas as rotas migradas: vehicles (CRUD), campaigns (CRUD), contacts (CRUD), auth (login/register), upload (images)"
+
+  - task: "Popular banco de dados com dados de exemplo"
+    implemented: true
+    working: true
+    file: "backend/seed_data.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Criadas 10 viaturas de exemplo com imagens do Unsplash + 2 campanhas ativas"
+
+  - task: "Remover dependências do MongoDB"
+    implemented: true
+    working: true
+    file: "backend/server.py, supervisor"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "MongoDB removido do código, serviço parado"
+
+## frontend:
+  - task: "Melhorias de identidade visual"
+    implemented: true
+    working: true
+    file: "frontend/src/**/*.jsx, frontend/src/index.css"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "CONCLUÍDO anteriormente - Linha vermelha, frases autorais, numeração, hover effects"
+
+  - task: "Testar integração com novo backend Supabase"
     implemented: false
     working: "NA"
     file: "N/A"
     stuck_count: 0
-    priority: "low"
-    needs_retesting: false
+    priority: "high"
+    needs_retesting: true
     status_history:
         - working: "NA"
           agent: "main"
-          comment: "Melhorias foram apenas visuais no frontend, backend não foi afetado"
+          comment: "Frontend mantém mesmas chamadas de API, backend faz ponte com Supabase - precisa de teste end-to-end"
 
 ## metadata:
   created_by: "main_agent"
-  version: "1.0"
-  test_sequence: 0
-  run_ui: false
+  version: "2.0"
+  test_sequence: 1
+  run_ui: true
 
 ## test_plan:
   current_focus:
-    - "Elementos gráficos de assinatura (linha vermelha)"
-    - "Frases autorais implementadas"
-    - "Hover states distintos"
+    - "Listar viaturas (GET /api/vehicles)"
+    - "Visualizar detalhes de viatura"
+    - "Login admin (POST /api/admin/login)"
+    - "Upload de imagens (POST /api/upload/vehicle-image)"
+    - "Criar/editar/deletar viaturas no painel admin"
+    - "Criar/editar/deletar campanhas no painel admin"
+    - "Visualizar mensagens de contacto"
   stuck_tasks: []
-  test_all: false
+  test_all: true
   test_priority: "high_first"
 
 ## agent_communication:
     - agent: "main"
-      message: "Melhorias de identidade visual aplicadas com sucesso. Elementos implementados: (1) Linha vermelha de 2px como assinatura visual recorrente em navbar, cards, páginas; (2) Frases autorais curtas e diretas substituindo textos genéricos; (3) Numeração discreta de seções (01, 02, 03, 04); (4) Hover effects minimalistas mas distintos; (5) Consistência extrema de espaçamentos. O site agora tem personalidade própria e é reconhecível mesmo sem o logótipo."
+      message: "Migração Supabase COMPLETA! ✅ Database: PostgreSQL via Transaction Pooler ✅ Auth: Supabase Auth com JWT ✅ Storage: 2 buckets públicos criados ✅ Dados: 10 viaturas + 2 campanhas ✅ MongoDB removido. Backend rodando em http://0.0.0.0:8001. Health check OK. Próximo: Testar fluxo completo com testing agent."

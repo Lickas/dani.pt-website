@@ -231,15 +231,18 @@ export const Home = () => {
                 <div className="container-site">
                     {/* Header */}
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                        <div>
-                            <span className="label-style text-[#999]">Stock</span>
-                            <h2 className="font-display text-5xl md:text-6xl text-[#1A1A1A] mt-2">
-                                Últimas entradas
-                            </h2>
+                        <div className="flex items-start gap-6">
+                            <span className="section-number pt-1">03</span>
+                            <div>
+                                <span className="label-style text-[#999]">Stock</span>
+                                <h2 className="font-display text-5xl md:text-6xl text-[#1A1A1A] mt-2">
+                                    Últimas entradas
+                                </h2>
+                            </div>
                         </div>
                         <Link 
                             to="/viaturas"
-                            className="btn-secondary"
+                            className="btn-secondary dani-hover-lift"
                         >
                             Ver catálogo completo
                             <ArrowRight size={16} />

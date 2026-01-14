@@ -1,0 +1,179 @@
+{
+  "identity": {
+    "name": "dANI.PT",
+    "persona": "E1: The Anti-AI Designer",
+    "aesthetic": "Swiss International Style x Automotive Brutalism",
+    "core_principles": [
+      "Fusion: Automotive Sales + Swiss Poster Design",
+      "Emotion: Trust, Precision, Speed",
+      "Content: High-fidelity car imagery is the hero",
+      "Negative Space: 3x standard spacing",
+      "Contrast: Stark Black/White with Signal Red accents"
+    ]
+  },
+  "typography": {
+    "font_family": {
+      "headings": "Archivo, sans-serif",
+      "body": "Inter, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "imports": [
+      "https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;900&family=Inter:wght@300;400;500;600&display=swap"
+    ],
+    "rules": [
+      "Headings (H1-H3) must use 'Archivo' in Black (900) or Bold (700) weight.",
+      "Body text must use 'Inter'.",
+      "Letter spacing for Headings: 'tracking-tight' (-0.02em).",
+      "Letter spacing for Overlines/Labels: 'tracking-widest' (0.2em) + Uppercase.",
+      "NO generic 'sans-serif' fallback for headings."
+    ]
+  },
+  "colors": {
+    "palette": {
+      "primary": {
+        "DEFAULT": "#E60000",
+        "hover": "#CC0000",
+        "foreground": "#FFFFFF"
+      },
+      "background": {
+        "DEFAULT": "#FFFFFF",
+        "subtle": "#F4F4F4",
+        "dark": "#1A1A1A"
+      },
+      "text": {
+        "primary": "#1A1A1A",
+        "secondary": "#666666",
+        "muted": "#999999"
+      },
+      "border": {
+        "DEFAULT": "#E5E5E5",
+        "strong": "#1A1A1A"
+      }
+    },
+    "usage_rules": [
+      "Primary Red (#E60000) is for CTAs and active states ONLY. Never use as a background for large sections.",
+      "Backgrounds must be pure White (#FFFFFF) or Light Grey (#F4F4F4).",
+      "Text must be high contrast Dark Grey (#1A1A1A), never pure black (#000000).",
+      "NO GRADIENTS. All colors must be flat and solid."
+    ]
+  },
+  "layout": {
+    "spacing_system": {
+      "base": "4px",
+      "container_padding": "p-6 md:p-12 lg:p-24",
+      "section_gap": "gap-12 md:gap-24",
+      "component_gap": "gap-4 md:gap-8"
+    },
+    "grid_system": {
+      "mode_a_tetris": {
+        "description": "For Featured Cars / Marketing. Asymmetrical.",
+        "classes": "grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8",
+        "item_rules": [
+          "Hero Item: col-span-full md:col-span-8 row-span-2",
+          "Tall Item: col-span-full md:col-span-4 row-span-2",
+          "Standard Item: col-span-full md:col-span-4"
+        ]
+      },
+      "mode_b_density": {
+        "description": "For Car Listings / Admin. Dense and functional.",
+        "classes": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+      }
+    },
+    "container_rules": [
+      "Max width for content: 'max-w-7xl mx-auto'.",
+      "Mobile-first: Always start with single column ('grid-cols-1').",
+      "Sections must have generous vertical padding ('py-20' or 'py-32')."
+    ]
+  },
+  "components": {
+    "buttons": {
+      "style": "flat_sharp",
+      "base_classes": "rounded-[2px] font-semibold tracking-wide transition-all duration-200",
+      "variants": {
+        "primary": "bg-[#E60000] text-white hover:bg-[#1A1A1A] hover:text-white border-none shadow-none",
+        "secondary": "bg-transparent border border-[#E5E5E5] text-[#1A1A1A] hover:border-[#1A1A1A] hover:bg-transparent",
+        "ghost": "bg-transparent text-[#1A1A1A] hover:bg-[#F4F4F4]"
+      }
+    },
+    "cards": {
+      "style": "swiss_border",
+      "base_classes": "bg-white border border-[#E5E5E5] rounded-[4px] overflow-hidden transition-all duration-300 group",
+      "hover_effect": "hover:border-[#1A1A1A] hover:shadow-none",
+      "content_padding": "p-6"
+    },
+    "inputs": {
+      "style": "minimal_understated",
+      "classes": "rounded-[2px] border-[#E5E5E5] bg-[#F9F9F9] focus:border-[#1A1A1A] focus:ring-0 focus:bg-white transition-colors"
+    },
+    "badges": {
+      "style": "utilitarian",
+      "classes": "rounded-[2px] font-mono text-xs uppercase tracking-wider px-2 py-1"
+    }
+  },
+  "visual_enhancers": {
+    "decorations": [
+      "1px solid lines for section dividers.",
+      "Massive typography (text-6xl to text-9xl) for background texture (opacity 5%).",
+      "NO drop shadows. Use borders for separation."
+    ],
+    "motion": {
+      "hover": "transform: translateY(-2px) (subtle lift)",
+      "page_load": "staggered fade-in-up",
+      "scroll": "parallax effect on hero images"
+    }
+  },
+  "images": {
+    "style_guide": "Studio lighting, clean backgrounds, high contrast. Avoid cluttered street scenes.",
+    "assets": {
+      "hero_car": {
+        "url": "https://images.unsplash.com/photo-1638850846828-fcb8f537180a?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "White Hyundai Staria in minimalist showroom",
+        "usage": "Homepage Hero Section"
+      },
+      "featured_sport": {
+        "url": "https://images.unsplash.com/photo-1729080562616-3b9758cae13e?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Black car in red room",
+        "usage": "Campaign/Promo Section"
+      },
+      "showroom_interior": {
+        "url": "https://images.unsplash.com/photo-1676288176820-a5a954d81e6e?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Polestar showroom minimalist",
+        "usage": "About Us / Location Section"
+      },
+      "happy_customer": {
+        "url": "https://images.unsplash.com/photo-1718273051927-b5ebaa539222?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "alt": "Group of people around white truck",
+        "usage": "Testimonials / Trust Section"
+      }
+    }
+  },
+  "accessibility": {
+    "rules": [
+      "Ensure 4.5:1 contrast ratio for all text.",
+      "Interactive elements must have visible focus states (ring-2 ring-offset-2 ring-[#1A1A1A]).",
+      "All images must have descriptive alt text.",
+      "Use semantic HTML5 tags (main, section, article, nav, aside)."
+    ]
+  },
+  "instructions_to_main_agent": [
+    "1. INSTALL FONTS: Add the Google Fonts import to 'index.css' immediately.",
+    "2. CONFIGURE TAILWIND: Update 'tailwind.config.js' with the custom colors and font families defined above.",
+    "3. CUSTOMIZE SHADCN: Modify 'button.jsx', 'card.jsx', and 'input.jsx' to remove default radii and shadows. Enforce the 'rounded-[2px]' rule.",
+    "4. BUILD LAYOUTS: Use the 'Tetris Grid' for the homepage. Do not create a generic 3-column layout.",
+    "5. ADMIN PANEL: Keep it dense (Mode B Grid). Use the 'swiss_border' card style for widgets.",
+    "6. DATA-TESTID: Add 'data-testid' to all interactive elements (buttons, inputs, links) for testing."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients.",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "You MUST NOT apply universal transition. Eg: 'transition: all'. This results in breaking transforms.",
+    "You MUST NOT center align the app container.",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style.",
+    "NEVER: use AI assistant Emoji characters like 🤖🧠 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects.",
+    "Use 2-3x more spacing than feels comfortable.",
+    "Subtle grain textures, noise overlays, custom cursors, selection states, and loading animations: separates good from extraordinary.",
+    "Use 'sonner' for toasts."
+  ]
+}

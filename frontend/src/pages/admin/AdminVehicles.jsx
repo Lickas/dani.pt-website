@@ -87,7 +87,9 @@ export const AdminVehicles = () => {
             toast.success(vehicle.is_sold ? 'Viatura disponível' : 'Viatura vendida');
             fetchVehicles();
         } catch (error) {
-            toast.error('Erro ao atualizar');
+            if (!handleAuthError(error)) {
+                toast.error('Erro ao atualizar');
+            }
         }
     };
 

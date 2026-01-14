@@ -8,7 +8,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Plus, Pencil, Trash2, Eye, EyeOff, Search } from 'lucide-react';
 import { toast } from 'sonner';
@@ -19,6 +19,7 @@ export const AdminVehicles = () => {
     const [vehicles, setVehicles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchVehicles();
@@ -26,18 +27,35 @@ export const AdminVehicles = () => {
 
     const getAuthHeaders = () => {
         const token = localStorage.getItem('dani_admin_token');
+        if (!token) {
+            navigate('/admin');
+            return {};
+        }
         return { Authorization: `Bearer ${token}` };
     };
 
+    const handleAuthError = (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem('dani_admin_token');
+            toast.error('Sessão expirada. Por favor faça login novamente.');
+            navigate('/admin');
+            return true;
+        }
+        return false;
+    };
+
     const fetchVehicles = async () => {
+        const headers = getAuthHeaders();
+        if (!headers.Authorization) return;
+        
         try {
-            const response = await axios.get(`${API_URL}/vehicles/all`, {
-                headers: getAuthHeaders()
-            });
+            const response = await axios.get(`${API_URL}/vehicles/all`, { headers });
             setVehicles(response.data);
         } catch (error) {
             console.error('Error fetching vehicles:', error);
-            toast.error('Erro ao carregar viaturas');
+            if (!handleAuthError(error)) {
+                toast.error('Erro ao carregar viaturas');
+            }
         } finally {
             setLoading(false);
         }
@@ -53,7 +71,9 @@ export const AdminVehicles = () => {
             toast.success('Viatura eliminada');
             setVehicles(prev => prev.filter(v => v.id !== id));
         } catch (error) {
-            toast.error('Erro ao eliminar viatura');
+            if (!handleAuthError(error)) {
+                toast.error('Erro ao eliminar viatura');
+            }
         }
     };
 

@@ -206,16 +206,20 @@ export const Home = () => {
                 ============================================ */}
             <section className="bg-[#1A1A1A] py-24 md:py-32">
                 <div className="container-site">
-                    <div className="max-w-3xl">
-                        <span className="label-style text-white/30">Filosofia</span>
-                        <p className="font-display text-4xl md:text-5xl lg:text-6xl text-white mt-4 leading-tight">
-                            Não vendemos carros.<br/>
-                            <span className="text-[#E60000]">Entregamos confiança.</span>
-                        </p>
-                        <p className="text-white/50 mt-8 text-lg max-w-lg">
-                            Cada viatura é cuidadosamente inspecionada antes de chegar ao nosso stand. 
-                            Sem surpresas. Sem promessas vazias.
-                        </p>
+                    <div className="flex items-start gap-8">
+                        {/* Linha vermelha vertical */}
+                        <div className="hidden md:block w-[2px] h-24 bg-[#E60000]"></div>
+                        
+                        <div className="max-w-3xl">
+                            <span className="section-number text-white/20">02</span>
+                            <p className="font-display text-4xl md:text-5xl lg:text-6xl text-white mt-4 leading-tight">
+                                Nada escondido.<br/>
+                                <span className="text-[#E60000]">Tudo verificado.</span>
+                            </p>
+                            <p className="text-white/50 mt-8 text-base max-w-lg leading-relaxed">
+                                Cada viatura passa por inspeção rigorosa. Sem surpresas. Sem promessas vazias. Só qualidade comprovada.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>

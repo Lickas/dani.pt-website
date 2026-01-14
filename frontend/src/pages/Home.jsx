@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowRight, Search, ChevronRight, Shield, CheckCircle, Star, Phone, MessageCircle, MapPin, Clock, Fuel, Calendar, Settings, Car } from 'lucide-react';
+import { ArrowRight, Search, ChevronRight, ChevronUp, Shield, CheckCircle, Star, Phone, MessageCircle, MapPin, Clock, Calendar, Car, Sparkles, Award, ThumbsUp, Zap, Tag } from 'lucide-react';
 import { VehicleCard } from '../components/VehicleCard';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -11,28 +11,41 @@ const HERO_BG = "https://images.unsplash.com/photo-1701241966709-5371c9bf0f1d?cr
 
 export const Home = () => {
     const [vehicles, setVehicles] = useState([]);
+    const [campaigns, setCampaigns] = useState([]);
     const [featuredVehicles, setFeaturedVehicles] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showScrollTop, setShowScrollTop] = useState(false);
     const navigate = useNavigate();
 
     // Search state
     const [searchBrand, setSearchBrand] = useState('');
-    const [searchFuel, setSearchFuel] = useState('');
-    const [searchMaxPrice, setSearchMaxPrice] = useState(100000);
+    const [searchMaxPrice, setSearchMaxPrice] = useState('');
     const [searchMinYear, setSearchMinYear] = useState('');
 
     const brands = ['BMW', 'Mercedes-Benz', 'Volkswagen', 'Audi', 'Peugeot', 'Toyota', 'Renault', 'Tesla', 'Ford', 'Volvo'];
-    const fuelTypes = ['Gasolina', 'Diesel', 'Híbrido', 'Elétrico'];
+    const priceRanges = [
+        { label: 'Até 10.000€', value: '10000' },
+        { label: 'Até 15.000€', value: '15000' },
+        { label: 'Até 20.000€', value: '20000' },
+        { label: 'Até 30.000€', value: '30000' },
+        { label: 'Até 50.000€', value: '50000' },
+        { label: 'Até 75.000€', value: '75000' },
+        { label: 'Sem limite', value: '' },
+    ];
     const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`${API_URL}/vehicles`);
-                setVehicles(response.data);
-                setFeaturedVehicles(response.data.filter(v => v.is_featured).slice(0, 3));
+                const [vehiclesRes, campaignsRes] = await Promise.all([
+                    axios.get(`${API_URL}/vehicles`),
+                    axios.get(`${API_URL}/campaigns`)
+                ]);
+                setVehicles(vehiclesRes.data);
+                setCampaigns(campaignsRes.data);
+                setFeaturedVehicles(vehiclesRes.data.filter(v => v.is_featured).slice(0, 3));
             } catch (error) {
-                console.error('Error fetching vehicles:', error);
+                console.error('Error fetching data:', error);
             } finally {
                 setLoading(false);
             }
@@ -40,12 +53,24 @@ export const Home = () => {
         fetchData();
     }, []);
 
+    // Scroll to top button visibility
+    useEffect(() => {
+        const handleScroll = () => {
+            setShowScrollTop(window.scrollY > 500);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     const handleSearch = (e) => {
         e.preventDefault();
         const params = new URLSearchParams();
         if (searchBrand) params.append('brand', searchBrand);
-        if (searchFuel) params.append('fuel_type', searchFuel);
-        if (searchMaxPrice < 100000) params.append('max_price', searchMaxPrice);
+        if (searchMaxPrice) params.append('max_price', searchMaxPrice);
         if (searchMinYear) params.append('min_year', searchMinYear);
         navigate(`/viaturas?${params.toString()}`);
     };
@@ -53,12 +78,6 @@ export const Home = () => {
     const formatPrice = (price) => {
         return new Intl.NumberFormat('pt-PT', { minimumFractionDigits: 0 }).format(price);
     };
-
-    // Get unique stats
-    const uniqueBrands = [...new Set(vehicles.map(v => v.brand))].length;
-    const avgPrice = vehicles.length > 0 
-        ? Math.round(vehicles.reduce((acc, v) => acc + v.price, 0) / vehicles.length)
-        : 0;
 
     return (
         <main className="pt-16 md:pt-20">
@@ -94,19 +113,19 @@ export const Home = () => {
                             <span className="text-[#E60000]">o seu.</span>
                         </h1>
 
-                        {/* Frase autoral */}
+                        {/* Tagline única */}
                         <p className="text-white/60 mt-6 md:mt-8 max-w-md text-base md:text-lg leading-relaxed animate-fade-up delay-200">
                             Escolhidos um a um. Sem ruído, sem promessas vazias. Só carros de qualidade comprovada.
                         </p>
 
                         {/* ================================
-                            SEARCH BLOCK - Enhanced with Slider
+                            SEARCH BLOCK - Clean Layout
                             ================================ */}
                         <form 
                             onSubmit={handleSearch}
                             className="mt-10 md:mt-12 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md p-5 md:p-6 rounded-sm shadow-2xl animate-fade-up delay-300"
                         >
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 {/* Brand Select */}
                                 <div>
                                     <label className="block text-[11px] font-medium tracking-widest uppercase text-gray-400 mb-2">
@@ -124,19 +143,18 @@ export const Home = () => {
                                     </select>
                                 </div>
 
-                                {/* Fuel Type */}
+                                {/* Price Range */}
                                 <div>
                                     <label className="block text-[11px] font-medium tracking-widest uppercase text-gray-400 mb-2">
-                                        Combustível
+                                        Preço Máximo
                                     </label>
                                     <select
-                                        value={searchFuel}
-                                        onChange={(e) => setSearchFuel(e.target.value)}
+                                        value={searchMaxPrice}
+                                        onChange={(e) => setSearchMaxPrice(e.target.value)}
                                         className="input-style"
                                     >
-                                        <option value="">Todos</option>
-                                        {fuelTypes.map(f => (
-                                            <option key={f} value={f}>{f}</option>
+                                        {priceRanges.map(p => (
+                                            <option key={p.value} value={p.value}>{p.label}</option>
                                         ))}
                                     </select>
                                 </div>
@@ -169,37 +187,9 @@ export const Home = () => {
                                     </button>
                                 </div>
                             </div>
-
-                            {/* Price Slider */}
-                            <div className="pt-4 border-t border-gray-100 dark:border-gray-800">
-                                <div className="flex items-center justify-between mb-3">
-                                    <label className="text-[11px] font-medium tracking-widest uppercase text-gray-400">
-                                        Preço Máximo
-                                    </label>
-                                    <span className="text-lg font-bold text-gray-900 dark:text-white">
-                                        {searchMaxPrice >= 100000 ? 'Sem limite' : `${formatPrice(searchMaxPrice)}€`}
-                                    </span>
-                                </div>
-                                <input
-                                    type="range"
-                                    min="5000"
-                                    max="100000"
-                                    step="1000"
-                                    value={searchMaxPrice}
-                                    onChange={(e) => setSearchMaxPrice(parseInt(e.target.value))}
-                                    className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer accent-[#E60000] slider-thumb"
-                                />
-                                <div className="flex justify-between text-xs text-gray-400 mt-2">
-                                    <span>5.000€</span>
-                                    <span>25.000€</span>
-                                    <span>50.000€</span>
-                                    <span>75.000€</span>
-                                    <span>100.000€+</span>
-                                </div>
-                            </div>
                         </form>
 
-                        {/* Quick Stats - Simplified */}
+                        {/* Trust Badges - Simplified */}
                         <div className="mt-10 md:mt-12 flex flex-wrap items-center gap-6 md:gap-10 animate-fade-up delay-400">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center">
@@ -209,15 +199,15 @@ export const Home = () => {
                             </div>
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center">
-                                    <Shield size={18} className="text-blue-400" />
-                                </div>
-                                <span className="text-sm text-white/70">Garantia Incluída</span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center">
                                     <Star size={18} className="text-yellow-400" />
                                 </div>
                                 <span className="text-sm text-white/70">+500 Clientes Satisfeitos</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center">
+                                    <Award size={18} className="text-blue-400" />
+                                </div>
+                                <span className="text-sm text-white/70">15 Anos de Experiência</span>
                             </div>
                         </div>
                     </div>
@@ -232,67 +222,220 @@ export const Home = () => {
             </section>
 
             {/* ============================================
-                QUICK CATEGORIES - New Section
+                UNIQUE VALUE PROPOSITION - Marketing Section
                 ============================================ */}
-            <section className="py-12 md:py-16 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+            <section className="py-16 md:py-20 bg-white dark:bg-gray-900">
                 <div className="container-site">
+                    <div className="text-center max-w-3xl mx-auto mb-12">
+                        <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#E60000]/10 text-[#E60000] text-xs font-semibold tracking-wider uppercase rounded-full mb-4">
+                            <Sparkles size={14} />
+                            A Diferença dANI.PT
+                        </span>
+                        <h2 className="font-display text-4xl md:text-5xl text-gray-900 dark:text-white">
+                            Não vendemos carros.<br/>
+                            <span className="text-[#E60000]">Entregamos confiança.</span>
+                        </h2>
+                        <p className="text-gray-500 mt-4 text-base md:text-lg">
+                            Cada viatura é uma promessa cumprida. Sem surpresas, sem letras pequenas.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="group p-8 bg-gray-50 dark:bg-gray-800 rounded-sm hover:bg-[#E60000] transition-all duration-300 text-center">
+                            <div className="w-16 h-16 mx-auto bg-white dark:bg-gray-700 group-hover:bg-white/20 rounded-full flex items-center justify-center mb-4 transition-colors">
+                                <Shield size={28} className="text-[#E60000] group-hover:text-white transition-colors" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-white transition-colors mb-2">
+                                Zero Riscos
+                            </h3>
+                            <p className="text-gray-500 group-hover:text-white/80 transition-colors text-sm">
+                                Inspeção de 150+ pontos. Se não passa no nosso crivo, não entra no nosso stand.
+                            </p>
+                        </div>
+                        <div className="group p-8 bg-gray-50 dark:bg-gray-800 rounded-sm hover:bg-[#E60000] transition-all duration-300 text-center">
+                            <div className="w-16 h-16 mx-auto bg-white dark:bg-gray-700 group-hover:bg-white/20 rounded-full flex items-center justify-center mb-4 transition-colors">
+                                <ThumbsUp size={28} className="text-[#E60000] group-hover:text-white transition-colors" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-white transition-colors mb-2">
+                                Preço Justo
+                            </h3>
+                            <p className="text-gray-500 group-hover:text-white/80 transition-colors text-sm">
+                                Preços transparentes, sem negociações cansativas. O preço que vê é o preço final.
+                            </p>
+                        </div>
+                        <div className="group p-8 bg-gray-50 dark:bg-gray-800 rounded-sm hover:bg-[#E60000] transition-all duration-300 text-center">
+                            <div className="w-16 h-16 mx-auto bg-white dark:bg-gray-700 group-hover:bg-white/20 rounded-full flex items-center justify-center mb-4 transition-colors">
+                                <Zap size={28} className="text-[#E60000] group-hover:text-white transition-colors" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-white transition-colors mb-2">
+                                Entrega Rápida
+                            </h3>
+                            <p className="text-gray-500 group-hover:text-white/80 transition-colors text-sm">
+                                Documentação tratada em 48h. Saia a conduzir no mesmo dia da compra.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ============================================
+                QUICK CATEGORIES
+                ============================================ */}
+            <section className="py-12 md:py-16 bg-gray-50 dark:bg-gray-800 border-y border-gray-100 dark:border-gray-700">
+                <div className="container-site">
+                    <div className="flex items-center justify-between mb-8">
+                        <h3 className="font-display text-2xl md:text-3xl text-gray-900 dark:text-white">
+                            Pesquisa Rápida
+                        </h3>
+                        <Link 
+                            to="/viaturas"
+                            className="text-sm font-medium text-[#E60000] hover:underline"
+                        >
+                            Ver todas →
+                        </Link>
+                    </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <Link 
                             to="/viaturas?fuel_type=Elétrico"
-                            className="group p-6 bg-gray-50 dark:bg-gray-800 rounded-sm hover:bg-[#E60000] transition-all duration-300"
+                            className="group p-5 bg-white dark:bg-gray-900 rounded-sm border border-gray-100 dark:border-gray-700 hover:border-[#E60000] hover:shadow-lg transition-all duration-300"
                         >
-                            <Fuel size={24} className="text-[#E60000] group-hover:text-white transition-colors" />
-                            <h3 className="mt-3 font-semibold text-gray-900 dark:text-white group-hover:text-white transition-colors">
+                            <Zap size={22} className="text-[#E60000]" />
+                            <h4 className="mt-3 font-semibold text-gray-900 dark:text-white group-hover:text-[#E60000] transition-colors">
                                 Elétricos
-                            </h3>
-                            <p className="text-sm text-gray-500 group-hover:text-white/70 transition-colors mt-1">
-                                Zero emissões
-                            </p>
-                        </Link>
-                        <Link 
-                            to="/viaturas?fuel_type=Híbrido"
-                            className="group p-6 bg-gray-50 dark:bg-gray-800 rounded-sm hover:bg-[#E60000] transition-all duration-300"
-                        >
-                            <Settings size={24} className="text-[#E60000] group-hover:text-white transition-colors" />
-                            <h3 className="mt-3 font-semibold text-gray-900 dark:text-white group-hover:text-white transition-colors">
-                                Híbridos
-                            </h3>
-                            <p className="text-sm text-gray-500 group-hover:text-white/70 transition-colors mt-1">
-                                Máxima eficiência
-                            </p>
+                            </h4>
+                            <p className="text-xs text-gray-400 mt-1">Zero emissões</p>
                         </Link>
                         <Link 
                             to="/viaturas?max_price=15000"
-                            className="group p-6 bg-gray-50 dark:bg-gray-800 rounded-sm hover:bg-[#E60000] transition-all duration-300"
+                            className="group p-5 bg-white dark:bg-gray-900 rounded-sm border border-gray-100 dark:border-gray-700 hover:border-[#E60000] hover:shadow-lg transition-all duration-300"
                         >
-                            <Car size={24} className="text-[#E60000] group-hover:text-white transition-colors" />
-                            <h3 className="mt-3 font-semibold text-gray-900 dark:text-white group-hover:text-white transition-colors">
+                            <Tag size={22} className="text-[#E60000]" />
+                            <h4 className="mt-3 font-semibold text-gray-900 dark:text-white group-hover:text-[#E60000] transition-colors">
                                 Até 15.000€
-                            </h3>
-                            <p className="text-sm text-gray-500 group-hover:text-white/70 transition-colors mt-1">
-                                Melhor custo-benefício
-                            </p>
+                            </h4>
+                            <p className="text-xs text-gray-400 mt-1">Melhor custo-benefício</p>
                         </Link>
                         <Link 
                             to="/viaturas?min_year=2022"
-                            className="group p-6 bg-gray-50 dark:bg-gray-800 rounded-sm hover:bg-[#E60000] transition-all duration-300"
+                            className="group p-5 bg-white dark:bg-gray-900 rounded-sm border border-gray-100 dark:border-gray-700 hover:border-[#E60000] hover:shadow-lg transition-all duration-300"
                         >
-                            <Calendar size={24} className="text-[#E60000] group-hover:text-white transition-colors" />
-                            <h3 className="mt-3 font-semibold text-gray-900 dark:text-white group-hover:text-white transition-colors">
+                            <Calendar size={22} className="text-[#E60000]" />
+                            <h4 className="mt-3 font-semibold text-gray-900 dark:text-white group-hover:text-[#E60000] transition-colors">
                                 Recentes
-                            </h3>
-                            <p className="text-sm text-gray-500 group-hover:text-white/70 transition-colors mt-1">
-                                De 2022 em diante
-                            </p>
+                            </h4>
+                            <p className="text-xs text-gray-400 mt-1">De 2022 em diante</p>
+                        </Link>
+                        <Link 
+                            to="/viaturas?brand=BMW"
+                            className="group p-5 bg-white dark:bg-gray-900 rounded-sm border border-gray-100 dark:border-gray-700 hover:border-[#E60000] hover:shadow-lg transition-all duration-300"
+                        >
+                            <Car size={22} className="text-[#E60000]" />
+                            <h4 className="mt-3 font-semibold text-gray-900 dark:text-white group-hover:text-[#E60000] transition-colors">
+                                Premium
+                            </h4>
+                            <p className="text-xs text-gray-400 mt-1">BMW, Mercedes, Audi</p>
                         </Link>
                     </div>
                 </div>
             </section>
 
             {/* ============================================
+                CAMPAIGNS SECTION - NEW
+                ============================================ */}
+            {campaigns.length > 0 && (
+                <section className="py-20 md:py-28 bg-[#E60000]">
+                    <div className="container-site">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+                            <div>
+                                <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 text-white text-xs font-semibold tracking-wider uppercase rounded-full mb-4">
+                                    <Tag size={12} />
+                                    Ofertas Especiais
+                                </span>
+                                <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white">
+                                    Campanhas<br/>em vigor
+                                </h2>
+                            </div>
+                            <Link 
+                                to="/campanhas"
+                                className="inline-flex items-center gap-2 text-white font-semibold hover:underline"
+                            >
+                                Ver todas as campanhas
+                                <ArrowRight size={16} />
+                            </Link>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {campaigns.slice(0, 3).map((campaign, index) => (
+                                <div 
+                                    key={campaign.id}
+                                    className="bg-white rounded-sm overflow-hidden group hover:shadow-2xl transition-shadow animate-fade-up"
+                                    style={{ animationDelay: `${index * 0.1}s` }}
+                                >
+                                    {campaign.image_url && (
+                                        <div className="aspect-[16/9] overflow-hidden">
+                                            <img 
+                                                src={campaign.image_url} 
+                                                alt={campaign.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                        </div>
+                                    )}
+                                    <div className="p-6">
+                                        {campaign.discount_percentage && (
+                                            <span className="inline-block px-3 py-1 bg-[#E60000] text-white text-xs font-bold rounded-full mb-3">
+                                                -{campaign.discount_percentage}%
+                                            </span>
+                                        )}
+                                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                            {campaign.title}
+                                        </h3>
+                                        <p className="text-gray-500 text-sm line-clamp-2">
+                                            {campaign.description}
+                                        </p>
+                                        <Link 
+                                            to="/campanhas"
+                                            className="inline-flex items-center gap-1 mt-4 text-[#E60000] font-semibold text-sm hover:underline"
+                                        >
+                                            Saber mais
+                                            <ChevronRight size={14} />
+                                        </Link>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            {/* Fallback if no campaigns */}
+            {campaigns.length === 0 && (
+                <section className="py-20 md:py-28 bg-[#E60000]">
+                    <div className="container-site text-center">
+                        <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 text-white text-xs font-semibold tracking-wider uppercase rounded-full mb-4">
+                            <Tag size={12} />
+                            Ofertas Especiais
+                        </span>
+                        <h2 className="font-display text-4xl md:text-5xl text-white mb-4">
+                            Campanhas em breve
+                        </h2>
+                        <p className="text-white/70 max-w-md mx-auto">
+                            Estamos a preparar ofertas especiais para si. Fique atento!
+                        </p>
+                        <a 
+                            href="tel:+351919190993"
+                            className="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-white text-[#E60000] font-semibold rounded-sm hover:bg-gray-100 transition-colors"
+                        >
+                            <Phone size={18} />
+                            Ligue para saber mais
+                        </a>
+                    </div>
+                </section>
+            )}
+
+            {/* ============================================
                 FEATURED VEHICLES
                 ============================================ */}
-            <section className="py-20 md:py-28">
+            <section className="py-20 md:py-28 bg-white dark:bg-gray-900">
                 <div className="container-site">
                     {/* Section Header */}
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 md:mb-14">
@@ -300,7 +443,7 @@ export const Home = () => {
                             <span className="section-number pt-2">01</span>
                             <div>
                                 <span className="text-[11px] font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500">
-                                    Seleção
+                                    Seleção Premium
                                 </span>
                                 <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-gray-900 dark:text-white mt-2">
                                     Em destaque
@@ -347,84 +490,26 @@ export const Home = () => {
             </section>
 
             {/* ============================================
-                WHY US SECTION - New
-                ============================================ */}
-            <section className="py-20 md:py-28 bg-gray-50 dark:bg-gray-900">
-                <div className="container-site">
-                    <div className="flex items-start gap-5 md:gap-6 mb-12">
-                        <span className="section-number pt-2">02</span>
-                        <div>
-                            <span className="text-[11px] font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500">
-                                Porquê nós
-                            </span>
-                            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-gray-900 dark:text-white mt-2">
-                                A diferença<br/>
-                                <span className="text-[#E60000]">dANI.PT</span>
-                            </h2>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div className="bg-white dark:bg-gray-800 p-6 rounded-sm border border-gray-100 dark:border-gray-700">
-                            <div className="w-12 h-12 bg-green-50 dark:bg-green-900/20 rounded-full flex items-center justify-center mb-4">
-                                <CheckCircle size={24} className="text-green-600" />
-                            </div>
-                            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Inspeção Rigorosa</h3>
-                            <p className="text-sm text-gray-500 leading-relaxed">
-                                Todas as viaturas passam por uma inspeção completa de +150 pontos antes de entrar no nosso stock.
-                            </p>
-                        </div>
-                        <div className="bg-white dark:bg-gray-800 p-6 rounded-sm border border-gray-100 dark:border-gray-700">
-                            <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-4">
-                                <Shield size={24} className="text-blue-600" />
-                            </div>
-                            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Garantia Real</h3>
-                            <p className="text-sm text-gray-500 leading-relaxed">
-                                Oferecemos garantia mínima de 12 meses em todas as viaturas. Sem letras pequenas.
-                            </p>
-                        </div>
-                        <div className="bg-white dark:bg-gray-800 p-6 rounded-sm border border-gray-100 dark:border-gray-700">
-                            <div className="w-12 h-12 bg-yellow-50 dark:bg-yellow-900/20 rounded-full flex items-center justify-center mb-4">
-                                <Star size={24} className="text-yellow-600" />
-                            </div>
-                            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Histórico Completo</h3>
-                            <p className="text-sm text-gray-500 leading-relaxed">
-                                Acesso total ao histórico de cada viatura: manutenções, quilometragem real, donos anteriores.
-                            </p>
-                        </div>
-                        <div className="bg-white dark:bg-gray-800 p-6 rounded-sm border border-gray-100 dark:border-gray-700">
-                            <div className="w-12 h-12 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-4">
-                                <MessageCircle size={24} className="text-[#E60000]" />
-                            </div>
-                            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Apoio Dedicado</h3>
-                            <p className="text-sm text-gray-500 leading-relaxed">
-                                Acompanhamento personalizado antes, durante e após a compra. Estamos aqui para si.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* ============================================
-                BRAND STATEMENT
+                TESTIMONIAL / BRAND STATEMENT
                 ============================================ */}
             <section className="bg-gray-900 dark:bg-black py-20 md:py-28 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-transparent to-gray-900 dark:from-black dark:to-black"></div>
+                <div className="absolute inset-0 opacity-10">
+                    <div className="absolute top-0 left-0 w-full h-full" style={{
+                        backgroundImage: 'radial-gradient(circle at 20% 50%, #E60000 0%, transparent 50%)'
+                    }}></div>
+                </div>
                 
                 <div className="container-site relative z-10">
-                    <div className="flex items-start gap-6 md:gap-8">
-                        <div className="hidden md:block w-[2px] h-28 bg-[#E60000] rounded-full"></div>
-                        
-                        <div className="max-w-3xl">
-                            <span className="section-number text-white/20">03</span>
-                            <p className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white mt-4 leading-tight">
-                                Nada escondido.<br/>
-                                <span className="text-[#E60000]">Tudo verificado.</span>
-                            </p>
-                            <p className="text-white/50 mt-6 md:mt-8 text-sm md:text-base max-w-lg leading-relaxed">
-                                Cada viatura passa por inspeção rigorosa. Histórico completo, estado real, preço justo. Sem surpresas.
-                            </p>
-                        </div>
+                    <div className="max-w-4xl mx-auto text-center">
+                        <div className="w-16 h-1 bg-[#E60000] mx-auto mb-8"></div>
+                        <blockquote className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white leading-tight">
+                            "Comprar um carro usado<br/>
+                            não tem de ser uma<br/>
+                            <span className="text-[#E60000]">aventura de risco."</span>
+                        </blockquote>
+                        <p className="text-white/40 mt-8 text-sm uppercase tracking-widest">
+                            — Daniel Henriques, Fundador
+                        </p>
                     </div>
                 </div>
             </section>
@@ -432,11 +517,11 @@ export const Home = () => {
             {/* ============================================
                 ALL VEHICLES PREVIEW
                 ============================================ */}
-            <section className="py-20 md:py-28 bg-white dark:bg-gray-800">
+            <section className="py-20 md:py-28 bg-gray-50 dark:bg-gray-800">
                 <div className="container-site">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 md:mb-14">
                         <div className="flex items-start gap-5 md:gap-6">
-                            <span className="section-number pt-2">04</span>
+                            <span className="section-number pt-2">02</span>
                             <div>
                                 <span className="text-[11px] font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500">
                                     Stock Atual
@@ -472,9 +557,9 @@ export const Home = () => {
             </section>
 
             {/* ============================================
-                CONTACT INFO BAR - New
+                CONTACT INFO BAR
                 ============================================ */}
-            <section className="py-12 md:py-16 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
+            <section className="py-12 md:py-16 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
                 <div className="container-site">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                         <div className="flex items-start gap-4">
@@ -520,11 +605,11 @@ export const Home = () => {
             {/* ============================================
                 CTA SECTION
                 ============================================ */}
-            <section className="py-20 md:py-28 bg-white dark:bg-gray-800">
+            <section className="py-20 md:py-28 bg-gray-50 dark:bg-gray-800">
                 <div className="container-site">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10 lg:gap-16">
                         <div className="lg:max-w-xl flex items-start gap-5 md:gap-6">
-                            <span className="section-number pt-2">05</span>
+                            <span className="section-number pt-2">03</span>
                             <div>
                                 <span className="text-[11px] font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500">
                                     Pronto?
@@ -556,6 +641,21 @@ export const Home = () => {
                     </div>
                 </div>
             </section>
+
+            {/* ============================================
+                SCROLL TO TOP BUTTON
+                ============================================ */}
+            <button
+                onClick={scrollToTop}
+                className={`fixed bottom-6 right-6 z-50 w-12 h-12 bg-[#E60000] hover:bg-[#CC0000] text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 ${
+                    showScrollTop 
+                        ? 'opacity-100 translate-y-0' 
+                        : 'opacity-0 translate-y-4 pointer-events-none'
+                }`}
+                aria-label="Voltar ao topo"
+            >
+                <ChevronUp size={24} />
+            </button>
         </main>
     );
 };

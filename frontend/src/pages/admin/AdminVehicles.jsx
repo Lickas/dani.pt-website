@@ -1,9 +1,16 @@
+/**
+ * Admin Vehicles List
+ * 
+ * TODO: Adicionar ordenação por colunas
+ * TODO: Implementar pesquisa rápida
+ * TODO: Adicionar exportação para Excel
+ * TODO: Bulk actions (marcar vendido, eliminar múltiplos)
+ */
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../../context/AuthContext';
-import { Plus, Pencil, Trash2, Eye, EyeOff } from 'lucide-react';
-import { Button } from '../../components/ui/button';
+import { Plus, Pencil, Trash2, Eye, EyeOff, Search } from 'lucide-react';
 import { toast } from 'sonner';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -11,11 +18,16 @@ const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 export const AdminVehicles = () => {
     const [vehicles, setVehicles] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { getAuthHeaders } = useAuth();
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         fetchVehicles();
     }, []);
+
+    const getAuthHeaders = () => {
+        const token = localStorage.getItem('dani_admin_token');
+        return { Authorization: `Bearer ${token}` };
+    };
 
     const fetchVehicles = async () => {
         try {
@@ -25,6 +37,7 @@ export const AdminVehicles = () => {
             setVehicles(response.data);
         } catch (error) {
             console.error('Error fetching vehicles:', error);
+            toast.error('Erro ao carregar viaturas');
         } finally {
             setLoading(false);
         }
@@ -37,7 +50,7 @@ export const AdminVehicles = () => {
             await axios.delete(`${API_URL}/vehicles/${id}`, {
                 headers: getAuthHeaders()
             });
-            toast.success('Viatura eliminada com sucesso');
+            toast.success('Viatura eliminada');
             setVehicles(prev => prev.filter(v => v.id !== id));
         } catch (error) {
             toast.error('Erro ao eliminar viatura');
@@ -51,10 +64,10 @@ export const AdminVehicles = () => {
             }, {
                 headers: getAuthHeaders()
             });
-            toast.success(vehicle.is_sold ? 'Viatura marcada como disponível' : 'Viatura marcada como vendida');
+            toast.success(vehicle.is_sold ? 'Viatura disponível' : 'Viatura vendida');
             fetchVehicles();
         } catch (error) {
-            toast.error('Erro ao atualizar viatura');
+            toast.error('Erro ao atualizar');
         }
     };
 
@@ -66,38 +79,55 @@ export const AdminVehicles = () => {
         }).format(price);
     };
 
+    // Filter vehicles based on search
+    const filteredVehicles = vehicles.filter(v => 
+        `${v.brand} ${v.model}`.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            {/* Page Header */}
+            <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="font-archivo font-black text-2xl md:text-3xl text-[#1A1A1A]">
+                    <h1 className="text-2xl md:text-3xl font-bold text-[#1A1A1A]">
                         Viaturas
                     </h1>
                     <p className="text-[#666666] mt-1">
-                        Gerir o stock de viaturas
+                        Gerir o stock de viaturas ({vehicles.length} total)
                     </p>
                 </div>
-                <Link to="/admin/viaturas/nova">
-                    <Button 
-                        className="bg-[#E60000] hover:bg-[#CC0000] rounded-[2px]"
-                        data-testid="add-vehicle-btn"
-                    >
-                        <Plus size={18} className="mr-2" />
-                        Nova Viatura
-                    </Button>
+                <Link 
+                    to="/admin/viaturas/nova"
+                    className="flex items-center gap-2 px-4 py-2 bg-[#E60000] text-white rounded-[2px] font-semibold hover:bg-[#CC0000] transition-colors"
+                    data-testid="add-vehicle-btn"
+                >
+                    <Plus size={18} />
+                    Nova Viatura
                 </Link>
+            </header>
+
+            {/* Search Bar - TODO: Expandir com mais filtros */}
+            <div className="relative">
+                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#999999]" />
+                <input
+                    type="text"
+                    placeholder="Pesquisar por marca ou modelo..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
+                    data-testid="search-vehicles"
+                />
             </div>
 
-            {/* Table */}
+            {/* Vehicles Table */}
             <div className="bg-white border border-[#E5E5E5] rounded-[4px] overflow-hidden">
                 {loading ? (
                     <div className="p-8 text-center text-[#666666]">
-                        A carregar...
+                        A carregar viaturas...
                     </div>
-                ) : vehicles.length === 0 ? (
+                ) : filteredVehicles.length === 0 ? (
                     <div className="p-8 text-center text-[#666666]">
-                        Nenhuma viatura registada
+                        {searchTerm ? 'Nenhuma viatura encontrada' : 'Nenhuma viatura registada'}
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
@@ -122,17 +152,16 @@ export const AdminVehicles = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-[#E5E5E5]">
-                                {vehicles.map((vehicle) => (
+                                {filteredVehicles.map((vehicle) => (
                                     <tr 
                                         key={vehicle.id}
                                         className="hover:bg-[#F9F9F9] transition-colors"
-                                        data-testid={`vehicle-row-${vehicle.id}`}
                                     >
                                         <td className="p-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-16 h-12 bg-[#F4F4F4] rounded-[2px] overflow-hidden flex-shrink-0">
                                                     <img
-                                                        src={vehicle.images?.[0] || 'https://via.placeholder.com/64x48'}
+                                                        src={vehicle.images?.[0] || 'https://via.placeholder.com/64x48?text=Sem+foto'}
                                                         alt={`${vehicle.brand} ${vehicle.model}`}
                                                         className="w-full h-full object-cover"
                                                     />
@@ -165,34 +194,28 @@ export const AdminVehicles = () => {
                                             </span>
                                         </td>
                                         <td className="p-4">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
+                                            <div className="flex items-center justify-end gap-1">
+                                                <button
                                                     onClick={() => toggleSold(vehicle)}
                                                     title={vehicle.is_sold ? 'Marcar disponível' : 'Marcar vendido'}
-                                                    data-testid={`toggle-sold-${vehicle.id}`}
+                                                    className="p-2 text-[#666666] hover:text-[#1A1A1A] hover:bg-[#F4F4F4] rounded-[2px] transition-colors"
                                                 >
                                                     {vehicle.is_sold ? <Eye size={16} /> : <EyeOff size={16} />}
-                                                </Button>
-                                                <Link to={`/admin/viaturas/${vehicle.id}`}>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        data-testid={`edit-vehicle-${vehicle.id}`}
-                                                    >
-                                                        <Pencil size={16} />
-                                                    </Button>
+                                                </button>
+                                                <Link 
+                                                    to={`/admin/viaturas/${vehicle.id}`}
+                                                    className="p-2 text-[#666666] hover:text-[#1A1A1A] hover:bg-[#F4F4F4] rounded-[2px] transition-colors"
+                                                    title="Editar"
+                                                >
+                                                    <Pencil size={16} />
                                                 </Link>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
+                                                <button
                                                     onClick={() => handleDelete(vehicle.id)}
-                                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                                    data-testid={`delete-vehicle-${vehicle.id}`}
+                                                    className="p-2 text-[#666666] hover:text-[#E60000] hover:bg-red-50 rounded-[2px] transition-colors"
+                                                    title="Eliminar"
                                                 >
                                                     <Trash2 size={16} />
-                                                </Button>
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>

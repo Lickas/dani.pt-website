@@ -136,10 +136,10 @@ class dANISupabaseAPITester:
     def test_create_contact_message(self):
         """Test contact form submission"""
         test_message = {
-            "name": "Test User",
-            "email": "test@example.com",
-            "phone": "+351123456789",
-            "message": "Test message from automated testing"
+            "name": "João Silva",
+            "email": "joao.silva@email.pt",
+            "phone": "+351912345678",
+            "message": "Olá, gostaria de saber mais informações sobre uma viatura BMW que vi no vosso site. Obrigado!"
         }
         success, response = self.run_test(
             "Create Contact Message",

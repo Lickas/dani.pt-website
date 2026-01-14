@@ -20,10 +20,16 @@ export const Footer = () => {
                                 className="h-8 w-auto brightness-0 invert"
                             />
                         </Link>
-                        <p className="mt-6 text-white/50 text-sm leading-relaxed max-w-sm">
-                            Selecionados. Revistos. Prontos.<br/>
-                            Stand de automóveis usados em Coimbra.
-                        </p>
+                        <div className="mt-6 space-y-3">
+                            <div className="w-12 h-[2px] bg-[#E60000]"></div>
+                            <p className="text-white/70 text-sm leading-relaxed max-w-sm">
+                                Escolhidos um a um.<br/>
+                                Revistos. Testados. Prontos.
+                            </p>
+                            <p className="text-white/40 text-xs">
+                                Stand de automóveis · Coimbra
+                            </p>
+                        </div>
                     </div>
 
                     {/* Contact Column */}

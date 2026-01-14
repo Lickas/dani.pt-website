@@ -1,19 +1,48 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ================================
+   dANI.PT - DESIGN SYSTEM
+   Premium • Direto • Confiante
+   ================================ */
+
 :root {
-    --primary-red: #E60000;
-    --primary-red-hover: #CC0000;
-    --bg-white: #FFFFFF;
-    --bg-subtle: #F4F4F4;
-    --text-dark: #1A1A1A;
-    --text-secondary: #666666;
-    --text-muted: #999999;
-    --border-color: #E5E5E5;
-    --border-strong: #1A1A1A;
+    /* Core Colors */
+    --red: #E60000;
+    --red-hover: #CC0000;
+    --white: #FFFFFF;
+    --off-white: #FAFAFA;
+    --gray-100: #F5F5F5;
+    --gray-200: #E8E8E8;
+    --gray-400: #999999;
+    --gray-600: #666666;
+    --black: #1A1A1A;
+    
+    /* Typography Scale */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 2rem;
+    --text-4xl: 2.5rem;
+    --text-5xl: 3.5rem;
+    --text-6xl: 4.5rem;
+    --text-7xl: 6rem;
+    --text-8xl: 8rem;
+    
+    /* Spacing */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+    --space-2xl: 5rem;
+    --space-3xl: 8rem;
 }
 
 * {
@@ -22,50 +51,65 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: var(--bg-white);
-    color: var(--text-dark);
-    line-height: 1.6;
+    background-color: var(--white);
+    color: var(--black);
+    line-height: 1.5;
+    letter-spacing: -0.01em;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Archivo', sans-serif;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
+/* Display Font - Headlines */
+.font-display {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 0.9;
+    text-transform: uppercase;
 }
 
-code {
-    font-family: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, monospace;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--bg-subtle);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 2px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--text-muted);
+/* Monospace for labels */
+.font-mono {
+    font-family: 'Space Grotesk', monospace;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: var(--text-xs);
 }
 
 /* Selection */
 ::selection {
-    background-color: var(--primary-red);
-    color: white;
+    background-color: var(--red);
+    color: var(--white);
 }
+
+/* Scrollbar - Minimal */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gray-200);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-400);
+}
+
+/* ================================
+   SHADCN OVERRIDES
+   ================================ */
 
 @layer base {
     :root {
@@ -80,7 +124,7 @@ code {
         --secondary: 0 0% 96%;
         --secondary-foreground: 0 0% 10%;
         --muted: 0 0% 96%;
-        --muted-foreground: 0 0% 45%;
+        --muted-foreground: 0 0% 40%;
         --accent: 0 0% 96%;
         --accent-foreground: 0 0% 10%;
         --destructive: 0 84% 60%;
@@ -88,7 +132,7 @@ code {
         --border: 0 0% 90%;
         --input: 0 0% 90%;
         --ring: 0 0% 10%;
-        --radius: 0.125rem;
+        --radius: 0px;
     }
 }
 
@@ -98,11 +142,62 @@ code {
     }
 }
 
-/* Animations */
-@keyframes fadeInUp {
+/* ================================
+   UTILITY CLASSES
+   ================================ */
+
+/* Container */
+.container-site {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .container-site {
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+}
+
+@media (min-width: 1280px) {
+    .container-site {
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+}
+
+/* Divider Line */
+.divider {
+    height: 1px;
+    background-color: var(--gray-200);
+}
+
+.divider-dark {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Label Style */
+.label-style {
+    font-family: 'Space Grotesk', monospace;
+    font-weight: 500;
+    font-size: 0.6875rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+}
+
+/* ================================
+   ANIMATIONS
+   ================================ */
+
+@keyframes fadeUp {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(30px);
     }
     to {
         opacity: 1;
@@ -111,102 +206,159 @@ code {
 }
 
 @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
     from {
         opacity: 0;
+        transform: translateX(-20px);
     }
     to {
         opacity: 1;
+        transform: translateX(0);
     }
 }
 
-.animate-fade-in-up {
-    animation: fadeInUp 0.5s ease-out forwards;
+.animate-fade-up {
+    animation: fadeUp 0.6s ease-out forwards;
 }
 
 .animate-fade-in {
-    animation: fadeIn 0.3s ease-out forwards;
+    animation: fadeIn 0.4s ease-out forwards;
 }
 
-/* Staggered animations */
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.2s; }
-.stagger-3 { animation-delay: 0.3s; }
-.stagger-4 { animation-delay: 0.4s; }
-.stagger-5 { animation-delay: 0.5s; }
-
-/* Utility classes */
-.container-custom {
-    max-width: 80rem;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+.animate-slide-in {
+    animation: slideIn 0.5s ease-out forwards;
 }
 
-@media (min-width: 768px) {
-    .container-custom {
-        padding-left: 3rem;
-        padding-right: 3rem;
-    }
+/* Stagger delays */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+
+/* ================================
+   COMPONENT STYLES
+   ================================ */
+
+/* Button Primary */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background-color: var(--red);
+    color: var(--white);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    letter-spacing: 0.02em;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-@media (min-width: 1024px) {
-    .container-custom {
-        padding-left: 6rem;
-        padding-right: 6rem;
-    }
+.btn-primary:hover {
+    background-color: var(--red-hover);
 }
 
-.section-padding {
-    padding-top: 4rem;
-    padding-bottom: 4rem;
+/* Button Secondary */
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background-color: var(--black);
+    color: var(--white);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    letter-spacing: 0.02em;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-@media (min-width: 768px) {
-    .section-padding {
-        padding-top: 6rem;
-        padding-bottom: 6rem;
-    }
+.btn-secondary:hover {
+    background-color: #000;
 }
 
-@media (min-width: 1024px) {
-    .section-padding {
-        padding-top: 8rem;
-        padding-bottom: 8rem;
-    }
+/* Button Outline */
+.btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background-color: transparent;
+    color: var(--black);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    letter-spacing: 0.02em;
+    border: 1px solid var(--gray-200);
+    cursor: pointer;
+    transition: border-color 0.2s ease;
 }
 
-/* Button hover lift effect */
-.btn-lift {
-    transition: transform 0.2s ease, background-color 0.2s ease;
+.btn-outline:hover {
+    border-color: var(--black);
 }
 
-.btn-lift:hover {
-    transform: translateY(-2px);
+/* Input Style */
+.input-style {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background-color: var(--gray-100);
+    border: 1px solid transparent;
+    font-size: var(--text-sm);
+    color: var(--black);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-/* Card hover effect */
-.card-hover {
-    transition: border-color 0.3s ease, transform 0.2s ease;
+.input-style:focus {
+    outline: none;
+    background-color: var(--white);
+    border-color: var(--black);
 }
 
-.card-hover:hover {
-    border-color: var(--text-dark);
+.input-style::placeholder {
+    color: var(--gray-400);
+}
+
+/* Card Hover Effect */
+.card-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-lift:hover {
     transform: translateY(-4px);
 }
 
-/* Image zoom on hover */
-.img-zoom {
-    transition: transform 0.5s ease;
+/* Image Scale */
+.img-scale {
+    transition: transform 0.6s ease;
 }
 
-.img-zoom:hover {
+.img-scale:hover {
     transform: scale(1.05);
 }
 
-/* Debug wrapper fix */
-@layer base {
-    [data-debug-wrapper="true"] {
-        display: contents !important;
+/* ================================
+   MOBILE BOTTOM BAR SPACING
+   ================================ */
+
+@media (max-width: 767px) {
+    main {
+        padding-bottom: 72px;
     }
+}
+
+/* ================================
+   DEBUG
+   ================================ */
+
+[data-debug-wrapper="true"] {
+    display: contents !important;
 }

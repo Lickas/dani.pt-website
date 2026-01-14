@@ -181,7 +181,8 @@ function App() {
                     <Route path="/admin/viaturas/:id" element={<ProtectedRoute><AdminLayoutWrapper><AdminVehicleForm /></AdminLayoutWrapper></ProtectedRoute>} />
                     <Route path="/admin/campanhas" element={<ProtectedRoute><AdminLayoutWrapper><AdminCampaigns /></AdminLayoutWrapper></ProtectedRoute>} />
                     <Route path="/admin/campanhas/nova" element={<ProtectedRoute><AdminLayoutWrapper><AdminCampaignForm /></AdminLayoutWrapper></ProtectedRoute>} />
-                    <Route path="/admin/campanhas/:id" element={<ProtectedRoute><AdminLayoutWrapper><AdminCampaignForm /></AdminLayoutWrapper></ProtectedRoute>} />
+                    <Route path="/admin/campanhas/ver/:id" element={<ProtectedRoute><AdminLayoutWrapper><AdminCampaignDetail /></AdminLayoutWrapper></ProtectedRoute>} />
+                    <Route path="/admin/campanhas/editar/:id" element={<ProtectedRoute><AdminLayoutWrapper><AdminCampaignForm /></AdminLayoutWrapper></ProtectedRoute>} />
                     <Route path="/admin/mensagens" element={<ProtectedRoute><AdminLayoutWrapper><AdminMessages /></AdminLayoutWrapper></ProtectedRoute>} />
                     <Route path="/admin/configuracoes" element={<ProtectedRoute><AdminLayoutWrapper><AdminSettings /></AdminLayoutWrapper></ProtectedRoute>} />
 

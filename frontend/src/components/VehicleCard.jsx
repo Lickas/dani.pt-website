@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Fuel, Gauge, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Fuel, Gauge, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 
 export const VehicleCard = ({ vehicle }) => {
     const [currentImage, setCurrentImage] = useState(0);
@@ -16,7 +16,7 @@ export const VehicleCard = ({ vehicle }) => {
         if (isHovering && images.length > 1) {
             intervalRef.current = setInterval(() => {
                 setCurrentImage(prev => (prev + 1) % images.length);
-            }, 2000);
+            }, 2500);
         } else {
             if (intervalRef.current) {
                 clearInterval(intervalRef.current);
@@ -57,58 +57,72 @@ export const VehicleCard = ({ vehicle }) => {
         >
             {/* Image Container */}
             <div 
-                className="relative aspect-[4/3] bg-[#F5F5F5] dark:bg-[#1A1A1A] overflow-hidden mb-4"
+                className="relative aspect-[4/3] bg-gray-100 dark:bg-gray-800 overflow-hidden rounded-sm"
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => {
                     setIsHovering(false);
                     setCurrentImage(0);
                 }}
             >
-                {/* Linha vermelha superior - assinatura dANI */}
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#E60000] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                {/* Red accent line - appears on hover */}
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#E60000] transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 z-10"></div>
                 
-                <img
-                    src={images[currentImage]}
-                    alt={`${vehicle.brand} ${vehicle.model}`}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    loading="lazy"
-                />
+                {/* Image with smooth transition */}
+                <div className="relative w-full h-full">
+                    {images.map((img, idx) => (
+                        <img
+                            key={idx}
+                            src={img}
+                            alt={`${vehicle.brand} ${vehicle.model}`}
+                            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${
+                                idx === currentImage 
+                                    ? 'opacity-100 scale-100' 
+                                    : 'opacity-0 scale-105'
+                            } ${isHovering ? 'group-hover:scale-105' : ''}`}
+                            loading="lazy"
+                        />
+                    ))}
+                </div>
                 
                 {/* Navigation Arrows - Show on hover if multiple images */}
                 {images.length > 1 && (
-                    <div className={`absolute inset-0 flex items-center justify-between px-2 transition-opacity ${isHovering ? 'opacity-100' : 'opacity-0'}`}>
+                    <div className={`absolute inset-0 flex items-center justify-between px-2 transition-opacity duration-300 ${isHovering ? 'opacity-100' : 'opacity-0'}`}>
                         <button
                             onClick={prevImage}
-                            className="w-8 h-8 bg-white/90 dark:bg-black/70 flex items-center justify-center hover:bg-white dark:hover:bg-black transition-colors"
+                            className="w-8 h-8 bg-white/90 dark:bg-black/70 flex items-center justify-center hover:bg-white dark:hover:bg-black transition-colors rounded-sm"
+                            aria-label="Imagem anterior"
                         >
-                            <ChevronLeft size={18} className="text-[#1A1A1A] dark:text-white" />
+                            <ChevronLeft size={16} className="text-gray-800 dark:text-white" />
                         </button>
                         <button
                             onClick={nextImage}
-                            className="w-8 h-8 bg-white/90 dark:bg-black/70 flex items-center justify-center hover:bg-white dark:hover:bg-black transition-colors"
+                            className="w-8 h-8 bg-white/90 dark:bg-black/70 flex items-center justify-center hover:bg-white dark:hover:bg-black transition-colors rounded-sm"
+                            aria-label="Próxima imagem"
                         >
-                            <ChevronRight size={18} className="text-[#1A1A1A] dark:text-white" />
+                            <ChevronRight size={16} className="text-gray-800 dark:text-white" />
                         </button>
                     </div>
                 )}
 
-                {/* Image Indicators */}
+                {/* Image Indicators - Minimalist dots */}
                 {images.length > 1 && (
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
                         {images.map((_, idx) => (
                             <span 
                                 key={idx} 
-                                className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                                    idx === currentImage ? 'bg-white' : 'bg-white/40'
+                                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                                    idx === currentImage 
+                                        ? 'bg-white w-4' 
+                                        : 'bg-white/50'
                                 }`}
                             />
                         ))}
                     </div>
                 )}
                 
-                {/* Featured Badge */}
+                {/* Featured Badge - More elegant */}
                 {vehicle.is_featured && (
-                    <div className="absolute top-0 left-0 bg-[#E60000] text-white px-3 py-1">
+                    <div className="absolute top-3 left-3 bg-[#E60000] text-white px-2.5 py-1 rounded-sm">
                         <span className="text-[10px] font-semibold tracking-wider uppercase">
                             Destaque
                         </span>
@@ -117,43 +131,51 @@ export const VehicleCard = ({ vehicle }) => {
 
                 {/* Sold Overlay */}
                 {vehicle.is_sold && (
-                    <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
-                        <span className="font-display text-4xl text-white">VENDIDO</span>
+                    <div className="absolute inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center">
+                        <span className="font-display text-3xl text-white tracking-wider">VENDIDO</span>
                     </div>
                 )}
             </div>
 
             {/* Content */}
-            <div className="space-y-2">
-                <div className="flex items-center gap-3">
-                    <div className="w-6 h-[2px] bg-[#E60000] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <span className="label-style text-[#999] dark:text-[#666]">
+            <div className="pt-4 space-y-2">
+                {/* Brand with animated accent */}
+                <div className="flex items-center gap-2">
+                    <div className="w-0 group-hover:w-5 h-[2px] bg-[#E60000] transition-all duration-300"></div>
+                    <span className="text-[11px] font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500">
                         {vehicle.brand}
                     </span>
                 </div>
                 
-                <h3 className="text-xl font-semibold text-[#1A1A1A] dark:text-white group-hover:text-[#E60000] transition-colors leading-tight">
+                {/* Model name */}
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-[#E60000] transition-colors duration-200 leading-tight">
                     {vehicle.model}
                 </h3>
 
-                <div className="flex items-center gap-4 text-xs text-[#666] dark:text-[#888] pt-1">
-                    <span>{vehicle.year}</span>
-                    <span className="w-1 h-1 bg-[#CCC] dark:bg-[#444] rounded-full"></span>
+                {/* Specs row */}
+                <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 pt-0.5">
+                    <span className="flex items-center gap-1">
+                        <Calendar size={12} />
+                        {vehicle.year}
+                    </span>
+                    <span className="w-px h-3 bg-gray-200 dark:bg-gray-700"></span>
                     <span className="flex items-center gap-1">
                         <Gauge size={12} />
                         {formatMileage(vehicle.mileage)} km
                     </span>
-                    <span className="w-1 h-1 bg-[#CCC] dark:bg-[#444] rounded-full"></span>
+                    <span className="w-px h-3 bg-gray-200 dark:bg-gray-700"></span>
                     <span className="flex items-center gap-1">
                         <Fuel size={12} />
                         {vehicle.fuel_type}
                     </span>
                 </div>
 
-                <div className="pt-2">
-                    <span className="text-2xl font-bold text-[#1A1A1A] dark:text-white">
-                        {formatPrice(vehicle.price)}€
+                {/* Price */}
+                <div className="pt-2 flex items-baseline gap-1">
+                    <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                        {formatPrice(vehicle.price)}
                     </span>
+                    <span className="text-sm font-medium text-gray-400">€</span>
                 </div>
             </div>
         </Link>

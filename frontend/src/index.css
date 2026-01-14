@@ -340,28 +340,48 @@ body {
 }
 
 /* ================================
-   COMPONENT STYLES
+   COMPONENT STYLES - Modern & Clean
    ================================ */
 
-/* Button Primary */
+/* Button Primary - Refined */
 .btn-primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 1rem 2rem;
+    gap: 0.625rem;
+    padding: 0.875rem 1.75rem;
     background-color: var(--red);
     color: var(--white);
     font-weight: 600;
     font-size: var(--text-sm);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
     border: none;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
 }
 
 .btn-primary:hover {
     background-color: var(--red-hover);
+    transform: translateY(-1px);
+}
+
+.btn-primary:hover::before {
+    transform: translateX(100%);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
 }
 
 /* Button Secondary */
@@ -369,52 +389,59 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 1rem 2rem;
+    gap: 0.625rem;
+    padding: 0.875rem 1.75rem;
     background-color: var(--black);
     color: var(--white);
     font-weight: 600;
     font-size: var(--text-sm);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
     border: none;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all var(--transition-base);
 }
 
 .btn-secondary:hover {
     background-color: #000;
+    transform: translateY(-1px);
 }
 
-/* Button Outline */
+/* Button Outline - More elegant */
 .btn-outline {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 1rem 2rem;
+    gap: 0.625rem;
+    padding: 0.875rem 1.75rem;
     background-color: transparent;
     color: var(--black);
     font-weight: 600;
     font-size: var(--text-sm);
-    letter-spacing: 0.02em;
-    border: 1px solid var(--gray-200);
+    letter-spacing: 0.01em;
+    border: 1.5px solid var(--gray-200);
     cursor: pointer;
-    transition: border-color 0.2s ease;
+    transition: all var(--transition-base);
 }
 
 .btn-outline:hover {
     border-color: var(--black);
+    background-color: var(--gray-50);
 }
 
-/* Input Style */
+/* Input Style - Cleaner */
 .input-style {
     width: 100%;
-    padding: 1rem 1.25rem;
-    background-color: var(--gray-100);
-    border: 1px solid transparent;
+    padding: 0.875rem 1rem;
+    background-color: var(--gray-50);
+    border: 1.5px solid transparent;
     font-size: var(--text-sm);
     color: var(--black);
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    transition: all var(--transition-base);
+    border-radius: 2px;
+}
+
+.input-style:hover {
+    background-color: var(--gray-100);
 }
 
 .input-style:focus {
@@ -429,25 +456,26 @@ body {
 
 /* Card Hover Effect */
 .card-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
 }
 
 .card-lift:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.15);
 }
 
-/* Image Scale */
+/* Image Scale - Smoother */
 .img-scale {
-    transition: transform 0.6s ease;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .img-scale:hover {
-    transform: scale(1.05);
+    transform: scale(1.04);
 }
 
-/* dANI Hover Effects - Distintos e minimalistas */
+/* dANI Hover Effects - Distintivos e elegantes */
 .dani-hover-lift {
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform var(--transition-smooth);
 }
 
 .dani-hover-lift:hover {
@@ -466,7 +494,7 @@ body {
     width: 0;
     height: 2px;
     background-color: var(--red);
-    transition: width 0.3s ease;
+    transition: width var(--transition-slow);
 }
 
 .dani-hover-underline:hover::after {
@@ -474,11 +502,17 @@ body {
 }
 
 .dani-hover-weight {
-    transition: font-weight 0.2s ease;
+    transition: font-weight var(--transition-fast);
 }
 
 .dani-hover-weight:hover {
     font-weight: 600;
+}
+
+/* Focus ring */
+.focus-ring:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--red-soft);
 }
 
 /* ================================

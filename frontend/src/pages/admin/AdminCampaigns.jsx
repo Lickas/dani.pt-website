@@ -126,7 +126,14 @@ export const AdminCampaigns = () => {
                                 </span>
                                 <div className="flex gap-1">
                                     <Link 
-                                        to={`/admin/campanhas/${campaign.id}`}
+                                        to={`/admin/campanhas/ver/${campaign.id}`}
+                                        className="p-2 text-[#666666] hover:text-[#1A1A1A] hover:bg-[#F4F4F4] rounded-[2px] transition-colors"
+                                        title="Ver detalhes"
+                                    >
+                                        <Eye size={16} />
+                                    </Link>
+                                    <Link 
+                                        to={`/admin/campanhas/editar/${campaign.id}`}
                                         className="p-2 text-[#666666] hover:text-[#1A1A1A] hover:bg-[#F4F4F4] rounded-[2px] transition-colors"
                                         title="Editar"
                                     >
@@ -142,9 +149,12 @@ export const AdminCampaigns = () => {
                                 </div>
                             </div>
 
-                            <h3 className="font-bold text-lg text-[#1A1A1A] mb-2">
-                                {campaign.title}
-                            </h3>
+                            {/* Clickable title */}
+                            <Link to={`/admin/campanhas/ver/${campaign.id}`}>
+                                <h3 className="font-bold text-lg text-[#1A1A1A] mb-2 hover:text-[#E60000] transition-colors">
+                                    {campaign.title}
+                                </h3>
+                            </Link>
                             <p className="text-sm text-[#666666] mb-4 line-clamp-2">
                                 {campaign.description}
                             </p>

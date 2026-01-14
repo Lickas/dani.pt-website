@@ -155,17 +155,23 @@ export const Home = () => {
                 ============================================ */}
             <section className="py-24 md:py-32">
                 <div className="container-site">
-                    {/* Section Header */}
+                    {/* Section Header com numeração */}
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                        <div>
-                            <span className="label-style text-[#999]">Seleção</span>
-                            <h2 className="font-display text-5xl md:text-6xl text-[#1A1A1A] mt-2">
-                                Em destaque
-                            </h2>
+                        <div className="flex items-start gap-6">
+                            <span className="section-number pt-1">01</span>
+                            <div>
+                                <span className="label-style text-[#999]">Seleção</span>
+                                <h2 className="font-display text-5xl md:text-6xl text-[#1A1A1A] mt-2">
+                                    Em destaque
+                                </h2>
+                                <p className="dani-quote mt-3">
+                                    Revistos. Testados. Prontos.
+                                </p>
+                            </div>
                         </div>
                         <Link 
                             to="/viaturas"
-                            className="group flex items-center gap-2 text-sm font-semibold text-[#1A1A1A] hover:text-[#E60000] transition-colors"
+                            className="group flex items-center gap-2 text-sm font-semibold text-[#1A1A1A] hover:text-[#E60000] transition-colors dani-hover-underline"
                         >
                             Ver todas
                             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />

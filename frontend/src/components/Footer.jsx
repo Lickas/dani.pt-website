@@ -7,7 +7,7 @@ export const Footer = () => {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-[#1A1A1A]">
+        <footer className="bg-[#1A1A1A] dark:bg-[#0A0A0A]">
             {/* Main Footer */}
             <div className="container-site py-16 md:py-24">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
@@ -17,7 +17,7 @@ export const Footer = () => {
                             <img 
                                 src={LOGO_URL} 
                                 alt="dANI.PT" 
-                                className="h-8 w-auto brightness-0 invert opacity-90"
+                                className="h-8 w-auto brightness-0 invert"
                             />
                         </Link>
                         <p className="mt-6 text-white/50 text-sm leading-relaxed max-w-sm">
@@ -84,7 +84,6 @@ export const Footer = () => {
                     </p>
                     
                     <div className="flex items-center gap-6">
-                        {/* Admin Access - Discrete */}
                         <Link 
                             to="/admin"
                             className="text-white/20 hover:text-white/40 text-xs transition-colors"
@@ -92,7 +91,6 @@ export const Footer = () => {
                             Área reservada
                         </Link>
                         
-                        {/* Credits */}
                         <a 
                             href="https://leandroxws.dev"
                             target="_blank"

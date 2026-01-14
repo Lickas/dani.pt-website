@@ -9,21 +9,29 @@ export const About = () => {
                 HERO - Impactful Statement
                 ============================================ */}
             <section className="min-h-[70vh] flex items-center bg-[#1A1A1A] relative overflow-hidden">
+                {/* Linha vermelha superior */}
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#E60000]"></div>
+                
                 {/* Background texture */}
                 <div className="absolute inset-0 opacity-5">
                     <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-white/10 to-transparent"></div>
                 </div>
 
                 <div className="container-site relative z-10 py-24">
-                    <span className="label-style text-white/30">Quem somos</span>
-                    <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl text-white mt-4 max-w-4xl">
-                        Confiança<br/>
-                        não se<br/>
-                        <span className="text-[#E60000]">compra.</span>
-                    </h1>
-                    <p className="text-white/50 text-xl mt-8 max-w-lg">
-                        Conquista-se. Viatura a viatura. Cliente a cliente.
-                    </p>
+                    <div className="flex items-start gap-6">
+                        <div className="hidden md:block w-[2px] h-32 bg-[#E60000]"></div>
+                        <div>
+                            <span className="label-style text-white/30">Quem somos</span>
+                            <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl text-white mt-4 max-w-4xl">
+                                Confiança<br/>
+                                não se<br/>
+                                <span className="text-[#E60000]">compra.</span>
+                            </h1>
+                            <p className="text-white/70 text-lg mt-8 max-w-lg">
+                                Conquista-se. Viatura a viatura.<br/>Cliente a cliente.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </section>
 

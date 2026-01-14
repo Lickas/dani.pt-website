@@ -19,7 +19,7 @@ export const CampaignDetail = () => {
     useEffect(() => {
         const fetchCampaign = async () => {
             try {
-                const response = await axios.get(`${API_URL}/campaigns/${id}`);
+                const response = await axios.get(`${API_URL}/campaigns/public/${id}`);
                 setCampaign(response.data);
             } catch (err) {
                 console.error('Error fetching campaign:', err);

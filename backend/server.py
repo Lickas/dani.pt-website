@@ -146,12 +146,12 @@ class ImageUploadResponse(BaseModel):
 # ==================== AUTH HELPERS ====================
 
 async def verify_admin_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
-    """Verify Supabase JWT token for admin access"""
+    """Verify JWT token for admin access"""
     token = credentials.credentials
     try:
         payload = jwt.decode(
             token,
-            SUPABASE_JWT_SECRET,
+            JWT_SECRET,
             algorithms=[JWT_ALGORITHM],
             options={"verify_aud": False}
         )

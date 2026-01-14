@@ -194,12 +194,12 @@ body {
 /* Divider Line */
 .divider {
     height: 1px;
-    background-color: var(--gray-200);
+    background: linear-gradient(90deg, var(--gray-200), transparent);
 }
 
 .divider-dark {
     height: 1px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), transparent);
 }
 
 /* dANI Signature Line - Elemento gráfico recorrente */
@@ -216,17 +216,17 @@ body {
 }
 
 .dani-line-short {
-    width: 32px;
+    width: 40px;
     height: 2px;
     background-color: var(--red);
 }
 
-/* Label Style */
+/* Label Style - More refined */
 .label-style {
     font-family: 'Space Grotesk', monospace;
     font-weight: 500;
     font-size: 0.6875rem;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--gray-400);
 }
@@ -234,21 +234,31 @@ body {
 /* Section Number - Numeração discreta */
 .section-number {
     font-family: 'Space Grotesk', monospace;
-    font-weight: 400;
+    font-weight: 300;
     font-size: 0.625rem;
-    letter-spacing: 0.1em;
-    color: var(--gray-400);
-    opacity: 0.4;
+    letter-spacing: 0.15em;
+    color: var(--gray-300);
 }
 
 /* Autoral Quote - Frases curtas e diretas */
 .dani-quote {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 400;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     letter-spacing: -0.01em;
-    line-height: 1.6;
-    color: var(--gray-600);
+    line-height: 1.7;
+    color: var(--gray-500);
+}
+
+/* Glass Effect */
+.glass {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .glass {
+    background: rgba(17, 24, 39, 0.8);
 }
 
 /* ================================

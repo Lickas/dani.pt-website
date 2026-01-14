@@ -86,16 +86,17 @@ export const Campaigns = () => {
                     ) : campaigns.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {campaigns.map((campaign, index) => (
-                                <article
+                                <Link
+                                    to={`/campanhas/${campaign.id}`}
                                     key={campaign.id}
-                                    className="group animate-fade-up"
+                                    className="group animate-fade-up block"
                                     style={{ animationDelay: `${index * 0.05}s` }}
                                 >
                                     {/* Image Container */}
                                     {campaign.image_url && (
                                         <div className="aspect-video bg-[#F5F5F5] mb-4 overflow-hidden relative">
                                             {/* Linha vermelha superior - assinatura dANI */}
-                                            <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#E60000] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                            <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#E60000] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
                                             
                                             <img
                                                 src={campaign.image_url}

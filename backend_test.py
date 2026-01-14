@@ -94,21 +94,21 @@ class dANISupabaseAPITester:
         return False
 
     def test_get_vehicles(self):
-        """Test getting public vehicles"""
+        """Test getting all vehicles"""
         success, response = self.run_test(
-            "Get Public Vehicles",
+            "Get All Vehicles",
             "GET",
             "vehicles",
             200
         )
         return success, response
 
-    def test_get_featured_vehicles(self):
-        """Test getting featured vehicles"""
+    def test_get_vehicles_by_brand(self, brand="BMW"):
+        """Test filtering vehicles by brand"""
         success, response = self.run_test(
-            "Get Featured Vehicles",
+            f"Get Vehicles by Brand ({brand})",
             "GET",
-            "vehicles?is_featured=true",
+            f"vehicles?brand={brand}",
             200
         )
         return success, response

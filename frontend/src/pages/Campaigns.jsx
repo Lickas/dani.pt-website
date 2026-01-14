@@ -47,11 +47,17 @@ export const Campaigns = () => {
             <section className="bg-[#FAFAFA] py-16 md:py-24">
                 <div className="container-site">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                        <div>
-                            <span className="label-style text-[#999]">Ofertas</span>
-                            <h1 className="font-display text-6xl md:text-7xl lg:text-8xl text-[#1A1A1A] mt-2">
-                                Campanhas
-                            </h1>
+                        <div className="flex items-start gap-6">
+                            <div className="w-[2px] h-20 bg-[#E60000] hidden md:block"></div>
+                            <div>
+                                <span className="label-style text-[#999]">Ofertas</span>
+                                <h1 className="font-display text-6xl md:text-7xl lg:text-8xl text-[#1A1A1A] mt-2">
+                                    Campanhas
+                                </h1>
+                                <p className="dani-quote mt-3">
+                                    As melhores ofertas. Diretas.
+                                </p>
+                            </div>
                         </div>
                         <p className="text-[#666] md:text-right">
                             {loading ? '...' : campaigns.length} campanhas ativas

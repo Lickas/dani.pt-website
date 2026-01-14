@@ -102,9 +102,9 @@ body {
     color: var(--white);
 }
 
-/* Scrollbar - Minimal */
+/* Scrollbar - Ultra Minimal */
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -112,11 +112,21 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--gray-200);
+    background: var(--gray-300);
+    border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--gray-400);
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-thumb {
+    background: var(--gray-700);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-600);
 }
 
 /* ================================

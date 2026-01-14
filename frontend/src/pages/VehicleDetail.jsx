@@ -85,13 +85,16 @@ export const VehicleDetail = () => {
     return (
         <main className="pt-20">
             <div className="container-site py-8 md:py-12">
-                {/* Back Link */}
+                {/* Back Link com linha vermelha */}
                 <Link 
                     to="/viaturas"
-                    className="inline-flex items-center gap-2 text-sm text-[#666] hover:text-[#1A1A1A] transition-colors mb-8"
+                    className="inline-flex items-center gap-2 text-sm text-[#666] hover:text-[#1A1A1A] transition-colors mb-8 group"
                 >
-                    <ArrowLeft size={16} />
-                    Voltar
+                    <div className="flex items-center gap-3">
+                        <div className="w-0 group-hover:w-6 h-[2px] bg-[#E60000] transition-all duration-300"></div>
+                        <ArrowLeft size={16} />
+                        <span>Voltar</span>
+                    </div>
                 </Link>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">

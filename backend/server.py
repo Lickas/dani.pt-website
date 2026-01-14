@@ -26,6 +26,7 @@ load_dotenv(ROOT_DIR / '.env')
 
 # Supabase JWT Configuration
 SUPABASE_JWT_SECRET = os.environ.get('SUPABASE_JWT_SECRET')
+JWT_SECRET = os.environ.get('JWT_SECRET', 'dani-pt-secret-key-2024')
 JWT_ALGORITHM = "HS256"
 
 # Storage buckets

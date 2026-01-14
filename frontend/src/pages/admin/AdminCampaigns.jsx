@@ -1,19 +1,28 @@
+/**
+ * Admin Campaigns
+ * 
+ * TODO: Adicionar agendamento de campanhas
+ * TODO: Métricas de performance (views, cliques)
+ * TODO: A/B testing de banners
+ * TODO: Integrar com Google Ads
+ */
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../../context/AuthContext';
-import { Plus, Pencil, Trash2, Calendar } from 'lucide-react';
-import { Button } from '../../components/ui/button';
+import { Plus, Pencil, Trash2, Calendar, Percent } from 'lucide-react';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { pt } from 'date-fns/locale';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export const AdminCampaigns = () => {
     const [campaigns, setCampaigns] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { getAuthHeaders } = useAuth();
+
+    const getAuthHeaders = () => {
+        const token = localStorage.getItem('dani_admin_token');
+        return { Authorization: `Bearer ${token}` };
+    };
 
     useEffect(() => {
         fetchCampaigns();
@@ -33,25 +42,25 @@ export const AdminCampaigns = () => {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Tem a certeza que deseja eliminar esta campanha?')) return;
+        if (!window.confirm('Eliminar esta campanha?')) return;
 
         try {
             await axios.delete(`${API_URL}/campaigns/${id}`, {
                 headers: getAuthHeaders()
             });
-            toast.success('Campanha eliminada com sucesso');
+            toast.success('Campanha eliminada');
             setCampaigns(prev => prev.filter(c => c.id !== id));
         } catch (error) {
-            toast.error('Erro ao eliminar campanha');
+            toast.error('Erro ao eliminar');
         }
     };
 
     const formatDate = (dateString) => {
-        try {
-            return format(new Date(dateString), "d 'de' MMMM yyyy", { locale: pt });
-        } catch {
-            return dateString;
-        }
+        return new Date(dateString).toLocaleDateString('pt-PT', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        });
     };
 
     const isActive = (campaign) => {
@@ -64,44 +73,48 @@ export const AdminCampaigns = () => {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="font-archivo font-black text-2xl md:text-3xl text-[#1A1A1A]">
+                    <h1 className="text-2xl md:text-3xl font-bold text-[#1A1A1A]">
                         Campanhas
                     </h1>
                     <p className="text-[#666666] mt-1">
-                        Gerir campanhas e promoções
+                        Gerir promoções e ofertas especiais
                     </p>
                 </div>
-                <Link to="/admin/campanhas/nova">
-                    <Button 
-                        className="bg-[#E60000] hover:bg-[#CC0000] rounded-[2px]"
-                        data-testid="add-campaign-btn"
-                    >
-                        <Plus size={18} className="mr-2" />
-                        Nova Campanha
-                    </Button>
+                <Link 
+                    to="/admin/campanhas/nova"
+                    className="flex items-center gap-2 px-4 py-2 bg-[#E60000] text-white rounded-[2px] font-semibold hover:bg-[#CC0000] transition-colors"
+                >
+                    <Plus size={18} />
+                    Nova Campanha
                 </Link>
-            </div>
+            </header>
 
             {/* Campaigns Grid */}
             {loading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {[1, 2, 3].map((i) => (
-                        <div key={i} className="h-48 bg-[#F4F4F4] rounded-[4px] animate-pulse" />
+                        <div key={i} className="h-48 bg-gray-200 rounded-[4px] animate-pulse" />
                     ))}
                 </div>
             ) : campaigns.length === 0 ? (
                 <div className="bg-white border border-[#E5E5E5] rounded-[4px] p-8 text-center">
+                    <Percent size={48} className="mx-auto mb-4 text-[#999999] opacity-30" />
                     <p className="text-[#666666]">Nenhuma campanha registada</p>
+                    <Link 
+                        to="/admin/campanhas/nova"
+                        className="inline-block mt-4 text-[#E60000] hover:underline"
+                    >
+                        Criar primeira campanha →
+                    </Link>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="campaigns-grid">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {campaigns.map((campaign) => (
-                        <div
+                        <article
                             key={campaign.id}
                             className="bg-white border border-[#E5E5E5] rounded-[4px] p-6 hover:border-[#1A1A1A] transition-colors"
-                            data-testid={`campaign-card-${campaign.id}`}
                         >
                             <div className="flex items-start justify-between mb-4">
                                 <span className={`px-2 py-1 rounded-[2px] text-xs font-mono uppercase ${
@@ -111,24 +124,25 @@ export const AdminCampaigns = () => {
                                 }`}>
                                     {isActive(campaign) ? 'Ativa' : 'Inativa'}
                                 </span>
-                                <div className="flex gap-2">
-                                    <Link to={`/admin/campanhas/${campaign.id}`}>
-                                        <Button variant="ghost" size="sm">
-                                            <Pencil size={16} />
-                                        </Button>
+                                <div className="flex gap-1">
+                                    <Link 
+                                        to={`/admin/campanhas/${campaign.id}`}
+                                        className="p-2 text-[#666666] hover:text-[#1A1A1A] hover:bg-[#F4F4F4] rounded-[2px] transition-colors"
+                                        title="Editar"
+                                    >
+                                        <Pencil size={16} />
                                     </Link>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
+                                    <button
                                         onClick={() => handleDelete(campaign.id)}
-                                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                        className="p-2 text-[#666666] hover:text-[#E60000] hover:bg-red-50 rounded-[2px] transition-colors"
+                                        title="Eliminar"
                                     >
                                         <Trash2 size={16} />
-                                    </Button>
+                                    </button>
                                 </div>
                             </div>
 
-                            <h3 className="font-archivo font-bold text-lg text-[#1A1A1A] mb-2">
+                            <h3 className="font-bold text-lg text-[#1A1A1A] mb-2">
                                 {campaign.title}
                             </h3>
                             <p className="text-sm text-[#666666] mb-4 line-clamp-2">
@@ -137,7 +151,7 @@ export const AdminCampaigns = () => {
 
                             {campaign.discount_percentage && (
                                 <div className="mb-4">
-                                    <span className="text-2xl font-archivo font-black text-[#E60000]">
+                                    <span className="text-3xl font-bold text-[#E60000]">
                                         -{campaign.discount_percentage}%
                                     </span>
                                 </div>
@@ -146,10 +160,10 @@ export const AdminCampaigns = () => {
                             <div className="flex items-center gap-2 text-sm text-[#999999]">
                                 <Calendar size={14} />
                                 <span>
-                                    {formatDate(campaign.start_date)} - {formatDate(campaign.end_date)}
+                                    {formatDate(campaign.start_date)} — {formatDate(campaign.end_date)}
                                 </span>
                             </div>
-                        </div>
+                        </article>
                     ))}
                 </div>
             )}

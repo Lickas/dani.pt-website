@@ -1,13 +1,16 @@
+/**
+ * Admin Vehicle Form - Create/Edit
+ * 
+ * TODO: Implementar drag & drop para reordenar imagens
+ * TODO: Adicionar preview de galeria
+ * TODO: Validação mais robusta com Zod
+ * TODO: Auto-save draft
+ */
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../../context/AuthContext';
-import { ArrowLeft, Plus, X, Upload } from 'lucide-react';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Textarea } from '../../components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { Switch } from '../../components/ui/switch';
+import { ArrowLeft, Plus, X, Upload, Save } from 'lucide-react';
 import { toast } from 'sonner';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -15,7 +18,6 @@ const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 export const AdminVehicleForm = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { getAuthHeaders } = useAuth();
     const isEditing = Boolean(id);
 
     const [loading, setLoading] = useState(false);
@@ -37,6 +39,11 @@ export const AdminVehicleForm = () => {
         is_sold: false
     });
     const [newFeature, setNewFeature] = useState('');
+
+    const getAuthHeaders = () => {
+        const token = localStorage.getItem('dani_admin_token');
+        return { Authorization: `Bearer ${token}` };
+    };
 
     useEffect(() => {
         if (isEditing) {
@@ -100,7 +107,7 @@ export const AdminVehicleForm = () => {
                 ...prev,
                 images: [...prev.images, ...uploadedUrls]
             }));
-            toast.success('Imagens carregadas com sucesso');
+            toast.success('Imagens carregadas');
         } catch (error) {
             toast.error('Erro ao carregar imagens');
         } finally {
@@ -131,12 +138,12 @@ export const AdminVehicleForm = () => {
                 await axios.put(`${API_URL}/vehicles/${id}`, payload, {
                     headers: getAuthHeaders()
                 });
-                toast.success('Viatura atualizada com sucesso');
+                toast.success('Viatura atualizada');
             } else {
                 await axios.post(`${API_URL}/vehicles`, payload, {
                     headers: getAuthHeaders()
                 });
-                toast.success('Viatura criada com sucesso');
+                toast.success('Viatura criada');
             }
             navigate('/admin/viaturas');
         } catch (error) {
@@ -146,6 +153,7 @@ export const AdminVehicleForm = () => {
         }
     };
 
+    // Options
     const brands = ['BMW', 'Mercedes-Benz', 'Volkswagen', 'Audi', 'Peugeot', 'Toyota', 'Renault', 'Tesla', 'Ford', 'Volvo', 'Opel', 'Fiat', 'Citroen', 'Seat', 'Skoda', 'Hyundai', 'Kia', 'Nissan', 'Honda', 'Mazda'];
     const fuelTypes = ['Gasolina', 'Diesel', 'Híbrido', 'Elétrico'];
     const transmissions = ['Manual', 'Automático'];
@@ -154,7 +162,7 @@ export const AdminVehicleForm = () => {
     return (
         <div className="max-w-4xl">
             {/* Header */}
-            <div className="mb-8">
+            <header className="mb-8">
                 <button
                     onClick={() => navigate('/admin/viaturas')}
                     className="flex items-center gap-2 text-sm text-[#666666] hover:text-[#1A1A1A] transition-colors mb-4"
@@ -162,16 +170,16 @@ export const AdminVehicleForm = () => {
                     <ArrowLeft size={16} />
                     Voltar às Viaturas
                 </button>
-                <h1 className="font-archivo font-black text-2xl md:text-3xl text-[#1A1A1A]">
+                <h1 className="text-2xl md:text-3xl font-bold text-[#1A1A1A]">
                     {isEditing ? 'Editar Viatura' : 'Nova Viatura'}
                 </h1>
-            </div>
+            </header>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-8" data-testid="vehicle-form">
+            <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Basic Info */}
-                <div className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
-                    <h2 className="font-archivo font-bold text-lg text-[#1A1A1A] mb-4">
+                <section className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
+                    <h2 className="font-bold text-lg text-[#1A1A1A] mb-4">
                         Informação Básica
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -179,71 +187,64 @@ export const AdminVehicleForm = () => {
                             <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
                                 Marca *
                             </label>
-                            <Select
+                            <select
                                 value={formData.brand}
-                                onValueChange={(value) => handleChange('brand', value)}
+                                onChange={(e) => handleChange('brand', e.target.value)}
+                                required
+                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
                             >
-                                <SelectTrigger className="rounded-[2px]" data-testid="input-brand">
-                                    <SelectValue placeholder="Selecionar marca" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {brands.map((brand) => (
-                                        <SelectItem key={brand} value={brand}>{brand}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                <option value="">Selecionar marca</option>
+                                {brands.map((brand) => (
+                                    <option key={brand} value={brand}>{brand}</option>
+                                ))}
+                            </select>
                         </div>
                         <div>
                             <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
                                 Modelo *
                             </label>
-                            <Input
+                            <input
+                                type="text"
                                 value={formData.model}
                                 onChange={(e) => handleChange('model', e.target.value)}
                                 required
-                                className="rounded-[2px]"
+                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
                                 placeholder="Ex: Serie 3 320d"
-                                data-testid="input-model"
                             />
                         </div>
                         <div>
                             <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
                                 Ano *
                             </label>
-                            <Select
-                                value={formData.year.toString()}
-                                onValueChange={(value) => handleChange('year', parseInt(value))}
+                            <select
+                                value={formData.year}
+                                onChange={(e) => handleChange('year', parseInt(e.target.value))}
+                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
                             >
-                                <SelectTrigger className="rounded-[2px]" data-testid="input-year">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {years.map((year) => (
-                                        <SelectItem key={year} value={year.toString()}>{year}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                {years.map((year) => (
+                                    <option key={year} value={year}>{year}</option>
+                                ))}
+                            </select>
                         </div>
                         <div>
                             <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
                                 Preço (€) *
                             </label>
-                            <Input
+                            <input
                                 type="number"
                                 value={formData.price}
                                 onChange={(e) => handleChange('price', e.target.value)}
                                 required
-                                className="rounded-[2px]"
+                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
                                 placeholder="Ex: 25000"
-                                data-testid="input-price"
                             />
                         </div>
                     </div>
-                </div>
+                </section>
 
                 {/* Specs */}
-                <div className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
-                    <h2 className="font-archivo font-bold text-lg text-[#1A1A1A] mb-4">
+                <section className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
+                    <h2 className="font-bold text-lg text-[#1A1A1A] mb-4">
                         Especificações
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -251,116 +252,105 @@ export const AdminVehicleForm = () => {
                             <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
                                 Combustível
                             </label>
-                            <Select
+                            <select
                                 value={formData.fuel_type}
-                                onValueChange={(value) => handleChange('fuel_type', value)}
+                                onChange={(e) => handleChange('fuel_type', e.target.value)}
+                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
                             >
-                                <SelectTrigger className="rounded-[2px]" data-testid="input-fuel">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {fuelTypes.map((fuel) => (
-                                        <SelectItem key={fuel} value={fuel}>{fuel}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                {fuelTypes.map((fuel) => (
+                                    <option key={fuel} value={fuel}>{fuel}</option>
+                                ))}
+                            </select>
                         </div>
                         <div>
                             <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
                                 Quilómetros *
                             </label>
-                            <Input
+                            <input
                                 type="number"
                                 value={formData.mileage}
                                 onChange={(e) => handleChange('mileage', e.target.value)}
                                 required
-                                className="rounded-[2px]"
+                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
                                 placeholder="Ex: 50000"
-                                data-testid="input-mileage"
                             />
                         </div>
                         <div>
                             <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
                                 Transmissão
                             </label>
-                            <Select
+                            <select
                                 value={formData.transmission}
-                                onValueChange={(value) => handleChange('transmission', value)}
+                                onChange={(e) => handleChange('transmission', e.target.value)}
+                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
                             >
-                                <SelectTrigger className="rounded-[2px]" data-testid="input-transmission">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {transmissions.map((t) => (
-                                        <SelectItem key={t} value={t}>{t}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                {transmissions.map((t) => (
+                                    <option key={t} value={t}>{t}</option>
+                                ))}
+                            </select>
                         </div>
                         <div>
                             <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
                                 Cor
                             </label>
-                            <Input
+                            <input
+                                type="text"
                                 value={formData.color}
                                 onChange={(e) => handleChange('color', e.target.value)}
-                                className="rounded-[2px]"
+                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
                                 placeholder="Ex: Preto"
-                                data-testid="input-color"
                             />
                         </div>
                         <div>
                             <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
                                 Potência
                             </label>
-                            <Input
+                            <input
+                                type="text"
                                 value={formData.power}
                                 onChange={(e) => handleChange('power', e.target.value)}
-                                className="rounded-[2px]"
+                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
                                 placeholder="Ex: 150cv"
-                                data-testid="input-power"
                             />
                         </div>
                     </div>
-                </div>
+                </section>
 
                 {/* Description */}
-                <div className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
-                    <h2 className="font-archivo font-bold text-lg text-[#1A1A1A] mb-4">
+                <section className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
+                    <h2 className="font-bold text-lg text-[#1A1A1A] mb-4">
                         Descrição
                     </h2>
-                    <Textarea
+                    <textarea
                         value={formData.description}
                         onChange={(e) => handleChange('description', e.target.value)}
                         rows={4}
-                        className="rounded-[2px] resize-none"
+                        className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A] resize-none"
                         placeholder="Descrição detalhada da viatura..."
-                        data-testid="input-description"
                     />
-                </div>
+                </section>
 
                 {/* Features */}
-                <div className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
-                    <h2 className="font-archivo font-bold text-lg text-[#1A1A1A] mb-4">
+                <section className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
+                    <h2 className="font-bold text-lg text-[#1A1A1A] mb-4">
                         Equipamento
                     </h2>
                     <div className="flex gap-2 mb-4">
-                        <Input
+                        <input
+                            type="text"
                             value={newFeature}
                             onChange={(e) => setNewFeature(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddFeature())}
-                            className="rounded-[2px]"
+                            className="flex-1 px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
                             placeholder="Adicionar equipamento..."
-                            data-testid="input-feature"
                         />
-                        <Button
+                        <button
                             type="button"
                             onClick={handleAddFeature}
-                            variant="outline"
-                            className="rounded-[2px]"
+                            className="px-4 py-3 border border-[#E5E5E5] rounded-[2px] hover:bg-[#F4F4F4] transition-colors"
                         >
                             <Plus size={18} />
-                        </Button>
+                        </button>
                     </div>
                     <div className="flex flex-wrap gap-2">
                         {formData.features.map((feature, index) => (
@@ -379,30 +369,27 @@ export const AdminVehicleForm = () => {
                             </span>
                         ))}
                     </div>
-                </div>
+                </section>
 
                 {/* Images */}
-                <div className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
-                    <h2 className="font-archivo font-bold text-lg text-[#1A1A1A] mb-4">
+                <section className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
+                    <h2 className="font-bold text-lg text-[#1A1A1A] mb-4">
                         Imagens
                     </h2>
-                    <div className="mb-4">
-                        <label className="flex items-center justify-center gap-2 p-8 border-2 border-dashed border-[#E5E5E5] rounded-[4px] cursor-pointer hover:border-[#1A1A1A] transition-colors">
-                            <Upload size={24} className="text-[#999999]" />
-                            <span className="text-[#666666]">
-                                {uploading ? 'A carregar...' : 'Carregar imagens'}
-                            </span>
-                            <input
-                                type="file"
-                                multiple
-                                accept="image/*"
-                                onChange={handleImageUpload}
-                                className="hidden"
-                                disabled={uploading}
-                                data-testid="input-images"
-                            />
-                        </label>
-                    </div>
+                    <label className="flex items-center justify-center gap-2 p-8 border-2 border-dashed border-[#E5E5E5] rounded-[4px] cursor-pointer hover:border-[#1A1A1A] transition-colors mb-4">
+                        <Upload size={24} className="text-[#999999]" />
+                        <span className="text-[#666666]">
+                            {uploading ? 'A carregar...' : 'Clique para carregar imagens'}
+                        </span>
+                        <input
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="hidden"
+                            disabled={uploading}
+                        />
+                    </label>
                     {formData.images.length > 0 && (
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             {formData.images.map((url, index) => (
@@ -423,57 +410,58 @@ export const AdminVehicleForm = () => {
                             ))}
                         </div>
                     )}
-                </div>
+                </section>
 
                 {/* Status */}
-                <div className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
-                    <h2 className="font-archivo font-bold text-lg text-[#1A1A1A] mb-4">
+                <section className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
+                    <h2 className="font-bold text-lg text-[#1A1A1A] mb-4">
                         Estado
                     </h2>
                     <div className="space-y-4">
-                        <div className="flex items-center justify-between">
+                        <label className="flex items-center justify-between cursor-pointer">
                             <div>
                                 <span className="font-medium text-[#1A1A1A]">Destaque</span>
-                                <p className="text-sm text-[#666666]">Mostrar esta viatura em destaque na homepage</p>
+                                <p className="text-sm text-[#666666]">Mostrar na homepage</p>
                             </div>
-                            <Switch
+                            <input
+                                type="checkbox"
                                 checked={formData.is_featured}
-                                onCheckedChange={(checked) => handleChange('is_featured', checked)}
-                                data-testid="switch-featured"
+                                onChange={(e) => handleChange('is_featured', e.target.checked)}
+                                className="w-5 h-5 rounded border-[#E5E5E5] text-[#E60000] focus:ring-[#E60000]"
                             />
-                        </div>
-                        <div className="flex items-center justify-between">
+                        </label>
+                        <label className="flex items-center justify-between cursor-pointer">
                             <div>
                                 <span className="font-medium text-[#1A1A1A]">Vendido</span>
-                                <p className="text-sm text-[#666666]">Marcar esta viatura como vendida</p>
+                                <p className="text-sm text-[#666666]">Marcar como vendida</p>
                             </div>
-                            <Switch
+                            <input
+                                type="checkbox"
                                 checked={formData.is_sold}
-                                onCheckedChange={(checked) => handleChange('is_sold', checked)}
-                                data-testid="switch-sold"
+                                onChange={(e) => handleChange('is_sold', e.target.checked)}
+                                className="w-5 h-5 rounded border-[#E5E5E5] text-[#E60000] focus:ring-[#E60000]"
                             />
-                        </div>
+                        </label>
                     </div>
-                </div>
+                </section>
 
                 {/* Submit */}
                 <div className="flex gap-4">
-                    <Button
+                    <button
                         type="button"
-                        variant="outline"
                         onClick={() => navigate('/admin/viaturas')}
-                        className="rounded-[2px]"
+                        className="px-6 py-3 border border-[#E5E5E5] rounded-[2px] text-[#666666] hover:border-[#1A1A1A] transition-colors"
                     >
                         Cancelar
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                         type="submit"
                         disabled={loading}
-                        className="bg-[#E60000] hover:bg-[#CC0000] rounded-[2px]"
-                        data-testid="submit-vehicle"
+                        className="flex items-center gap-2 px-6 py-3 bg-[#E60000] hover:bg-[#CC0000] disabled:bg-[#999999] text-white rounded-[2px] font-semibold transition-colors"
                     >
+                        <Save size={18} />
                         {loading ? 'A guardar...' : isEditing ? 'Guardar Alterações' : 'Criar Viatura'}
-                    </Button>
+                    </button>
                 </div>
             </form>
         </div>

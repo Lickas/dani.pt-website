@@ -1,25 +1,22 @@
+/**
+ * Admin Campaign Form - Create/Edit
+ * 
+ * TODO: Adicionar seleção de viaturas para a campanha
+ * TODO: Upload de banner personalizado
+ * TODO: Preview do banner no site
+ */
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../../context/AuthContext';
-import { ArrowLeft } from 'lucide-react';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Textarea } from '../../components/ui/textarea';
-import { Switch } from '../../components/ui/switch';
-import { Calendar } from '../../components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '../../components/ui/popover';
+import { ArrowLeft, Save, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { pt } from 'date-fns/locale';
-import { CalendarIcon } from 'lucide-react';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export const AdminCampaignForm = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { getAuthHeaders } = useAuth();
     const isEditing = Boolean(id);
 
     const [loading, setLoading] = useState(false);
@@ -27,11 +24,16 @@ export const AdminCampaignForm = () => {
         title: '',
         description: '',
         discount_percentage: '',
-        start_date: new Date(),
-        end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        start_date: new Date().toISOString().split('T')[0],
+        end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         is_active: true,
         vehicle_ids: []
     });
+
+    const getAuthHeaders = () => {
+        const token = localStorage.getItem('dani_admin_token');
+        return { Authorization: `Bearer ${token}` };
+    };
 
     useEffect(() => {
         if (isEditing) {
@@ -48,8 +50,8 @@ export const AdminCampaignForm = () => {
             if (campaign) {
                 setFormData({
                     ...campaign,
-                    start_date: new Date(campaign.start_date),
-                    end_date: new Date(campaign.end_date)
+                    start_date: new Date(campaign.start_date).toISOString().split('T')[0],
+                    end_date: new Date(campaign.end_date).toISOString().split('T')[0]
                 });
             }
         } catch (error) {
@@ -70,20 +72,20 @@ export const AdminCampaignForm = () => {
             const payload = {
                 ...formData,
                 discount_percentage: formData.discount_percentage ? parseFloat(formData.discount_percentage) : null,
-                start_date: formData.start_date.toISOString(),
-                end_date: formData.end_date.toISOString()
+                start_date: new Date(formData.start_date).toISOString(),
+                end_date: new Date(formData.end_date).toISOString()
             };
 
             if (isEditing) {
                 await axios.put(`${API_URL}/campaigns/${id}`, payload, {
                     headers: getAuthHeaders()
                 });
-                toast.success('Campanha atualizada com sucesso');
+                toast.success('Campanha atualizada');
             } else {
                 await axios.post(`${API_URL}/campaigns`, payload, {
                     headers: getAuthHeaders()
                 });
-                toast.success('Campanha criada com sucesso');
+                toast.success('Campanha criada');
             }
             navigate('/admin/campanhas');
         } catch (error) {
@@ -96,7 +98,7 @@ export const AdminCampaignForm = () => {
     return (
         <div className="max-w-2xl">
             {/* Header */}
-            <div className="mb-8">
+            <header className="mb-8">
                 <button
                     onClick={() => navigate('/admin/campanhas')}
                     className="flex items-center gap-2 text-sm text-[#666666] hover:text-[#1A1A1A] transition-colors mb-4"
@@ -104,25 +106,25 @@ export const AdminCampaignForm = () => {
                     <ArrowLeft size={16} />
                     Voltar às Campanhas
                 </button>
-                <h1 className="font-archivo font-black text-2xl md:text-3xl text-[#1A1A1A]">
+                <h1 className="text-2xl md:text-3xl font-bold text-[#1A1A1A]">
                     {isEditing ? 'Editar Campanha' : 'Nova Campanha'}
                 </h1>
-            </div>
+            </header>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-6" data-testid="campaign-form">
-                <div className="bg-white border border-[#E5E5E5] rounded-[4px] p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <section className="bg-white border border-[#E5E5E5] rounded-[4px] p-6 space-y-4">
                     <div>
                         <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
                             Título *
                         </label>
-                        <Input
+                        <input
+                            type="text"
                             value={formData.title}
                             onChange={(e) => handleChange('title', e.target.value)}
                             required
-                            className="rounded-[2px]"
+                            className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
                             placeholder="Ex: Promoção de Verão"
-                            data-testid="input-title"
                         />
                     </div>
 
@@ -130,30 +132,28 @@ export const AdminCampaignForm = () => {
                         <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
                             Descrição *
                         </label>
-                        <Textarea
+                        <textarea
                             value={formData.description}
                             onChange={(e) => handleChange('description', e.target.value)}
                             required
                             rows={3}
-                            className="rounded-[2px] resize-none"
+                            className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A] resize-none"
                             placeholder="Descrição da campanha..."
-                            data-testid="input-description"
                         />
                     </div>
 
                     <div>
                         <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
-                            Percentagem de Desconto
+                            Desconto (%)
                         </label>
-                        <Input
+                        <input
                             type="number"
                             min="0"
                             max="100"
                             value={formData.discount_percentage}
                             onChange={(e) => handleChange('discount_percentage', e.target.value)}
-                            className="rounded-[2px]"
+                            className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
                             placeholder="Ex: 10"
-                            data-testid="input-discount"
                         />
                     </div>
 
@@ -162,86 +162,64 @@ export const AdminCampaignForm = () => {
                             <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
                                 Data de Início
                             </label>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        className="w-full justify-start text-left font-normal rounded-[2px]"
-                                        data-testid="input-start-date"
-                                    >
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {formData.start_date ? format(formData.start_date, 'PPP', { locale: pt }) : 'Selecionar'}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0">
-                                    <Calendar
-                                        mode="single"
-                                        selected={formData.start_date}
-                                        onSelect={(date) => handleChange('start_date', date)}
-                                        initialFocus
-                                    />
-                                </PopoverContent>
-                            </Popover>
+                            <div className="relative">
+                                <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#999999]" />
+                                <input
+                                    type="date"
+                                    value={formData.start_date}
+                                    onChange={(e) => handleChange('start_date', e.target.value)}
+                                    className="w-full pl-10 pr-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
+                                />
+                            </div>
                         </div>
 
                         <div>
                             <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
                                 Data de Fim
                             </label>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        className="w-full justify-start text-left font-normal rounded-[2px]"
-                                        data-testid="input-end-date"
-                                    >
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {formData.end_date ? format(formData.end_date, 'PPP', { locale: pt }) : 'Selecionar'}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0">
-                                    <Calendar
-                                        mode="single"
-                                        selected={formData.end_date}
-                                        onSelect={(date) => handleChange('end_date', date)}
-                                        initialFocus
-                                    />
-                                </PopoverContent>
-                            </Popover>
+                            <div className="relative">
+                                <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#999999]" />
+                                <input
+                                    type="date"
+                                    value={formData.end_date}
+                                    onChange={(e) => handleChange('end_date', e.target.value)}
+                                    className="w-full pl-10 pr-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
+                                />
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-4">
+                    <label className="flex items-center justify-between cursor-pointer pt-4">
                         <div>
                             <span className="font-medium text-[#1A1A1A]">Campanha Ativa</span>
-                            <p className="text-sm text-[#666666]">Mostrar esta campanha no site</p>
+                            <p className="text-sm text-[#666666]">Mostrar no site</p>
                         </div>
-                        <Switch
+                        <input
+                            type="checkbox"
                             checked={formData.is_active}
-                            onCheckedChange={(checked) => handleChange('is_active', checked)}
-                            data-testid="switch-active"
+                            onChange={(e) => handleChange('is_active', e.target.checked)}
+                            className="w-5 h-5 rounded border-[#E5E5E5] text-[#E60000] focus:ring-[#E60000]"
                         />
-                    </div>
-                </div>
+                    </label>
+                </section>
 
                 {/* Submit */}
                 <div className="flex gap-4">
-                    <Button
+                    <button
                         type="button"
-                        variant="outline"
                         onClick={() => navigate('/admin/campanhas')}
-                        className="rounded-[2px]"
+                        className="px-6 py-3 border border-[#E5E5E5] rounded-[2px] text-[#666666] hover:border-[#1A1A1A] transition-colors"
                     >
                         Cancelar
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                         type="submit"
                         disabled={loading}
-                        className="bg-[#E60000] hover:bg-[#CC0000] rounded-[2px]"
-                        data-testid="submit-campaign"
+                        className="flex items-center gap-2 px-6 py-3 bg-[#E60000] hover:bg-[#CC0000] disabled:bg-[#999999] text-white rounded-[2px] font-semibold transition-colors"
                     >
+                        <Save size={18} />
                         {loading ? 'A guardar...' : isEditing ? 'Guardar Alterações' : 'Criar Campanha'}
-                    </Button>
+                    </button>
                 </div>
             </form>
         </div>

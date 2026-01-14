@@ -6,6 +6,54 @@ import { VehicleCard } from '../components/VehicleCard';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+// Custom Price Slider Component
+const PriceSlider = ({ value, onChange, min = 5000, max = 100000, step = 1000 }) => {
+    const percentage = ((value - min) / (max - min)) * 100;
+    
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat('pt-PT', { minimumFractionDigits: 0 }).format(price);
+    };
+
+    return (
+        <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-3">
+                <label className="text-[11px] font-medium tracking-widest uppercase text-gray-400">
+                    Preço Máximo
+                </label>
+                <span className="text-lg font-bold text-gray-900 dark:text-white">
+                    {value >= max ? 'Sem limite' : `${formatPrice(value)}€`}
+                </span>
+            </div>
+            <div className="relative">
+                {/* Background track */}
+                <div className="absolute top-1/2 left-0 right-0 h-[6px] bg-gray-200 dark:bg-gray-700 rounded-full -translate-y-1/2"></div>
+                {/* Progress track (red) */}
+                <div 
+                    className="absolute top-1/2 left-0 h-[6px] bg-[#E60000] rounded-full -translate-y-1/2 transition-all duration-100"
+                    style={{ width: `${percentage}%` }}
+                ></div>
+                {/* Input */}
+                <input
+                    type="range"
+                    min={min}
+                    max={max}
+                    step={step}
+                    value={value}
+                    onChange={(e) => onChange(parseInt(e.target.value))}
+                    className="relative w-full h-[6px] bg-transparent appearance-none cursor-pointer z-10 slider-custom"
+                />
+            </div>
+            <div className="flex justify-between text-xs text-gray-400 mt-2">
+                <span>5.000€</span>
+                <span>25.000€</span>
+                <span>50.000€</span>
+                <span>75.000€</span>
+                <span>100.000€+</span>
+            </div>
+        </div>
+    );
+};
+
 export const Vehicles = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [vehicles, setVehicles] = useState([]);
@@ -205,33 +253,11 @@ export const Vehicles = () => {
                                 </div>
                             </div>
 
-                            {/* Price Slider */}
-                            <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
-                                <div className="flex items-center justify-between mb-3">
-                                    <label className="text-[11px] font-medium tracking-widest uppercase text-gray-400">
-                                        Preço Máximo
-                                    </label>
-                                    <span className="text-lg font-bold text-gray-900 dark:text-white">
-                                        {filters.max_price >= 100000 ? 'Sem limite' : `${formatPrice(filters.max_price)}€`}
-                                    </span>
-                                </div>
-                                <input
-                                    type="range"
-                                    min="5000"
-                                    max="100000"
-                                    step="1000"
-                                    value={filters.max_price}
-                                    onChange={(e) => handleFilterChange('max_price', parseInt(e.target.value))}
-                                    className="w-full h-2 rounded-full appearance-none cursor-pointer"
-                                />
-                                <div className="flex justify-between text-xs text-gray-400 mt-2">
-                                    <span>5.000€</span>
-                                    <span>25.000€</span>
-                                    <span>50.000€</span>
-                                    <span>75.000€</span>
-                                    <span>100.000€+</span>
-                                </div>
-                            </div>
+                            {/* Price Slider - Custom Component */}
+                            <PriceSlider 
+                                value={filters.max_price}
+                                onChange={(value) => handleFilterChange('max_price', value)}
+                            />
                         </div>
                     </div>
 

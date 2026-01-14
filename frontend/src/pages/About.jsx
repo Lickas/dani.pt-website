@@ -43,9 +43,12 @@ export const About = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
                         {/* Left - Small */}
                         <div className="lg:col-span-4">
-                            <span className="label-style text-[#999]">Filosofia</span>
+                            <div className="flex items-start gap-4 mb-4">
+                                <span className="section-number">01</span>
+                                <span className="label-style text-[#999]">Filosofia</span>
+                            </div>
                             <h2 className="font-display text-4xl md:text-5xl text-[#1A1A1A] mt-2">
-                                Selecionados.<br/>
+                                Escolhidos.<br/>
                                 Revistos.<br/>
                                 Prontos.
                             </h2>
@@ -53,13 +56,13 @@ export const About = () => {
 
                         {/* Right - Large */}
                         <div className="lg:col-span-8 lg:pt-12">
-                            <p className="text-xl text-[#666] leading-relaxed">
+                            <p className="dani-quote text-lg leading-relaxed">
                                 Na dANI.PT não aceitamos qualquer viatura. Cada carro que entra no nosso stand 
-                                passa por uma seleção criteriosa e uma revisão completa antes de estar disponível.
+                                passa por seleção criteriosa e revisão completa.
                             </p>
-                            <p className="text-xl text-[#666] leading-relaxed mt-6">
-                                Não prometemos milagres. Prometemos honestidade. Prometemos que quando compra 
-                                uma viatura connosco, sabe exatamente o que está a levar.
+                            <p className="dani-quote text-lg leading-relaxed mt-6">
+                                Sem promessas vazias. Só honestidade. Quando compra uma viatura connosco, 
+                                sabe exatamente o que está a levar.
                             </p>
                             <div className="mt-12 flex items-center gap-8">
                                 <div>

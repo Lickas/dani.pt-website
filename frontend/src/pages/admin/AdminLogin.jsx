@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import axios from 'axios';
 import { toast } from 'sonner';
+
+const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export const AdminLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const { login } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -15,7 +16,8 @@ export const AdminLogin = () => {
         setLoading(true);
 
         try {
-            await login(email, password);
+            const response = await axios.post(`${API_URL}/auth/login`, { email, password });
+            localStorage.setItem('token', response.data.token);
             toast.success('Login efetuado com sucesso!');
             navigate('/admin/dashboard');
         } catch (error) {

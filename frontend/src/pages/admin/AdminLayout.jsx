@@ -31,8 +31,12 @@ export const AdminLayout = () => {
         <div className="min-h-screen bg-[#F4F4F4]">
             {/* Mobile Header */}
             <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#E5E5E5] h-16 flex items-center justify-between px-4">
-                <Link to="/admin/dashboard" className="font-archivo font-black text-xl text-[#1A1A1A]">
-                    dANI<span className="text-[#E60000]">.PT</span>
+                <Link to="/admin/dashboard">
+                    <img 
+                        src={LOGO_URL} 
+                        alt="dANI.PT" 
+                        className="h-7 w-auto object-contain"
+                    />
                 </Link>
                 <button
                     onClick={() => setSidebarOpen(!sidebarOpen)}

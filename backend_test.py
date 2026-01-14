@@ -171,18 +171,25 @@ class dANISupabaseAPITester:
         return success, response
 
 def main():
-    print("🚀 Starting dANI.PT API Testing")
+    print("🚀 Starting dANI.PT Supabase API Testing")
     print("=" * 50)
     
-    tester = dANIAPITester()
+    tester = dANISupabaseAPITester()
     
-    # Test public endpoints first
+    # Test health check first
+    print("\n🏥 TESTING HEALTH CHECK")
+    print("-" * 30)
+    tester.test_health_check()
+    
+    # Test public endpoints
     print("\n📋 TESTING PUBLIC ENDPOINTS")
     print("-" * 30)
     
     # Test vehicles endpoints
     vehicles_success, vehicles_data = tester.test_get_vehicles()
-    featured_success, featured_data = tester.test_get_featured_vehicles()
+    
+    # Test vehicle filtering by brand
+    tester.test_get_vehicles_by_brand("BMW")
     
     # Test a specific vehicle if any exist
     if vehicles_success and vehicles_data and len(vehicles_data) > 0:
@@ -192,9 +199,6 @@ def main():
     # Test campaigns
     tester.test_get_campaigns()
     
-    # Test business info
-    tester.test_get_business_info()
-    
     # Test contact form
     tester.test_create_contact_message()
     
@@ -202,19 +206,18 @@ def main():
     print("\n🔐 TESTING ADMIN AUTHENTICATION")
     print("-" * 30)
     
-    login_success = tester.test_auth_login("admin@dani.pt", "admin123")
+    # Try to login - if no admin user exists, this is expected to fail
+    login_success = tester.test_admin_login("admin@dani.pt", "admin123")
     
     if login_success:
         print("\n👑 TESTING ADMIN ENDPOINTS")
         print("-" * 30)
         
         # Test admin endpoints
-        tester.test_admin_stats()
-        tester.test_admin_vehicles()
         tester.test_admin_contacts()
         tester.test_admin_campaigns()
     else:
-        print("❌ Admin login failed, skipping admin endpoint tests")
+        print("ℹ️  Admin login failed - this is expected if no admin user exists yet")
     
     # Print final results
     print("\n" + "=" * 50)

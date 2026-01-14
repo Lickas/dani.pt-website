@@ -40,10 +40,18 @@ export const Contact = () => {
                 ============================================ */}
             <section className="bg-[#FAFAFA] py-16 md:py-24">
                 <div className="container-site">
-                    <span className="label-style text-[#999]">Contacto</span>
-                    <h1 className="font-display text-6xl md:text-7xl lg:text-8xl text-[#1A1A1A] mt-2">
-                        Fale<br/>connosco
-                    </h1>
+                    <div className="flex items-start gap-6">
+                        <div className="w-[2px] h-20 bg-[#E60000] hidden md:block"></div>
+                        <div>
+                            <span className="label-style text-[#999]">Contacto</span>
+                            <h1 className="font-display text-6xl md:text-7xl lg:text-8xl text-[#1A1A1A] mt-2">
+                                Fale<br/>connosco
+                            </h1>
+                            <p className="dani-quote mt-4">
+                                Perguntas diretas. Respostas diretas.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </section>
 

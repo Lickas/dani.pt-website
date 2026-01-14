@@ -168,6 +168,7 @@ function App() {
                     <Route path="/viaturas" element={<PublicLayout><Vehicles /></PublicLayout>} />
                     <Route path="/viaturas/:id" element={<PublicLayout><VehicleDetail /></PublicLayout>} />
                     <Route path="/campanhas" element={<PublicLayout><Campaigns /></PublicLayout>} />
+                    <Route path="/campanhas/:id" element={<PublicLayout><CampaignDetail /></PublicLayout>} />
                     <Route path="/sobre" element={<PublicLayout><About /></PublicLayout>} />
                     <Route path="/contactos" element={<PublicLayout><Contact /></PublicLayout>} />
 

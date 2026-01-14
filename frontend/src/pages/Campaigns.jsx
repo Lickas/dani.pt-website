@@ -93,6 +93,9 @@ export const Campaigns = () => {
                                     {/* Image Container */}
                                     {campaign.image_url && (
                                         <div className="aspect-video bg-[#F5F5F5] mb-4 overflow-hidden relative">
+                                            {/* Linha vermelha superior - assinatura dANI */}
+                                            <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#E60000] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                            
                                             <img
                                                 src={campaign.image_url}
                                                 alt={campaign.title}

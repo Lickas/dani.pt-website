@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin } from 'lucide-react';
 
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_auto-dani-portal/artifacts/3i34e4pv_logo.png";
+
 export const Footer = () => {
     const currentYear = new Date().getFullYear();
 
@@ -13,10 +15,14 @@ export const Footer = () => {
                     <div className="lg:col-span-1">
                         <Link 
                             to="/" 
-                            className="font-archivo font-black text-3xl tracking-tight"
+                            className="inline-block"
                             data-testid="footer-logo"
                         >
-                            dANI<span className="text-[#E60000]">.PT</span>
+                            <img 
+                                src={LOGO_URL} 
+                                alt="dANI.PT" 
+                                className="h-10 w-auto object-contain brightness-0 invert"
+                            />
                         </Link>
                         <p className="mt-4 text-gray-400 text-sm leading-relaxed">
                             Stand de automóveis usados em Coimbra. 

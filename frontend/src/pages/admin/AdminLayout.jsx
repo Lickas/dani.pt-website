@@ -4,6 +4,8 @@ import { useAuth } from '../../context/AuthContext';
 import { LayoutDashboard, Car, Megaphone, Mail, Settings, LogOut, Menu, X } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_auto-dani-portal/artifacts/3i34e4pv_logo.png";
+
 export const AdminLayout = () => {
     const { user, logout } = useAuth();
     const location = useLocation();
@@ -50,11 +52,15 @@ export const AdminLayout = () => {
                     <div className="h-16 lg:h-20 flex items-center px-6 border-b border-[#E5E5E5]">
                         <Link 
                             to="/admin/dashboard" 
-                            className="font-archivo font-black text-xl text-[#1A1A1A]"
+                            className="flex flex-col"
                             data-testid="admin-logo"
                         >
-                            dANI<span className="text-[#E60000]">.PT</span>
-                            <span className="block text-xs font-inter font-normal text-[#999999]">Admin</span>
+                            <img 
+                                src={LOGO_URL} 
+                                alt="dANI.PT" 
+                                className="h-8 w-auto object-contain"
+                            />
+                            <span className="text-xs font-inter text-[#999999] mt-1">Admin</span>
                         </Link>
                     </div>
 

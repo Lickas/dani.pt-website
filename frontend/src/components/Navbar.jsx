@@ -3,6 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Phone } from 'lucide-react';
 import { Button } from './ui/button';
 
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_auto-dani-portal/artifacts/3i34e4pv_logo.png";
+
 export const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const location = useLocation();
@@ -26,10 +28,14 @@ export const Navbar = () => {
                     {/* Logo */}
                     <Link 
                         to="/" 
-                        className="font-archivo font-black text-2xl md:text-3xl tracking-tight text-[#1A1A1A] hover:text-[#E60000] transition-colors"
+                        className="flex items-center"
                         data-testid="logo-link"
                     >
-                        dANI<span className="text-[#E60000]">.PT</span>
+                        <img 
+                            src={LOGO_URL} 
+                            alt="dANI.PT - Stand de Automóveis" 
+                            className="h-8 md:h-10 w-auto object-contain"
+                        />
                     </Link>
 
                     {/* Desktop Navigation */}

@@ -219,6 +219,17 @@ async def get_vehicles(
     vehicles = result.scalars().all()
     return vehicles
 
+@api_router.get("/vehicles/all", response_model=List[Vehicle])
+async def get_all_vehicles(
+    db: AsyncSession = Depends(get_db),
+    admin: dict = Depends(verify_admin_token)
+):
+    """Get ALL vehicles including sold ones (admin only)"""
+    query = select(VehicleModel).order_by(VehicleModel.created_at.desc())
+    result = await db.execute(query)
+    vehicles = result.scalars().all()
+    return vehicles
+
 @api_router.get("/vehicles/{vehicle_id}", response_model=Vehicle)
 async def get_vehicle(vehicle_id: str, db: AsyncSession = Depends(get_db)):
     """Get a specific vehicle by ID"""

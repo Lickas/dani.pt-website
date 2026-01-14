@@ -152,11 +152,17 @@ export const Campaigns = () => {
                                                 </span>
                                             </div>
                                         )}
+
+                                        {/* View Details Link */}
+                                        <div className="flex items-center gap-1 text-[#E60000] font-semibold text-sm pt-2 group-hover:underline">
+                                            Ver detalhes
+                                            <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                                        </div>
                                     </div>
 
                                     {/* Divider */}
                                     <div className="divider mt-6"></div>
-                                </article>
+                                </Link>
                             ))}
                         </div>
                     ) : (

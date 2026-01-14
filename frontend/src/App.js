@@ -40,14 +40,34 @@ const ScrollToTop = () => {
     return null;
 };
 
+// Token validation helper
+const isTokenValid = () => {
+    const token = localStorage.getItem('dani_admin_token');
+    if (!token) return false;
+    
+    try {
+        // Decode JWT payload (base64)
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        // Check if token is expired (exp is in seconds)
+        const now = Math.floor(Date.now() / 1000);
+        return payload.exp > now;
+    } catch (e) {
+        // Invalid token format
+        localStorage.removeItem('dani_admin_token');
+        return false;
+    }
+};
+
 // Simple auth check
 const isAuthenticated = () => {
-    return localStorage.getItem('dani_admin_token') !== null;
+    return isTokenValid();
 };
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
     if (!isAuthenticated()) {
+        // Clear invalid token if present
+        localStorage.removeItem('dani_admin_token');
         return <Navigate to="/admin" replace />;
     }
     return children;

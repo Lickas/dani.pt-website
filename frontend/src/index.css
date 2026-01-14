@@ -569,7 +569,7 @@ input[type="range"] {
     width: 100%;
     height: 6px;
     border-radius: 3px;
-    background: linear-gradient(to right, #E60000 0%, #E60000 var(--value, 50%), #E5E7EB var(--value, 50%), #E5E7EB 100%);
+    background: #E5E7EB;
     outline: none;
     cursor: pointer;
 }
@@ -585,6 +585,8 @@ input[type="range"]::-webkit-slider-thumb {
     border: 3px solid white;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
+    position: relative;
+    z-index: 2;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
@@ -612,12 +614,107 @@ input[type="range"]::-moz-range-track {
     background: #E5E7EB;
 }
 
+input[type="range"]::-moz-range-progress {
+    background: #E60000;
+    height: 6px;
+    border-radius: 3px;
+}
+
 .dark input[type="range"] {
-    background: linear-gradient(to right, #E60000 0%, #E60000 var(--value, 50%), #374151 var(--value, 50%), #374151 100%);
+    background: #374151;
 }
 
 .dark input[type="range"]::-moz-range-track {
     background: #374151;
+}
+
+/* ================================
+   GLOW EFFECTS - Text & Elements
+   ================================ */
+
+/* Red text glow on hover */
+.text-glow-red {
+    color: #E60000;
+    transition: all 0.3s ease;
+}
+
+.text-glow-red:hover {
+    text-shadow: 0 0 20px rgba(230, 0, 0, 0.5), 0 0 40px rgba(230, 0, 0, 0.3);
+}
+
+/* Hover glow for badges */
+.hover-glow-red {
+    transition: all 0.3s ease;
+}
+
+.hover-glow-red:hover {
+    box-shadow: 0 0 20px rgba(230, 0, 0, 0.4);
+}
+
+/* Link glow effect */
+.link-glow {
+    transition: all 0.3s ease;
+}
+
+.link-glow:hover {
+    text-shadow: 0 0 10px rgba(230, 0, 0, 0.5);
+}
+
+/* Card hover glow */
+.card-hover-glow {
+    transition: all 0.3s ease;
+}
+
+.card-hover-glow:hover {
+    box-shadow: 0 10px 40px rgba(230, 0, 0, 0.15);
+}
+
+/* Button glow */
+.btn-glow {
+    transition: all 0.3s ease;
+}
+
+.btn-glow:hover {
+    box-shadow: 0 0 25px rgba(230, 0, 0, 0.5);
+}
+
+/* Dark button glow */
+.btn-glow-dark {
+    transition: all 0.3s ease;
+}
+
+.btn-glow-dark:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Glow bar animation */
+.glow-bar {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 10px rgba(230, 0, 0, 0.5); }
+    50% { box-shadow: 0 0 25px rgba(230, 0, 0, 0.8); }
+}
+
+/* Subtle pulse for discount badges */
+.animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+@keyframes pulse-subtle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; }
+}
+
+/* Hide scrollbar for carousel */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
 }
 
 /* ================================

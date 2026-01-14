@@ -526,6 +526,40 @@ body {
 }
 
 /* ================================
+   DARK MODE SUPPORT
+   ================================ */
+
+.dark body {
+    background-color: var(--black);
+    color: var(--gray-100);
+}
+
+.dark .input-style {
+    background-color: var(--gray-800);
+    color: var(--gray-100);
+    border-color: var(--gray-700);
+}
+
+.dark .input-style:hover {
+    background-color: var(--gray-700);
+}
+
+.dark .input-style:focus {
+    background-color: var(--gray-800);
+    border-color: var(--gray-500);
+}
+
+.dark .btn-outline {
+    color: var(--gray-100);
+    border-color: var(--gray-700);
+}
+
+.dark .btn-outline:hover {
+    border-color: var(--gray-500);
+    background-color: var(--gray-800);
+}
+
+/* ================================
    DEBUG
    ================================ */
 

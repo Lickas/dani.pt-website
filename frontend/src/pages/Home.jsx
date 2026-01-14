@@ -58,10 +58,13 @@ export const Home = () => {
 
                 <div className="container-site relative z-10 py-20">
                     <div className="max-w-4xl">
-                        {/* Label */}
-                        <span className="label-style text-[#999] animate-fade-up">
-                            Stand de Automóveis · Coimbra
-                        </span>
+                        {/* Label com linha vermelha */}
+                        <div className="flex items-center gap-4 animate-fade-up">
+                            <div className="dani-line-short"></div>
+                            <span className="label-style text-[#999]">
+                                Stand de Automóveis · Coimbra
+                            </span>
+                        </div>
 
                         {/* Headline */}
                         <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl text-[#1A1A1A] mt-4 animate-fade-up delay-100">
@@ -69,10 +72,9 @@ export const Home = () => {
                             o seu.
                         </h1>
 
-                        {/* Subtext */}
-                        <p className="text-lg text-[#666] mt-6 max-w-md animate-fade-up delay-200">
-                            {totalVehicles} viaturas selecionadas.<br/>
-                            Qualidade sem compromissos.
+                        {/* Frase autoral */}
+                        <p className="dani-quote mt-6 max-w-md animate-fade-up delay-200">
+                            Escolhidos um a um. Sem ruído. Só carros.
                         </p>
 
                         {/* ================================

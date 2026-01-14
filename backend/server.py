@@ -342,6 +342,22 @@ async def get_all_campaigns(
     campaigns = result.scalars().all()
     return campaigns
 
+@api_router.get("/campaigns/public/{campaign_id}", response_model=Campaign)
+async def get_campaign_public(campaign_id: str, db: AsyncSession = Depends(get_db)):
+    """Get a specific campaign (public - for frontend detail page)"""
+    result = await db.execute(
+        select(CampaignModel).where(
+            CampaignModel.id == campaign_id,
+            CampaignModel.is_active == True
+        )
+    )
+    campaign = result.scalar_one_or_none()
+    
+    if not campaign:
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    
+    return campaign
+
 @api_router.get("/campaigns/{campaign_id}", response_model=Campaign)
 async def get_campaign(
     campaign_id: str,

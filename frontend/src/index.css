@@ -292,6 +292,17 @@ body {
     }
 }
 
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 @keyframes scaleIn {
     from {
         opacity: 0;
@@ -308,6 +319,99 @@ body {
     100% { background-position: 200% 0; }
 }
 
+/* Animação de reveal único dANI.PT */
+@keyframes revealText {
+    from {
+        clip-path: inset(0 100% 0 0);
+    }
+    to {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+@keyframes underlineGrow {
+    from {
+        transform: scaleX(0);
+        transform-origin: left;
+    }
+    to {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+}
+
+/* Animação de float suave */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Animação de pulse glow */
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(230, 0, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(230, 0, 0, 0.6);
+    }
+}
+
+/* Animação de rotate in */
+@keyframes rotateIn {
+    from {
+        opacity: 0;
+        transform: rotate(-10deg) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: rotate(0) scale(1);
+    }
+}
+
+/* Animação de blur in */
+@keyframes blurIn {
+    from {
+        opacity: 0;
+        filter: blur(10px);
+    }
+    to {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+/* Animação de contador */
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animação de linha expandir */
+@keyframes lineExpand {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+/* Animação de typing cursor */
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
 .animate-fade-up {
     animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     opacity: 0;
@@ -321,8 +425,36 @@ body {
     animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.animate-slide-in-right {
+    animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 .animate-scale-in {
     animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-reveal {
+    animation: revealText 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.animate-rotate-in {
+    animation: rotateIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-blur-in {
+    animation: blurIn 0.5s ease-out forwards;
+}
+
+.animate-line-expand {
+    animation: lineExpand 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Stagger delays - More refined */

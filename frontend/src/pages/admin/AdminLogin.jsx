@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import { Lock, Mail, ArrowLeft, Loader2 } from 'lucide-react';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
-const LOGO_URL = "https://customer-assets.emergentagent.com/job_auto-dani-portal/artifacts/3i34e4pv_logo.png";
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_site-renovacao/artifacts/42m6k0x5_Gemini_Generated_Image_n4ngben4ngben4ng.png";
 
 export const AdminLogin = () => {
     const [email, setEmail] = useState('');

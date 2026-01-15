@@ -22,7 +22,6 @@ node_modules/
 # Next.js
 /.next/
 /out/
-next-env.d.ts
 *.tsbuildinfo
 
 # Production builds
@@ -31,9 +30,6 @@ dist/
 dist
 
 # Environment files (comprehensive coverage)
-
-*token.json*
-*credentials.json*
 
 # Logs and debug files
 npm-debug.log*
@@ -81,29 +77,6 @@ android-sdk/ frontend/node_modules/.cache/default-development/2.pack
 frontend/node_modules/.cache/default-development/0.pack
 frontend/node_modules/.cache/default-development/2.pack
 -e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
 -e 
 # Environment files
 *.env

@@ -59,7 +59,7 @@ export const Navbar = () => {
                             <img 
                                 src={LOGO_URL} 
                                 alt="dANI.PT" 
-                                className={`h-6 md:h-7 w-auto transition-all ${isDark ? 'brightness-0 invert' : ''}`}
+                                className={`h-10 md:h-12 w-auto transition-all ${isDark ? 'brightness-0 invert' : ''}`}
                             />
                         </Link>
 

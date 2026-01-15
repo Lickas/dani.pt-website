@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Moon, Sun, Phone } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-const LOGO_URL = "https://customer-assets.emergentagent.com/job_auto-dani-portal/artifacts/3i34e4pv_logo.png";
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_site-renovacao/artifacts/42m6k0x5_Gemini_Generated_Image_n4ngben4ngben4ng.png";
 
 export const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);

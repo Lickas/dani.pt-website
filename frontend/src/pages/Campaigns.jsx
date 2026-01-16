@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { Calendar, Percent, Tag, ChevronRight } from 'lucide-react';
-
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import { campaignsAPI } from '../utils/apiService';
 
 export const Campaigns = () => {
     const [campaigns, setCampaigns] = useState([]);
@@ -16,10 +14,14 @@ export const Campaigns = () => {
     const fetchCampaigns = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`${API_URL}/campaigns`);
-            setCampaigns(response.data);
+            const data = await campaignsAPI.getAll();
+            
+            // PROGRAMA\u00c7\u00c3O DEFENSIVA: Garantir que \u00e9 um array
+            const safeData = Array.isArray(data) ? data : [];
+            setCampaigns(safeData);
         } catch (error) {
             console.error('Error fetching campaigns:', error);
+            setCampaigns([]);
         } finally {
             setLoading(false);
         }

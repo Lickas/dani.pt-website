@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
 import { ArrowLeft, Phone, MessageCircle, Fuel, Calendar, Gauge, Settings, Palette, Zap, Check } from 'lucide-react';
-
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import { vehiclesAPI } from '../utils/apiService';
 
 export const VehicleDetail = () => {
     const { id } = useParams();
@@ -14,10 +12,11 @@ export const VehicleDetail = () => {
     useEffect(() => {
         const fetchVehicle = async () => {
             try {
-                const response = await axios.get(`${API_URL}/vehicles/${id}`);
-                setVehicle(response.data);
+                const data = await vehiclesAPI.getById(id);
+                setVehicle(data);
             } catch (error) {
                 console.error('Error:', error);
+                setVehicle(null);
             } finally {
                 setLoading(false);
             }

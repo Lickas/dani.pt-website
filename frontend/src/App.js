@@ -79,6 +79,7 @@ const ProtectedRoute = ({ children }) => {
 // Public Layout
 const PublicLayout = ({ children }) => (
     <>
+        <DemoModeBanner />
         <Navbar />
         {children}
         <Footer />

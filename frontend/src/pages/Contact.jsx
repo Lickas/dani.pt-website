@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Phone, Mail, MapPin, Send, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
-
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import { contactsAPI } from '../utils/apiService';
 
 export const Contact = () => {
     const [formData, setFormData] = useState({
@@ -23,7 +21,7 @@ export const Contact = () => {
         setLoading(true);
 
         try {
-            await axios.post(`${API_URL}/contacts`, formData);
+            await contactsAPI.create(formData);
             toast.success('Mensagem enviada! Responderemos brevemente.');
             setFormData({ name: '', email: '', phone: '', message: '' });
         } catch (error) {

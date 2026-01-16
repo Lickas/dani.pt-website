@@ -40,15 +40,31 @@ export const Home = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [vehiclesRes, campaignsRes] = await Promise.all([
-                    axios.get(`${API_URL}/vehicles`),
-                    axios.get(`${API_URL}/campaigns`)
+                // Buscar viaturas e campanhas com fallback autom\u00e1tico para mock data
+                const [vehiclesData, campaignsData] = await Promise.all([
+                    vehiclesAPI.getAll(),
+                    campaignsAPI.getAll()
                 ]);
-                setVehicles(vehiclesRes.data);
-                setCampaigns(campaignsRes.data);
-                setFeaturedVehicles(vehiclesRes.data.filter(v => v.is_featured).slice(0, 3));
+                
+                // PROGRAMA\u00c7\u00c3O DEFENSIVA: Garantir que sempre temos arrays v\u00e1lidos
+                const safeVehicles = Array.isArray(vehiclesData) ? vehiclesData : [];
+                const safeCampaigns = Array.isArray(campaignsData) ? campaignsData : [];
+                
+                setVehicles(safeVehicles);
+                setCampaigns(safeCampaigns);
+                
+                // Filtrar viaturas em destaque com seguran\u00e7a
+                const featured = safeVehicles
+                    .filter(v => v && v.is_featured)
+                    .slice(0, 3);
+                setFeaturedVehicles(featured);
+                
             } catch (error) {
                 console.error('Error fetching data:', error);
+                // Em caso de erro cr\u00edtico, garantir arrays vazios
+                setVehicles([]);
+                setCampaigns([]);
+                setFeaturedVehicles([]);
             } finally {
                 setLoading(false);
             }

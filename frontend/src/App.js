@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { MobileContactBar } from './components/MobileContactBar';
+import { DemoModeBanner } from './components/DemoModeBanner';
 import { ThemeProvider } from './context/ThemeContext';
 
 // Public Pages

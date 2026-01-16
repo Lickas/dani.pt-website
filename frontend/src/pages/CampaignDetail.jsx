@@ -5,10 +5,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
 import { ArrowLeft, Calendar, Tag, Clock, Phone, MessageCircle, CheckCircle } from 'lucide-react';
-
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import { campaignsAPI } from '../utils/apiService';
 
 export const CampaignDetail = () => {
     const { id } = useParams();
@@ -19,11 +17,12 @@ export const CampaignDetail = () => {
     useEffect(() => {
         const fetchCampaign = async () => {
             try {
-                const response = await axios.get(`${API_URL}/campaigns/public/${id}`);
-                setCampaign(response.data);
+                const data = await campaignsAPI.getById(id);
+                setCampaign(data);
             } catch (err) {
                 console.error('Error fetching campaign:', err);
                 setError('Campanha não encontrada');
+                setCampaign(null);
             } finally {
                 setLoading(false);
             }

@@ -445,7 +445,7 @@ export const Home = () => {
                                 </div>
                             ))}
                         </div>
-                    ) : (
+                    ) : featuredVehicles.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                             {featuredVehicles.map((vehicle, index) => (
                                 <div 
@@ -456,6 +456,10 @@ export const Home = () => {
                                     <VehicleCard vehicle={vehicle} />
                                 </div>
                             ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-12">
+                            <p className="text-gray-500">Nenhuma viatura em destaque no momento.</p>
                         </div>
                     )}
                 </div>

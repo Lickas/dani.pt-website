@@ -78,16 +78,21 @@ export const Vehicles = () => {
     const fetchVehicles = async () => {
         setLoading(true);
         try {
-            const params = new URLSearchParams();
-            if (filters.brand) params.append('brand', filters.brand);
-            if (filters.fuel_type) params.append('fuel_type', filters.fuel_type);
-            if (filters.min_year) params.append('min_year', filters.min_year);
-            if (filters.max_price < 100000) params.append('max_price', filters.max_price);
+            const params = {};
+            if (filters.brand) params.brand = filters.brand;
+            if (filters.fuel_type) params.fuel_type = filters.fuel_type;
+            if (filters.min_year) params.min_year = filters.min_year;
+            if (filters.max_price < 100000) params.max_price = filters.max_price;
             
-            const response = await axios.get(`${API_URL}/vehicles?${params.toString()}`);
-            setVehicles(response.data);
+            const data = await vehiclesAPI.getAll(params);
+            
+            // PROGRAMA\u00c7\u00c3O DEFENSIVA: Garantir que \u00e9 um array
+            const safeData = Array.isArray(data) ? data : [];
+            setVehicles(safeData);
         } catch (error) {
             console.error('Error fetching vehicles:', error);
+            // Em caso de erro, garantir array vazio
+            setVehicles([]);
         } finally {
             setLoading(false);
         }

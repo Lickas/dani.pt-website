@@ -603,7 +603,7 @@ export const Home = () => {
                             className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory"
                             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                         >
-                            {campaigns.length > 0 ? (
+                            {Array.isArray(campaigns) && campaigns.length > 0 ? (
                                 campaigns.map((campaign, index) => (
                                     <Link 
                                         to={`/campanhas/${campaign.id}`}

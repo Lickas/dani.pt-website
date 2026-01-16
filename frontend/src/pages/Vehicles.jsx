@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import axios from 'axios';
 import { Search, X, SlidersHorizontal, Grid, List } from 'lucide-react';
 import { VehicleCard } from '../components/VehicleCard';
-
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
+import { vehiclesAPI } from '../utils/apiService';
 
 // Custom Price Slider Component
 const PriceSlider = ({ value, onChange, min = 5000, max = 100000, step = 1000 }) => {

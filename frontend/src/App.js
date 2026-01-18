@@ -97,6 +97,7 @@ const AdminLayoutWrapper = ({ children }) => {
         { href: '/admin/viaturas', label: 'Viaturas' },
         { href: '/admin/campanhas', label: 'Campanhas' },
         { href: '/admin/mensagens', label: 'Mensagens' },
+        { href: '/admin/newsletter', label: 'Newsletter' },
         { href: '/admin/configuracoes', label: 'Configurações' },
     ];
 

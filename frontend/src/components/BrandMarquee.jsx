@@ -49,7 +49,7 @@ export const BrandMarquee = () => {
                     {brands.map((brand, index) => (
                         <div 
                             key={`brand-1-${index}`} 
-                            className="flex-shrink-0 grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300"
+                            className="flex-shrink-0 grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300 dark:brightness-0 dark:invert dark:hover:brightness-100 dark:hover:invert-0"
                         >
                             <img 
                                 src={brand.src} 
@@ -63,7 +63,7 @@ export const BrandMarquee = () => {
                     {brands.map((brand, index) => (
                         <div 
                             key={`brand-2-${index}`} 
-                            className="flex-shrink-0 grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300"
+                            className="flex-shrink-0 grayscale hover:grayscale-0 opacity-60 hover:opacity-100 transition-all duration-300 dark:brightness-0 dark:invert dark:hover:brightness-100 dark:hover:invert-0"
                         >
                             <img 
                                 src={brand.src} 

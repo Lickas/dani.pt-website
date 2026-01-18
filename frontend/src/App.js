@@ -190,6 +190,7 @@ function App() {
                     <Route path="/admin/campanhas/ver/:id" element={<ProtectedRoute><AdminLayoutWrapper><AdminCampaignDetail /></AdminLayoutWrapper></ProtectedRoute>} />
                     <Route path="/admin/campanhas/editar/:id" element={<ProtectedRoute><AdminLayoutWrapper><AdminCampaignForm /></AdminLayoutWrapper></ProtectedRoute>} />
                     <Route path="/admin/mensagens" element={<ProtectedRoute><AdminLayoutWrapper><AdminMessages /></AdminLayoutWrapper></ProtectedRoute>} />
+                    <Route path="/admin/newsletter" element={<ProtectedRoute><AdminLayoutWrapper><AdminNewsletter /></AdminLayoutWrapper></ProtectedRoute>} />
                     <Route path="/admin/configuracoes" element={<ProtectedRoute><AdminLayoutWrapper><AdminSettings /></AdminLayoutWrapper></ProtectedRoute>} />
 
                     <Route path="*" element={<Navigate to="/" replace />} />

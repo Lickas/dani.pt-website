@@ -12,7 +12,8 @@ import axios from 'axios';
 import { Mail, MailOpen, Trash2, Phone, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const BASE_URL = process.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_API_URL || '';
+const API_URL = BASE_URL ? `${BASE_URL}/api` : '/api';
 
 export const AdminMessages = () => {
     const [messages, setMessages] = useState([]);

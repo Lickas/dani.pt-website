@@ -12,7 +12,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Car, Megaphone, Mail, MailOpen, TrendingUp, Plus } from 'lucide-react';
 
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const BASE_URL = process.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_API_URL || '';
+const API_URL = BASE_URL ? `${BASE_URL}/api` : '/api';
 
 export const AdminDashboard = () => {
     const [stats, setStats] = useState(null);

@@ -29,6 +29,7 @@ import { AdminCampaigns } from './pages/admin/AdminCampaigns';
 import { AdminCampaignForm } from './pages/admin/AdminCampaignForm';
 import { AdminCampaignDetail } from './pages/admin/AdminCampaignDetail';
 import { AdminMessages } from './pages/admin/AdminMessages';
+import { AdminNewsletter } from './pages/admin/AdminNewsletter';
 import { AdminSettings } from './pages/admin/AdminSettings';
 
 import './App.css';

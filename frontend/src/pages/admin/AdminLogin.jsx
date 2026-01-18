@@ -1,16 +1,15 @@
 /**
  * Admin Login Page - dANI.PT
  * Clean, modern and minimal design
+ * Refactored for Supabase Auth (Serverless)
  */
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
 import { toast } from 'sonner';
 import { Lock, Mail, ArrowLeft, Loader2 } from 'lucide-react';
+import { supabase } from '../../supabaseClient';
 
-const BASE_URL = process.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_API_URL || '';
-const API_URL = BASE_URL ? `${BASE_URL}/api` : '/api';
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_site-renovacao/artifacts/42m6k0x5_Gemini_Generated_Image_n4ngben4ngben4ng.png";
 
 export const AdminLogin = () => {
@@ -21,9 +20,15 @@ export const AdminLogin = () => {
 
     // Redirect if already logged in
     useEffect(() => {
-        if (localStorage.getItem('dani_admin_token')) {
-            navigate('/admin/dashboard');
-        }
+        const checkUser = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                // Keep backward compatibility just in case
+                localStorage.setItem('dani_admin_token', session.access_token);
+                navigate('/admin/dashboard');
+            }
+        };
+        checkUser();
     }, [navigate]);
 
     const handleSubmit = async (e) => {
@@ -31,19 +36,23 @@ export const AdminLogin = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post(`${API_URL}/admin/login`, { 
+            const { data, error } = await supabase.auth.signInWithPassword({ 
                 email, 
                 password 
             });
+
+            if (error) throw error;
             
-            // Store token
-            localStorage.setItem('dani_admin_token', response.data.token);
-            
-            toast.success('Login efetuado com sucesso!');
-            navigate('/admin/dashboard');
+            if (data?.session) {
+                // Store token for compatibility with other components that might check it
+                localStorage.setItem('dani_admin_token', data.session.access_token);
+                
+                toast.success('Login efetuado com sucesso!');
+                navigate('/admin/dashboard');
+            }
         } catch (error) {
             console.error('Login error:', error);
-            toast.error('Credenciais inválidas');
+            toast.error('Credenciais inválidas ou erro no login.');
         } finally {
             setLoading(false);
         }

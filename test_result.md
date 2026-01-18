@@ -241,6 +241,19 @@
           agent: "main"
           comment: "Adicionado componente BrandMarquee com animação infinita e logos da pasta public/marcas"
 
+  - task: "Corrigir logos em modo escuro"
+    implemented: true
+    working: true
+    file: "frontend/src/components/BrandMarquee.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Adicionadas classes dark:brightness-0 dark:invert para garantir que logos fiquem brancos em fundo escuro"
+
+
   - task: "Testar integração com novo backend Supabase"
     implemented: false
     working: "NA"

@@ -262,3 +262,5 @@
 ## agent_communication:
     - agent: "main"
       message: "Migração Supabase COMPLETA! ✅ Database: PostgreSQL via Transaction Pooler ✅ Auth: Supabase Auth com JWT ✅ Storage: 2 buckets públicos criados ✅ Dados: 10 viaturas + 2 campanhas ✅ MongoDB removido. Backend rodando em http://0.0.0.0:8001. Health check OK. Próximo: Testar fluxo completo com testing agent."
+    - agent: "main"
+      message: "FIX: Recuperadas credenciais do Supabase do backend e configuradas no Frontend (.env). Erro 'supabaseUrl is required' resolvido."

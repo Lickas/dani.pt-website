@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 // Layout Components
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { NewsletterSection } from './components/NewsletterSection';
 import { MobileContactBar } from './components/MobileContactBar';
 import { DemoModeBanner } from './components/DemoModeBanner';
 import { ThemeProvider } from './context/ThemeContext';

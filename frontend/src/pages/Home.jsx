@@ -345,6 +345,11 @@ export const Home = () => {
             </section>
 
             {/* ============================================
+                BRAND MARQUEE
+                ============================================ */}
+            <BrandMarquee />
+
+            {/* ============================================
                 QUICK CATEGORIES
                 ============================================ */}
             <section className="py-12 md:py-16 bg-gray-50 dark:bg-gray-800 border-y border-gray-100 dark:border-gray-700">

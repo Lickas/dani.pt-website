@@ -25,7 +25,7 @@ from models import Base
 config = context.config
 
 # Override sqlalchemy.url with DATABASE_URL from .env (sync URL)
-database_url = os.environ.get('DATABASE_URL')
+database_url = os.environ.get('DATABASE_DIRECT_URL') or os.environ.get('DATABASE_URL')
 config.set_main_option('sqlalchemy.url', database_url)
 
 # Interpret the config file for Python logging.

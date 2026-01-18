@@ -61,3 +61,12 @@ class AdminUser(Base):
     name = Column(String(200), nullable=False)
     supabase_user_id = Column(String(36), nullable=True, unique=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+
+class NewsletterSubscriber(Base):
+    __tablename__ = 'newsletter_subscribers'
+    
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    email = Column(String(200), nullable=False, unique=True, index=True)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)

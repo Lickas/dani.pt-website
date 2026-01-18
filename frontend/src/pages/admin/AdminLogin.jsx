@@ -9,7 +9,8 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { Lock, Mail, ArrowLeft, Loader2 } from 'lucide-react';
 
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const BASE_URL = process.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_API_URL || '';
+const API_URL = BASE_URL ? `${BASE_URL}/api` : '/api';
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_site-renovacao/artifacts/42m6k0x5_Gemini_Generated_Image_n4ngben4ngben4ng.png";
 
 export const AdminLogin = () => {

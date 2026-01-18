@@ -228,6 +228,19 @@
           agent: "main"
           comment: "CONCLUÍDO anteriormente - Linha vermelha, frases autorais, numeração, hover effects"
 
+
+  - task: "Adicionar Marquee de Marcas"
+    implemented: true
+    working: true
+    file: "frontend/src/components/BrandMarquee.jsx, frontend/src/pages/Home.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Adicionado componente BrandMarquee com animação infinita e logos da pasta public/marcas"
+
   - task: "Testar integração com novo backend Supabase"
     implemented: false
     working: "NA"

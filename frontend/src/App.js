@@ -83,6 +83,7 @@ const PublicLayout = ({ children }) => (
         <DemoModeBanner />
         <Navbar />
         {children}
+        <NewsletterSection />
         <Footer />
         <MobileContactBar />
     </>

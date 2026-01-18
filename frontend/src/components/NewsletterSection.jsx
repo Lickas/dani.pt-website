@@ -30,8 +30,10 @@ export const NewsletterSection = () => {
                 setEmail('');
             }
         } catch (error) {
-            console.error('Newsletter error:', error);
-            toast.error('Erro ao subscrever. Tente novamente.');
+            console.error('Newsletter error details:', error);
+            // Show more specific error message if available
+            const errorMessage = error.message || 'Erro ao subscrever. Tente novamente.';
+            toast.error(`Erro: ${errorMessage}`);
         } finally {
             setLoading(false);
         }

@@ -101,7 +101,7 @@ export const AdminVehicleForm = () => {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
-                uploadedUrls.push(`${process.env.REACT_APP_BACKEND_URL}${response.data.url}`);
+                uploadedUrls.push(`${BASE_URL}${response.data.url}`);
             }
 
             setFormData(prev => ({

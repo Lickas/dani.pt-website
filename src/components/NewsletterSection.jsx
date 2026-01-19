@@ -45,7 +45,7 @@ export const NewsletterSection = () => {
                             Fique a par das <span className="text-[#E60000]">novidades</span>
                         </h2>
                         <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base mb-8 leading-relaxed">
-                            Receba em primeira mão as nossas novas entradas de viaturas e campanhas exclusivas. 
+                            Receba em primeira mão as minhas novas entradas de viaturas e campanhas exclusivas. 
                             Sem spam, apenas o que importa.
                         </p>
 

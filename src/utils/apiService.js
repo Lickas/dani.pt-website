@@ -383,6 +383,60 @@ export const authAPI = {
   }
 };
 
+// ==============================================
+// NEWSLETTER API
+// ==============================================
+
+export const newsletterAPI = {
+  // Subscrever newsletter
+  subscribe: async (email) => {
+    if (USE_MOCK_DATA) {
+      await simulateDelay();
+      return { id: String(Date.now()), email, is_active: true };
+    }
+    
+    try {
+      const response = await axios.post(`${API_URL}/newsletter`, { email });
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 400) {
+        throw new Error('Este email já está subscrito.');
+      }
+      throw error;
+    }
+  },
+
+  // Cancelar subscrição
+  unsubscribe: async (email) => {
+    if (USE_MOCK_DATA) {
+      await simulateDelay();
+      return { message: 'Subscrição cancelada com sucesso.', found: true };
+    }
+    
+    try {
+      const response = await axios.post(`${API_URL}/newsletter/unsubscribe`, { email });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Verificar se está subscrito
+  checkSubscription: async (email) => {
+    if (USE_MOCK_DATA) {
+      await simulateDelay();
+      return { subscribed: false, found: false };
+    }
+    
+    try {
+      const response = await axios.get(`${API_URL}/newsletter/check/${encodeURIComponent(email)}`);
+      return response.data;
+    } catch (error) {
+      return { subscribed: false, found: false };
+    }
+  }
+};
+
 // Configurar interceptor para adicionar token em todas as requisições
 axios.interceptors.request.use(
   (config) => {
@@ -403,5 +457,6 @@ export default {
   campaigns: campaignsAPI,
   contacts: contactsAPI,
   upload: uploadAPI,
-  auth: authAPI
+  auth: authAPI,
+  newsletter: newsletterAPI
 };

@@ -180,6 +180,8 @@ function App() {
                     <Route path="/campanhas/:id" element={<PublicLayout><CampaignDetail /></PublicLayout>} />
                     <Route path="/sobre" element={<PublicLayout><About /></PublicLayout>} />
                     <Route path="/contactos" element={<PublicLayout><Contact /></PublicLayout>} />
+                    <Route path="/termos" element={<PublicLayout><TermsOfService /></PublicLayout>} />
+                    <Route path="/privacidade" element={<PublicLayout><PrivacyPolicy /></PublicLayout>} />
 
                     {/* Admin Routes */}
                     <Route path="/admin" element={<AdminLogin />} />

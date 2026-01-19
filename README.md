@@ -1,6 +1,6 @@
 # 🚗 dANI.PT - Stand Automóvel
 
-Sistema completo de gestão para stand automóvel com frontend React e backend FastAPI integrado com **Supabase**.
+Sistema completo de gestão para stand automóvel - **Estrutura Serverless para Vercel**.
 
 ---
 
@@ -9,84 +9,125 @@ Sistema completo de gestão para stand automóvel com frontend React e backend F
 | Componente | Tecnologia |
 |------------|------------|
 | **Frontend** | React 18 + Tailwind CSS + shadcn/ui |
-| **Backend** | FastAPI (Python 3.11) |
+| **Backend** | Vercel Serverless Functions (Python) |
 | **Database** | Supabase (PostgreSQL) |
 | **Auth** | Supabase Auth (JWT) |
 | **Storage** | Supabase Storage (imagens) |
-| **ORM** | SQLAlchemy + Alembic |
 
 ---
 
 ## 📁 Estrutura do Projeto
 
 ```
-/app/
-├── backend/
-│   ├── server.py           # API FastAPI principal
-│   ├── database.py         # Conexão Supabase/PostgreSQL
-│   ├── models.py           # Modelos SQLAlchemy
-│   ├── supabase_client.py  # Clientes Supabase (Auth + Storage)
-│   ├── seed_data.py        # Dados de exemplo
-│   ├── alembic/            # Migrações de base de dados
-│   └── requirements.txt    # Dependências Python
+/
+├── api/                        # Serverless Functions (Python)
+│   ├── _shared/                # Código partilhado
+│   │   ├── database.py         # Conexão PostgreSQL
+│   │   ├── models.py           # Modelos SQLAlchemy
+│   │   ├── supabase_client.py  # Cliente Supabase
+│   │   └── auth.py             # Verificação JWT
+│   ├── admin/
+│   │   ├── login.py            # POST /api/admin/login
+│   │   └── register.py         # POST /api/admin/register
+│   ├── health.py               # GET /api/health
+│   ├── vehicles.py             # CRUD /api/vehicles
+│   ├── campaigns.py            # CRUD /api/campaigns
+│   ├── contacts.py             # CRUD /api/contacts
+│   ├── upload.py               # POST /api/upload/*
+│   └── newsletter.py           # POST /api/newsletter
 │
-├── frontend/
-│   ├── src/
-│   │   ├── pages/          # Páginas da aplicação
-│   │   ├── components/     # Componentes reutilizáveis
-│   │   └── utils/          # Utilitários (API service, mock data)
-│   ├── public/             # Assets estáticos
-│   └── package.json        # Dependências Node.js
+├── src/                        # React Frontend
+│   ├── pages/                  # Páginas
+│   ├── components/             # Componentes
+│   └── utils/                  # Utilitários
 │
-└── memory/PRD.md           # Product Requirements Document
+├── public/                     # Assets estáticos
+├── vercel.json                 # Configuração Vercel
+├── package.json                # Dependências Node.js
+└── requirements.txt            # Dependências Python
 ```
 
 ---
 
-## 🚀 Funcionalidades
+## 🚀 Deploy na Vercel
 
-### 🌐 Website Público
-- **Homepage** com viaturas em destaque e campanhas
-- **Catálogo de Viaturas** com filtros (marca, preço, combustível, ano)
-- **Detalhes de Viatura** com galeria de imagens
-- **Campanhas Promocionais** ativas
-- **Formulário de Contacto**
-- **Marquee de Marcas** animado
-- **Modo Escuro/Claro**
+### 1. Conectar Repositório
+- Vai a [vercel.com](https://vercel.com)
+- Importa o repositório
 
-### 🔐 Painel Admin
-- **Login** com Supabase Auth
-- **Gestão de Viaturas** (CRUD completo)
-- **Gestão de Campanhas** (CRUD completo)
-- **Visualização de Mensagens** de contacto
-- **Upload de Imagens** para Supabase Storage
-
----
-
-## ⚙️ Configuração
-
-### Variáveis de Ambiente - Backend (`backend/.env`)
+### 2. Configurar Variáveis de Ambiente
+Adiciona estas variáveis no Vercel Dashboard:
 
 ```env
-# Supabase
 SUPABASE_URL=https://xxx.supabase.co
 SUPABASE_ANON_KEY=eyJhbGci...
-SUPABASE_SERVICE_KEY=eyJhbGci...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGci...
+DATABASE_URL=postgresql://postgres.xxx:password@pooler.supabase.com:6543/postgres
+JWT_SECRET=your-secret-key
 
-# Database (Transaction Pooler)
-DATABASE_URL=postgresql://postgres.xxx:password@aws-0-eu-central-1.pooler.supabase.com:6543/postgres
-
-# JWT
-JWT_SECRET=your-jwt-secret
-JWT_ALGORITHM=HS256
-```
-
-### Variáveis de Ambiente - Frontend (`frontend/.env`)
-
-```env
-REACT_APP_BACKEND_URL=http://localhost:8001
+# Frontend
 REACT_APP_SUPABASE_URL=https://xxx.supabase.co
 REACT_APP_SUPABASE_ANON_KEY=eyJhbGci...
+```
+
+### 3. Deploy
+Clica em **Deploy** - demora ~2 minutos
+
+---
+
+## 🌐 API Endpoints
+
+### Públicos
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| GET | `/api/health` | Health check |
+| GET | `/api/vehicles` | Listar viaturas |
+| GET | `/api/vehicles/{id}` | Detalhes viatura |
+| GET | `/api/campaigns` | Campanhas ativas |
+| GET | `/api/campaigns/public/{id}` | Detalhes campanha |
+| POST | `/api/contacts` | Enviar mensagem |
+| POST | `/api/newsletter` | Subscrever newsletter |
+
+### Admin (requer autenticação)
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| POST | `/api/admin/login` | Login |
+| POST | `/api/admin/register` | Registar admin |
+| GET | `/api/vehicles/all` | Todas as viaturas |
+| POST | `/api/vehicles` | Criar viatura |
+| PUT | `/api/vehicles/{id}` | Atualizar viatura |
+| DELETE | `/api/vehicles/{id}` | Apagar viatura |
+| GET | `/api/campaigns/all` | Todas as campanhas |
+| POST | `/api/campaigns` | Criar campanha |
+| PUT | `/api/campaigns/{id}` | Atualizar campanha |
+| DELETE | `/api/campaigns/{id}` | Apagar campanha |
+| GET | `/api/contacts` | Ver mensagens |
+| POST | `/api/upload/vehicle-image` | Upload imagem |
+| POST | `/api/upload/campaign-image` | Upload imagem |
+
+---
+
+## 💻 Desenvolvimento Local
+
+### Instalar dependências
+```bash
+yarn install
+pip install -r requirements.txt
+```
+
+### Criar ficheiro .env
+```bash
+cp .env.example .env
+# Editar com as credenciais do Supabase
+```
+
+### Executar
+```bash
+# Frontend
+yarn start
+
+# Para testar API localmente, usar Vercel CLI:
+vercel dev
 ```
 
 ---
@@ -94,94 +135,34 @@ REACT_APP_SUPABASE_ANON_KEY=eyJhbGci...
 ## 🗄️ Base de Dados (Supabase)
 
 ### Tabelas
-
-| Tabela | Descrição |
-|--------|-----------|
-| `vehicles` | Viaturas do stand |
-| `campaigns` | Campanhas promocionais |
-| `contacts` | Mensagens de contacto |
-| `admin_users` | Utilizadores admin |
-| `newsletter_subscribers` | Subscritores newsletter |
+- `vehicles` - Viaturas do stand
+- `campaigns` - Campanhas promocionais
+- `contacts` - Mensagens de contacto
+- `admin_users` - Utilizadores admin
+- `newsletter_subscribers` - Subscritores newsletter
 
 ### Storage Buckets
-
-| Bucket | Descrição |
-|--------|-----------|
-| `vehicle-images` | Imagens das viaturas |
-| `campaign-images` | Imagens das campanhas |
+- `vehicle-images` - Imagens das viaturas
+- `campaign-images` - Imagens das campanhas
 
 ---
 
-## 📡 API Endpoints
+## 🎨 Funcionalidades
 
-### Públicos
-```
-GET  /api/health              # Health check
-GET  /api/vehicles            # Listar viaturas
-GET  /api/vehicles/{id}       # Detalhes viatura
-GET  /api/campaigns           # Campanhas ativas
-GET  /api/campaigns/{id}      # Detalhes campanha
-POST /api/contacts            # Enviar mensagem
-POST /api/newsletter          # Subscrever newsletter
-```
+### Website Público
+- Homepage com viaturas em destaque
+- Catálogo com filtros
+- Detalhes de viatura
+- Campanhas promocionais
+- Formulário de contacto
+- Modo escuro/claro
 
-### Admin (requer autenticação)
-```
-POST   /api/admin/login       # Login
-POST   /api/admin/register    # Registar admin
-GET    /api/contacts          # Ver mensagens
-GET    /api/campaigns/all     # Todas as campanhas
-POST   /api/vehicles          # Criar viatura
-PUT    /api/vehicles/{id}     # Atualizar viatura
-DELETE /api/vehicles/{id}     # Apagar viatura
-POST   /api/campaigns         # Criar campanha
-PUT    /api/campaigns/{id}    # Atualizar campanha
-DELETE /api/campaigns/{id}    # Apagar campanha
-POST   /api/upload/vehicle-image    # Upload imagem viatura
-POST   /api/upload/campaign-image   # Upload imagem campanha
-```
-
----
-
-## 🎨 Design System
-
-- **Cores:** Vermelho primário `#E60000`, fundo branco/cinza
-- **Fontes:** Archivo (headings), Inter (body)
-- **Estilo:** Swiss International Style - minimalista e funcional
-- **Componentes:** shadcn/ui personalizados
-
----
-
-## 🧪 Desenvolvimento Local
-
-### Backend
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn server:app --reload --port 8001
-```
-
-### Frontend
-```bash
-cd frontend
-yarn install
-yarn start
-```
-
----
-
-## 📦 Deploy
-
-### Frontend (Vercel)
-1. Root Directory: `frontend`
-2. Build Command: `yarn build`
-3. Output Directory: `build`
-4. Adicionar variáveis de ambiente
-
-### Backend (Railway/Heroku)
-1. Root Directory: `backend`
-2. Start Command: `uvicorn server:app --host 0.0.0.0 --port $PORT`
-3. Adicionar variáveis de ambiente
+### Painel Admin
+- Login com Supabase Auth
+- Gestão de viaturas (CRUD)
+- Gestão de campanhas (CRUD)
+- Visualização de mensagens
+- Upload de imagens
 
 ---
 

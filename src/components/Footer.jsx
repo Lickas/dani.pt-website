@@ -110,20 +110,25 @@ export const Footer = () => {
                     
                     <div className="flex items-center gap-6">
                         <Link 
+                            to="/termos"
+                            className="text-gray-600 hover:text-gray-400 text-xs transition-colors"
+                        >
+                            Termos de Serviço
+                        </Link>
+                        
+                        <Link 
+                            to="/privacidade"
+                            className="text-gray-600 hover:text-gray-400 text-xs transition-colors"
+                        >
+                            Política de Privacidade
+                        </Link>
+                        
+                        <Link 
                             to="/admin"
                             className="text-gray-600 hover:text-gray-400 text-xs transition-colors"
                         >
                             Área reservada
                         </Link>
-                        
-                        <a 
-                            href="https://leandroxws.dev"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-gray-600 hover:text-gray-400 text-xs transition-colors"
-                        >
-                            Oxiria Studios
-                        </a>
                     </div>
                 </div>
             </div>

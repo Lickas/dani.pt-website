@@ -262,19 +262,19 @@ export const Home = () => {
                                 <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center group-hover:bg-white/20 transition-colors">
                                     <CheckCircle size={18} className="text-green-400" />
                                 </div>
-                                <span className="text-sm text-white/70 group-hover:text-white transition-colors">100% Revistos</span>
+                                <span className="text-sm text-white/70 group-hover:text-white transition-colors">Novos e Usados</span>
                             </div>
                             <div className="flex items-center gap-3 group cursor-default">
                                 <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center group-hover:bg-white/20 transition-colors">
                                     <Star size={18} className="text-yellow-400" />
                                 </div>
-                                <span className="text-sm text-white/70 group-hover:text-white transition-colors">+500 Clientes Satisfeitos</span>
+                                <span className="text-sm text-white/70 group-hover:text-white transition-colors">Soluções de Financiamento</span>
                             </div>
                             <div className="flex items-center gap-3 group cursor-default">
                                 <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center group-hover:bg-white/20 transition-colors">
                                     <Award size={18} className="text-blue-400" />
                                 </div>
-                                <span className="text-sm text-white/70 group-hover:text-white transition-colors">15 Anos de Experiência</span>
+                                <span className="text-sm text-white/70 group-hover:text-white transition-colors">Garantia Total</span>
                             </div>
                         </div>
                     </div>

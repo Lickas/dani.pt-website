@@ -313,10 +313,10 @@ export const Home = () => {
                                 <Shield size={28} className="text-[#E60000] group-hover:text-white transition-colors" />
                             </div>
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-white transition-colors mb-2">
-                                Zero Riscos
+                                Variedade Total
                             </h3>
                             <p className="text-gray-500 group-hover:text-white/80 transition-colors text-sm">
-                                Inspeção de 150+ pontos. Se não passa no nosso crivo, não entra no nosso stand.
+                                Novos, semi-novos e usados. Todas as opções de mobilidade num só lugar.
                             </p>
                         </div>
                         <div className="group p-8 bg-gray-50 dark:bg-gray-800 rounded-sm hover:bg-[#E60000] transition-all duration-300 text-center card-hover-glow">

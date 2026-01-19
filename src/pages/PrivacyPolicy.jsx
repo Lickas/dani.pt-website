@@ -185,7 +185,7 @@ const PrivacyPolicy = () => {
                             9. Cookies
                         </h2>
                         <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                            O nosso website utiliza cookies essenciais para o seu funcionamento. Cookies são 
+                            O meu website utiliza cookies essenciais para o seu funcionamento. Cookies são 
                             pequenos ficheiros armazenados no seu dispositivo que nos permitem melhorar a sua 
                             experiência de navegação. Pode configurar o seu browser para recusar cookies, 
                             embora isso possa afetar algumas funcionalidades do website.

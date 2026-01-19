@@ -51,12 +51,14 @@ export const AdminVehicles = () => {
         
         try {
             const response = await axios.get(`${API_URL}/vehicles/all`, { headers });
-            setVehicles(response.data);
+            // Garantir que é um array
+            setVehicles(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
             console.error('Error fetching vehicles:', error);
             if (!handleAuthError(error)) {
                 toast.error('Erro ao carregar viaturas');
             }
+            setVehicles([]);
         } finally {
             setLoading(false);
         }

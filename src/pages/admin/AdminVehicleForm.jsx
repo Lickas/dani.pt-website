@@ -55,7 +55,11 @@ export const AdminVehicleForm = () => {
     const fetchVehicle = async () => {
         try {
             const response = await axios.get(`${API_URL}/vehicles/${id}`);
-            setFormData(response.data);
+            if (response.data && typeof response.data === 'object') {
+                setFormData(response.data);
+            } else {
+                throw new Error('Dados inválidos');
+            }
         } catch (error) {
             toast.error('Erro ao carregar viatura');
             navigate('/admin/viaturas');

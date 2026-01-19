@@ -2,19 +2,22 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 from sqlalchemy.orm import DeclarativeBase
 import os
 
-DATABASE_URL = os.environ.get('DATABASE_URL')
+DATABASE_URL = os.environ.get('DATABASE_URL', '')
+
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable is not set")
 
 # Convert to async URL
 ASYNC_DATABASE_URL = DATABASE_URL.replace('postgresql://', 'postgresql+asyncpg://')
 
-# Create async engine with proper configuration for Supabase Transaction Pooler
+# Create async engine - optimized for serverless (short-lived connections)
 engine = create_async_engine(
     ASYNC_DATABASE_URL,
-    pool_size=5,
-    max_overflow=2,
+    pool_size=1,
+    max_overflow=0,
     pool_timeout=30,
-    pool_recycle=300,
-    pool_pre_ping=False,
+    pool_recycle=60,
+    pool_pre_ping=True,
     echo=False,
     connect_args={
         "statement_cache_size": 0,

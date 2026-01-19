@@ -299,11 +299,11 @@ export const Home = () => {
                             A Diferença dANI.PT
                         </span>
                         <h2 className="font-display text-4xl md:text-5xl text-gray-900 dark:text-white">
-                            Não vendemos carros.<br/>
-                            <span className="text-glow-red">Entregamos confiança.</span>
+                            Não vendemos apenas carros.<br/>
+                            <span className="text-glow-red">Entregamos soluções.</span>
                         </h2>
                         <p className="text-gray-500 mt-4 text-base md:text-lg">
-                            Cada viatura é uma promessa cumprida. Sem surpresas, sem letras pequenas.
+                            Seja novo, usado ou semi-novo, cada viatura é uma promessa de mobilidade cumprida.
                         </p>
                     </div>
 

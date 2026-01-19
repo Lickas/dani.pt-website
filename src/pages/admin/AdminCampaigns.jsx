@@ -34,9 +34,11 @@ export const AdminCampaigns = () => {
             const response = await axios.get(`${API_URL}/campaigns/all`, {
                 headers: getAuthHeaders()
             });
-            setCampaigns(response.data);
+            // Garantir que é um array
+            setCampaigns(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
             console.error('Error fetching campaigns:', error);
+            setCampaigns([]);
         } finally {
             setLoading(false);
         }

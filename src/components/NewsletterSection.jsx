@@ -78,7 +78,7 @@ export const NewsletterSection = () => {
                         </form>
                         
                         <p className="mt-4 text-[10px] text-gray-400 dark:text-gray-600 uppercase tracking-wider">
-                            Pode cancelar a subscrição a qualquer momento na nossa{' '}
+                            Pode cancelar a subscrição a qualquer momento na minha{' '}
                             <a href="/privacidade" className="underline hover:text-[#E60000]">
                                 política de privacidade
                             </a>.

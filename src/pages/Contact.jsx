@@ -43,7 +43,7 @@ export const Contact = () => {
                         <div>
                             <span className="label-style text-[#999]">Contacto</span>
                             <h1 className="font-display text-6xl md:text-7xl lg:text-8xl text-[#1A1A1A] mt-2">
-                                Fale<br/>connosco
+                                Fale<br/>comigo
                             </h1>
                             <p className="dani-quote mt-4">
                                 Perguntas diretas. Respostas diretas.

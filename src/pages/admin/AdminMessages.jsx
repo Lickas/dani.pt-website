@@ -34,9 +34,11 @@ export const AdminMessages = () => {
             const response = await axios.get(`${API_URL}/contacts`, {
                 headers: getAuthHeaders()
             });
-            setMessages(response.data);
+            // Garantir que é um array
+            setMessages(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
             console.error('Error fetching messages:', error);
+            setMessages([]);
         } finally {
             setLoading(false);
         }

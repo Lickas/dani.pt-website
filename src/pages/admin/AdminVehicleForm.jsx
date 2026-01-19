@@ -1,20 +1,12 @@
 /**
- * Admin Vehicle Form - Create/Edit
- * 
- * TODO: Implementar drag & drop para reordenar imagens
- * TODO: Adicionar preview de galeria
- * TODO: Validação mais robusta com Zod
- * TODO: Auto-save draft
+ * Admin Vehicle Form - Create/Edit - Supabase Direct
  */
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { ArrowLeft, Plus, X, Upload, Save } from 'lucide-react';
+import { ArrowLeft, Plus, X, Upload, Save, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-
-const BASE_URL = process.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_API_URL || '';
-const API_URL = BASE_URL ? `${BASE_URL}/api` : '/api';
+import { vehiclesAPI, uploadAPI } from '../../utils/apiService';
 
 export const AdminVehicleForm = () => {
     const { id } = useParams();
@@ -41,11 +33,6 @@ export const AdminVehicleForm = () => {
     });
     const [newFeature, setNewFeature] = useState('');
 
-    const getAuthHeaders = () => {
-        const token = localStorage.getItem('dani_admin_token');
-        return { Authorization: `Bearer ${token}` };
-    };
-
     useEffect(() => {
         if (isEditing) {
             fetchVehicle();
@@ -54,12 +41,8 @@ export const AdminVehicleForm = () => {
 
     const fetchVehicle = async () => {
         try {
-            const response = await axios.get(`${API_URL}/vehicles/${id}`);
-            if (response.data && typeof response.data === 'object') {
-                setFormData(response.data);
-            } else {
-                throw new Error('Dados inválidos');
-            }
+            const data = await vehiclesAPI.getById(id);
+            setFormData(data);
         } catch (error) {
             toast.error('Erro ao carregar viatura');
             navigate('/admin/viaturas');
@@ -74,7 +57,7 @@ export const AdminVehicleForm = () => {
         if (newFeature.trim()) {
             setFormData(prev => ({
                 ...prev,
-                features: [...prev.features, newFeature.trim()]
+                features: [...(prev.features || []), newFeature.trim()]
             }));
             setNewFeature('');
         }
@@ -96,21 +79,13 @@ export const AdminVehicleForm = () => {
 
         try {
             for (const file of files) {
-                const formDataUpload = new FormData();
-                formDataUpload.append('file', file);
-
-                const response = await axios.post(`${API_URL}/upload`, formDataUpload, {
-                    headers: {
-                        ...getAuthHeaders(),
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-                uploadedUrls.push(`${BASE_URL}${response.data.url}`);
+                const result = await uploadAPI.uploadVehicleImage(file);
+                uploadedUrls.push(result.url);
             }
 
             setFormData(prev => ({
                 ...prev,
-                images: [...prev.images, ...uploadedUrls]
+                images: [...(prev.images || []), ...uploadedUrls]
             }));
             toast.success('Imagens carregadas');
         } catch (error) {
@@ -136,18 +111,14 @@ export const AdminVehicleForm = () => {
                 ...formData,
                 year: parseInt(formData.year),
                 price: parseFloat(formData.price),
-                mileage: parseInt(formData.mileage)
+                mileage: parseInt(formData.mileage) || 0
             };
 
             if (isEditing) {
-                await axios.put(`${API_URL}/vehicles/${id}`, payload, {
-                    headers: getAuthHeaders()
-                });
+                await vehiclesAPI.update(id, payload);
                 toast.success('Viatura atualizada');
             } else {
-                await axios.post(`${API_URL}/vehicles`, payload, {
-                    headers: getAuthHeaders()
-                });
+                await vehiclesAPI.create(payload);
                 toast.success('Viatura criada');
             }
             navigate('/admin/viaturas');
@@ -158,7 +129,6 @@ export const AdminVehicleForm = () => {
         }
     };
 
-    // Options
     const brands = ['BMW', 'Mercedes-Benz', 'Volkswagen', 'Audi', 'Peugeot', 'Toyota', 'Renault', 'Tesla', 'Ford', 'Volvo', 'Opel', 'Fiat', 'Citroen', 'Seat', 'Skoda', 'Hyundai', 'Kia', 'Nissan', 'Honda', 'Mazda'];
     const fuelTypes = ['Gasolina', 'Diesel', 'Híbrido', 'Elétrico'];
     const transmissions = ['Manual', 'Automático'];
@@ -166,37 +136,30 @@ export const AdminVehicleForm = () => {
 
     return (
         <div className="max-w-4xl">
-            {/* Header */}
             <header className="mb-8">
                 <button
                     onClick={() => navigate('/admin/viaturas')}
-                    className="flex items-center gap-2 text-sm text-[#666666] hover:text-[#1A1A1A] transition-colors mb-4"
+                    className="flex items-center gap-2 text-sm text-[#666666] hover:text-[#1A1A1A] dark:hover:text-white transition-colors mb-4"
                 >
                     <ArrowLeft size={16} />
                     Voltar às Viaturas
                 </button>
-                <h1 className="text-2xl md:text-3xl font-bold text-[#1A1A1A]">
+                <h1 className="text-2xl md:text-3xl font-bold text-[#1A1A1A] dark:text-white">
                     {isEditing ? 'Editar Viatura' : 'Nova Viatura'}
                 </h1>
             </header>
 
-            {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Basic Info */}
-                <section className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
-                    <h2 className="font-bold text-lg text-[#1A1A1A] mb-4">
-                        Informação Básica
-                    </h2>
+                <section className="bg-white dark:bg-[#1A1A1A] border border-[#E5E5E5] dark:border-[#333] rounded-[4px] p-6">
+                    <h2 className="font-bold text-lg text-[#1A1A1A] dark:text-white mb-4">Informação Básica</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
-                                Marca *
-                            </label>
+                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">Marca *</label>
                             <select
                                 value={formData.brand}
                                 onChange={(e) => handleChange('brand', e.target.value)}
                                 required
-                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
+                                className="w-full px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
                             >
                                 <option value="">Selecionar marca</option>
                                 {brands.map((brand) => (
@@ -205,26 +168,22 @@ export const AdminVehicleForm = () => {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
-                                Modelo *
-                            </label>
+                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">Modelo *</label>
                             <input
                                 type="text"
                                 value={formData.model}
                                 onChange={(e) => handleChange('model', e.target.value)}
                                 required
-                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
+                                className="w-full px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
                                 placeholder="Ex: Serie 3 320d"
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
-                                Ano *
-                            </label>
+                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">Ano *</label>
                             <select
                                 value={formData.year}
                                 onChange={(e) => handleChange('year', parseInt(e.target.value))}
-                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
+                                className="w-full px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
                             >
                                 {years.map((year) => (
                                     <option key={year} value={year}>{year}</option>
@@ -232,35 +191,28 @@ export const AdminVehicleForm = () => {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
-                                Preço (€) *
-                            </label>
+                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">Preço (€) *</label>
                             <input
                                 type="number"
                                 value={formData.price}
                                 onChange={(e) => handleChange('price', e.target.value)}
                                 required
-                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
+                                className="w-full px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
                                 placeholder="Ex: 25000"
                             />
                         </div>
                     </div>
                 </section>
 
-                {/* Specs */}
-                <section className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
-                    <h2 className="font-bold text-lg text-[#1A1A1A] mb-4">
-                        Especificações
-                    </h2>
+                <section className="bg-white dark:bg-[#1A1A1A] border border-[#E5E5E5] dark:border-[#333] rounded-[4px] p-6">
+                    <h2 className="font-bold text-lg text-[#1A1A1A] dark:text-white mb-4">Especificações</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div>
-                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
-                                Combustível
-                            </label>
+                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">Combustível</label>
                             <select
                                 value={formData.fuel_type}
                                 onChange={(e) => handleChange('fuel_type', e.target.value)}
-                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
+                                className="w-full px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
                             >
                                 {fuelTypes.map((fuel) => (
                                     <option key={fuel} value={fuel}>{fuel}</option>
@@ -268,26 +220,22 @@ export const AdminVehicleForm = () => {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
-                                Quilómetros *
-                            </label>
+                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">Quilómetros *</label>
                             <input
                                 type="number"
                                 value={formData.mileage}
                                 onChange={(e) => handleChange('mileage', e.target.value)}
                                 required
-                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
+                                className="w-full px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
                                 placeholder="Ex: 50000"
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
-                                Transmissão
-                            </label>
+                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">Transmissão</label>
                             <select
                                 value={formData.transmission}
                                 onChange={(e) => handleChange('transmission', e.target.value)}
-                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
+                                className="w-full px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
                             >
                                 {transmissions.map((t) => (
                                     <option key={t} value={t}>{t}</option>
@@ -295,80 +243,63 @@ export const AdminVehicleForm = () => {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
-                                Cor
-                            </label>
+                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">Cor</label>
                             <input
                                 type="text"
                                 value={formData.color}
                                 onChange={(e) => handleChange('color', e.target.value)}
-                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
+                                className="w-full px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
                                 placeholder="Ex: Preto"
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">
-                                Potência
-                            </label>
+                            <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">Potência</label>
                             <input
                                 type="text"
                                 value={formData.power}
                                 onChange={(e) => handleChange('power', e.target.value)}
-                                className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
+                                className="w-full px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
                                 placeholder="Ex: 150cv"
                             />
                         </div>
                     </div>
                 </section>
 
-                {/* Description */}
-                <section className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
-                    <h2 className="font-bold text-lg text-[#1A1A1A] mb-4">
-                        Descrição
-                    </h2>
+                <section className="bg-white dark:bg-[#1A1A1A] border border-[#E5E5E5] dark:border-[#333] rounded-[4px] p-6">
+                    <h2 className="font-bold text-lg text-[#1A1A1A] dark:text-white mb-4">Descrição</h2>
                     <textarea
                         value={formData.description}
                         onChange={(e) => handleChange('description', e.target.value)}
                         rows={4}
-                        className="w-full px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A] resize-none"
+                        className="w-full px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555] resize-none"
                         placeholder="Descrição detalhada da viatura..."
                     />
                 </section>
 
-                {/* Features */}
-                <section className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
-                    <h2 className="font-bold text-lg text-[#1A1A1A] mb-4">
-                        Equipamento
-                    </h2>
+                <section className="bg-white dark:bg-[#1A1A1A] border border-[#E5E5E5] dark:border-[#333] rounded-[4px] p-6">
+                    <h2 className="font-bold text-lg text-[#1A1A1A] dark:text-white mb-4">Equipamento</h2>
                     <div className="flex gap-2 mb-4">
                         <input
                             type="text"
                             value={newFeature}
                             onChange={(e) => setNewFeature(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddFeature())}
-                            className="flex-1 px-4 py-3 border border-[#E5E5E5] rounded-[2px] focus:outline-none focus:border-[#1A1A1A]"
+                            className="flex-1 px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
                             placeholder="Adicionar equipamento..."
                         />
                         <button
                             type="button"
                             onClick={handleAddFeature}
-                            className="px-4 py-3 border border-[#E5E5E5] rounded-[2px] hover:bg-[#F4F4F4] transition-colors"
+                            className="px-4 py-3 border border-[#E5E5E5] dark:border-[#333] text-[#666] dark:text-gray-400 rounded-[2px] hover:bg-[#F4F4F4] dark:hover:bg-[#333] transition-colors"
                         >
                             <Plus size={18} />
                         </button>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                        {formData.features.map((feature, index) => (
-                            <span
-                                key={index}
-                                className="inline-flex items-center gap-1 px-3 py-1 bg-[#F4F4F4] rounded-[2px] text-sm"
-                            >
+                        {(formData.features || []).map((feature, index) => (
+                            <span key={index} className="inline-flex items-center gap-1 px-3 py-1 bg-[#F4F4F4] dark:bg-[#333] text-[#1A1A1A] dark:text-white rounded-[2px] text-sm">
                                 {feature}
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveFeature(index)}
-                                    className="text-[#999999] hover:text-[#E60000]"
-                                >
+                                <button type="button" onClick={() => handleRemoveFeature(index)} className="text-[#999999] hover:text-[#E60000]">
                                     <X size={14} />
                                 </button>
                             </span>
@@ -376,14 +307,11 @@ export const AdminVehicleForm = () => {
                     </div>
                 </section>
 
-                {/* Images */}
-                <section className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
-                    <h2 className="font-bold text-lg text-[#1A1A1A] mb-4">
-                        Imagens
-                    </h2>
-                    <label className="flex items-center justify-center gap-2 p-8 border-2 border-dashed border-[#E5E5E5] rounded-[4px] cursor-pointer hover:border-[#1A1A1A] transition-colors mb-4">
-                        <Upload size={24} className="text-[#999999]" />
-                        <span className="text-[#666666]">
+                <section className="bg-white dark:bg-[#1A1A1A] border border-[#E5E5E5] dark:border-[#333] rounded-[4px] p-6">
+                    <h2 className="font-bold text-lg text-[#1A1A1A] dark:text-white mb-4">Imagens</h2>
+                    <label className="flex items-center justify-center gap-2 p-8 border-2 border-dashed border-[#E5E5E5] dark:border-[#333] rounded-[4px] cursor-pointer hover:border-[#1A1A1A] dark:hover:border-[#555] transition-colors mb-4">
+                        {uploading ? <Loader2 size={24} className="text-[#999999] animate-spin" /> : <Upload size={24} className="text-[#999999]" />}
+                        <span className="text-[#666666] dark:text-gray-400">
                             {uploading ? 'A carregar...' : 'Clique para carregar imagens'}
                         </span>
                         <input
@@ -395,15 +323,11 @@ export const AdminVehicleForm = () => {
                             disabled={uploading}
                         />
                     </label>
-                    {formData.images.length > 0 && (
+                    {(formData.images || []).length > 0 && (
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             {formData.images.map((url, index) => (
-                                <div key={index} className="relative aspect-[4/3] bg-[#F4F4F4] rounded-[2px] overflow-hidden">
-                                    <img
-                                        src={url}
-                                        alt={`Imagem ${index + 1}`}
-                                        className="w-full h-full object-cover"
-                                    />
+                                <div key={index} className="relative aspect-[4/3] bg-[#F4F4F4] dark:bg-[#333] rounded-[2px] overflow-hidden">
+                                    <img src={url} alt={`Imagem ${index + 1}`} className="w-full h-full object-cover" />
                                     <button
                                         type="button"
                                         onClick={() => handleRemoveImage(index)}
@@ -417,16 +341,13 @@ export const AdminVehicleForm = () => {
                     )}
                 </section>
 
-                {/* Status */}
-                <section className="bg-white border border-[#E5E5E5] rounded-[4px] p-6">
-                    <h2 className="font-bold text-lg text-[#1A1A1A] mb-4">
-                        Estado
-                    </h2>
+                <section className="bg-white dark:bg-[#1A1A1A] border border-[#E5E5E5] dark:border-[#333] rounded-[4px] p-6">
+                    <h2 className="font-bold text-lg text-[#1A1A1A] dark:text-white mb-4">Estado</h2>
                     <div className="space-y-4">
                         <label className="flex items-center justify-between cursor-pointer">
                             <div>
-                                <span className="font-medium text-[#1A1A1A]">Destaque</span>
-                                <p className="text-sm text-[#666666]">Mostrar na homepage</p>
+                                <span className="font-medium text-[#1A1A1A] dark:text-white">Destaque</span>
+                                <p className="text-sm text-[#666666] dark:text-gray-400">Mostrar na homepage</p>
                             </div>
                             <input
                                 type="checkbox"
@@ -437,8 +358,8 @@ export const AdminVehicleForm = () => {
                         </label>
                         <label className="flex items-center justify-between cursor-pointer">
                             <div>
-                                <span className="font-medium text-[#1A1A1A]">Vendido</span>
-                                <p className="text-sm text-[#666666]">Marcar como vendida</p>
+                                <span className="font-medium text-[#1A1A1A] dark:text-white">Vendido</span>
+                                <p className="text-sm text-[#666666] dark:text-gray-400">Marcar como vendida</p>
                             </div>
                             <input
                                 type="checkbox"
@@ -450,12 +371,11 @@ export const AdminVehicleForm = () => {
                     </div>
                 </section>
 
-                {/* Submit */}
                 <div className="flex gap-4">
                     <button
                         type="button"
                         onClick={() => navigate('/admin/viaturas')}
-                        className="px-6 py-3 border border-[#E5E5E5] rounded-[2px] text-[#666666] hover:border-[#1A1A1A] transition-colors"
+                        className="px-6 py-3 border border-[#E5E5E5] dark:border-[#333] rounded-[2px] text-[#666666] dark:text-gray-400 hover:border-[#1A1A1A] dark:hover:border-[#555] transition-colors"
                     >
                         Cancelar
                     </button>

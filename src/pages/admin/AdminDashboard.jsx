@@ -1,14 +1,11 @@
 /**
- * Admin Dashboard
+ * Admin Dashboard - Supabase Direct
  */
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { Car, Megaphone, Mail, MailOpen, TrendingUp, Plus } from 'lucide-react';
-
-const BASE_URL = process.env.REACT_APP_BACKEND_URL || '';
-const API_URL = BASE_URL ? `${BASE_URL}/api` : '/api';
+import { vehiclesAPI, campaignsAPI, contactsAPI } from '../../utils/apiService';
 
 export const AdminDashboard = () => {
     const [stats, setStats] = useState({
@@ -25,41 +22,28 @@ export const AdminDashboard = () => {
     }, []);
 
     const fetchDashboardData = async () => {
-        const token = localStorage.getItem('dani_admin_token');
-        const headers = { Authorization: `Bearer ${token}` };
-
         try {
-            // Fetch vehicles, campaigns, and contacts separately
-            const [vehiclesRes, campaignsRes, contactsRes] = await Promise.all([
-                axios.get(`${API_URL}/vehicles`, { headers }).catch(() => ({ data: [] })),
-                axios.get(`${API_URL}/campaigns`, { headers }).catch(() => ({ data: [] })),
-                axios.get(`${API_URL}/contacts`, { headers }).catch(() => ({ data: [] }))
+            const [vehicles, campaigns, contacts] = await Promise.all([
+                vehiclesAPI.getAll(),
+                campaignsAPI.getAllAdmin(),
+                contactsAPI.getAll()
             ]);
             
-            // Ensure arrays
-            const vehicles = Array.isArray(vehiclesRes.data) ? vehiclesRes.data : [];
-            const campaigns = Array.isArray(campaignsRes.data) ? campaignsRes.data : [];
-            const contacts = Array.isArray(contactsRes.data) ? contactsRes.data : [];
-            
-            // Calculate stats
             setStats({
                 available_vehicles: vehicles.filter(v => !v.is_sold).length,
                 sold_vehicles: vehicles.filter(v => v.is_sold).length,
                 active_campaigns: campaigns.filter(c => c.is_active).length,
-                unread_messages: contacts.filter(c => !c.read).length
+                unread_messages: contacts.filter(c => !c.is_read).length
             });
             
-            // Get recent messages (last 5)
             setRecentMessages(contacts.slice(0, 5));
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
-            // Keep default empty stats
         } finally {
             setLoading(false);
         }
     };
 
-    // Stat cards configuration
     const statCards = [
         {
             label: 'Viaturas Disponíveis',
@@ -106,7 +90,6 @@ export const AdminDashboard = () => {
 
     return (
         <div className="space-y-8">
-            {/* Page Header */}
             <header>
                 <h1 className="text-2xl md:text-3xl font-bold text-[#1A1A1A] dark:text-white">
                     Dashboard
@@ -116,7 +99,6 @@ export const AdminDashboard = () => {
                 </p>
             </header>
 
-            {/* Stats Grid */}
             <section aria-label="Estatísticas">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {statCards.map((card) => (
@@ -124,7 +106,6 @@ export const AdminDashboard = () => {
                             key={card.label}
                             to={card.link}
                             className="bg-white dark:bg-[#1A1A1A] border border-[#E5E5E5] dark:border-[#333] rounded-[4px] p-6 hover:border-[#1A1A1A] dark:hover:border-[#555] transition-colors group"
-                            data-testid={`stat-${card.label.toLowerCase().replace(/ /g, '-')}`}
                         >
                             <div className="flex items-start justify-between">
                                 <div>
@@ -144,7 +125,6 @@ export const AdminDashboard = () => {
                 </div>
             </section>
 
-            {/* Quick Actions */}
             <section aria-label="Ações Rápidas">
                 <h2 className="text-lg font-bold text-[#1A1A1A] dark:text-white mb-4">
                     Ações Rápidas
@@ -153,7 +133,6 @@ export const AdminDashboard = () => {
                     <Link
                         to="/admin/viaturas/nova"
                         className="flex items-center justify-center gap-2 p-4 bg-[#E60000] text-white rounded-[2px] font-semibold hover:bg-[#CC0000] transition-colors"
-                        data-testid="quick-add-vehicle"
                     >
                         <Plus size={18} />
                         Nova Viatura
@@ -161,7 +140,6 @@ export const AdminDashboard = () => {
                     <Link
                         to="/admin/campanhas/nova"
                         className="flex items-center justify-center gap-2 p-4 bg-[#1A1A1A] dark:bg-white text-white dark:text-[#1A1A1A] rounded-[2px] font-semibold hover:bg-black dark:hover:bg-gray-100 transition-colors"
-                        data-testid="quick-add-campaign"
                     >
                         <Plus size={18} />
                         Nova Campanha
@@ -169,7 +147,6 @@ export const AdminDashboard = () => {
                     <Link
                         to="/admin/mensagens"
                         className="flex items-center justify-center gap-2 p-4 bg-white dark:bg-[#1A1A1A] border border-[#E5E5E5] dark:border-[#333] text-[#1A1A1A] dark:text-white rounded-[2px] font-semibold hover:border-[#1A1A1A] dark:hover:border-[#555] transition-colors"
-                        data-testid="quick-messages"
                     >
                         <Mail size={18} />
                         Ver Mensagens
@@ -177,7 +154,6 @@ export const AdminDashboard = () => {
                 </div>
             </section>
 
-            {/* Recent Messages */}
             <section aria-label="Mensagens Recentes">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-bold text-[#1A1A1A] dark:text-white">
@@ -198,7 +174,7 @@ export const AdminDashboard = () => {
                                 <div className="flex items-start justify-between gap-4">
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2">
-                                            {!msg.read && (
+                                            {!msg.is_read && (
                                                 <span className="w-2 h-2 bg-[#E60000] rounded-full flex-shrink-0" />
                                             )}
                                             <span className="font-semibold text-[#1A1A1A] dark:text-white truncate">

@@ -82,7 +82,7 @@ const TermsOfService = () => {
                             4. Utilização do Website
                         </h2>
                         <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                            Ao utilizar o nosso website, compromete-se a:
+                            Ao utilizar o meu website, compromete-se a:
                         </p>
                         <ul className="text-gray-600 dark:text-gray-400 mt-4 space-y-2">
                             <li>• Fornecer informações verdadeiras nos formulários de contacto</li>

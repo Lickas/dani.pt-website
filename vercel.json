@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "framework": "create-react-app",
+  "framework": "vite",
   "buildCommand": "yarn build",
-  "outputDirectory": "build",
+  "outputDirectory": "dist",
   "installCommand": "yarn install",
   "functions": {
     "api/**/*.py": {
@@ -24,6 +24,6 @@
     { "src": "/api/newsletter/unsubscribe", "dest": "/api/newsletter.py" },
     { "src": "/api/newsletter/check/(.*)", "dest": "/api/newsletter.py" },
     { "src": "/api/newsletter", "dest": "/api/newsletter.py" },
-    { "src": "/(.*)", "dest": "/$1" }
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

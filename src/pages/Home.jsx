@@ -398,14 +398,14 @@ export const Home = () => {
                             <p className="text-xs text-gray-400 mt-1">Gama atualizada</p>
                         </Link>
                         <Link 
-                            to="/viaturas?brand=BMW"
+                            to="/viaturas?brand=ALFA ROMEO"
                             className="group p-5 bg-white dark:bg-gray-900 rounded-sm border border-gray-100 dark:border-gray-700 hover:border-[#E60000] hover:shadow-lg hover:shadow-red-500/10 transition-all duration-300"
                         >
                             <Car size={22} className="text-[#E60000]" />
                             <h4 className="mt-3 font-semibold text-gray-900 dark:text-white group-hover:text-[#E60000] transition-colors">
                                 Premium
                             </h4>
-                            <p className="text-xs text-gray-400 mt-1">BMW, Mercedes, Audi</p>
+                            <p className="text-xs text-gray-400 mt-1">Alfa Romeo, DS, Jeep</p>
                         </Link>
                     </div>
                 </div>

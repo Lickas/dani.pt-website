@@ -68,8 +68,6 @@ export const Vehicles = () => {
         max_price: parseInt(searchParams.get('max_price')) || 100000
     });
 
-    const brands = ['BMW', 'Mercedes-Benz', 'Volkswagen', 'Audi', 'Peugeot', 'Toyota', 'Renault', 'Tesla', 'Ford', 'Volvo'];
-    const fuelTypes = ['Gasolina', 'Diesel', 'Híbrido', 'Elétrico'];
     const years = Array.from({ length: new Date().getFullYear() - 1994 }, (_, i) => new Date().getFullYear() - i);
 
     useEffect(() => {

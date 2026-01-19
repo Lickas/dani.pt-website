@@ -383,19 +383,19 @@ export const Home = () => {
                         >
                             <Tag size={22} className="text-[#E60000]" />
                             <h4 className="mt-3 font-semibold text-gray-900 dark:text-white group-hover:text-[#E60000] transition-colors">
-                                Até 15.000€
+                                Semi-novos
                             </h4>
-                            <p className="text-xs text-gray-400 mt-1">Melhor custo-benefício</p>
+                            <p className="text-xs text-gray-400 mt-1">Como novos, melhor preço</p>
                         </Link>
                         <Link 
-                            to="/viaturas?min_year=2022"
+                            to="/viaturas?min_year=2024"
                             className="group p-5 bg-white dark:bg-gray-900 rounded-sm border border-gray-100 dark:border-gray-700 hover:border-[#E60000] hover:shadow-lg hover:shadow-red-500/10 transition-all duration-300"
                         >
                             <Calendar size={22} className="text-[#E60000]" />
                             <h4 className="mt-3 font-semibold text-gray-900 dark:text-white group-hover:text-[#E60000] transition-colors">
-                                Recentes
+                                Novos
                             </h4>
-                            <p className="text-xs text-gray-400 mt-1">De 2022 em diante</p>
+                            <p className="text-xs text-gray-400 mt-1">Gama atualizada</p>
                         </Link>
                         <Link 
                             to="/viaturas?brand=BMW"

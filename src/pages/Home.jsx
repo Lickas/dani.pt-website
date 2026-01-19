@@ -187,7 +187,7 @@ export const Home = () => {
                                         className="input-style"
                                     >
                                         <option value="">Todas as marcas</option>
-                                        {brands.map(b => (
+                                        {BRANDS.map(b => (
                                             <option key={b} value={b}>{b}</option>
                                         ))}
                                     </select>

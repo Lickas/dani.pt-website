@@ -56,7 +56,7 @@ const TermsOfService = () => {
                         <ul className="text-gray-600 dark:text-gray-400 mt-4 space-y-2">
                             <li>• Visualizar o meu catálogo de viaturas disponíveis</li>
                             <li>• Obter informações detalhadas sobre cada veículo</li>
-                            <li>• Entrar em contacto connosco para mais informações</li>
+                            <li>• Entrar em contacto comigo para mais informações</li>
                             <li>• Subscrever a nossa newsletter para receber novidades</li>
                             <li>• Consultar campanhas e promoções em vigor</li>
                         </ul>

@@ -1,14 +1,19 @@
-# dANI.PT - Stand de Automóveis 🚗
+# 🚗 dANI.PT - Stand Automóvel
 
-Website moderno para stand de automóveis com gestão de viaturas, campanhas e contactos.
+Sistema completo de gestão para stand automóvel com frontend React e backend FastAPI integrado com **Supabase**.
 
 ---
 
-## 🚀 DEPLOY RÁPIDO NA VERCEL
+## 🛠️ Stack Tecnológico
 
-**Quer fazer deploy agora? Leia:** [`GUIA_RAPIDO_VERCEL.md`](./GUIA_RAPIDO_VERCEL.md)
-
-**✅ Site funciona imediatamente sem backend!**
+| Componente | Tecnologia |
+|------------|------------|
+| **Frontend** | React 18 + Tailwind CSS + shadcn/ui |
+| **Backend** | FastAPI (Python 3.11) |
+| **Database** | Supabase (PostgreSQL) |
+| **Auth** | Supabase Auth (JWT) |
+| **Storage** | Supabase Storage (imagens) |
+| **ORM** | SQLAlchemy + Alembic |
 
 ---
 
@@ -16,262 +21,170 @@ Website moderno para stand de automóveis com gestão de viaturas, campanhas e c
 
 ```
 /app/
-├── frontend/           # React App (Create React App)
-├── backend/           # FastAPI + PostgreSQL (Supabase)
-├── GUIA_RAPIDO_VERCEL.md       # 🚀 Deploy na Vercel
-├── RESUMO_ALTERACOES.md        # 📝 Lista de correções
-├── VERCEL_DEPLOY.md            # 📚 Guia completo
-└── TESTES_VERIFICACAO.md       # ✅ Checklist de testes
+├── backend/
+│   ├── server.py           # API FastAPI principal
+│   ├── database.py         # Conexão Supabase/PostgreSQL
+│   ├── models.py           # Modelos SQLAlchemy
+│   ├── supabase_client.py  # Clientes Supabase (Auth + Storage)
+│   ├── seed_data.py        # Dados de exemplo
+│   ├── alembic/            # Migrações de base de dados
+│   └── requirements.txt    # Dependências Python
+│
+├── frontend/
+│   ├── src/
+│   │   ├── pages/          # Páginas da aplicação
+│   │   ├── components/     # Componentes reutilizáveis
+│   │   └── utils/          # Utilitários (API service, mock data)
+│   ├── public/             # Assets estáticos
+│   └── package.json        # Dependências Node.js
+│
+└── memory/PRD.md           # Product Requirements Document
 ```
 
 ---
 
-## 🛡️ Correções Implementadas
+## 🚀 Funcionalidades
 
-### ✅ Problema Resolvido
+### 🌐 Website Público
+- **Homepage** com viaturas em destaque e campanhas
+- **Catálogo de Viaturas** com filtros (marca, preço, combustível, ano)
+- **Detalhes de Viatura** com galeria de imagens
+- **Campanhas Promocionais** ativas
+- **Formulário de Contacto**
+- **Marquee de Marcas** animado
+- **Modo Escuro/Claro**
 
-- **Antes:** Tela branca na Vercel com `TypeError: e.data.filter is not a function`
-- **Depois:** Site funciona 100% mesmo sem backend
-
-### ✅ Soluções
-
-1. **Programação Defensiva** - Validação de arrays antes de `.map()`, `.filter()`, `.slice()`
-2. **API Service** - Sistema centralizado com fallback automático
-3. **Mock Data** - 8 viaturas + 2 campanhas de exemplo
-4. **Variáveis de Ambiente** - Controlo de modo demo vs produção
-5. **Demo Banner** - Aviso visual quando em modo demonstração
+### 🔐 Painel Admin
+- **Login** com Supabase Auth
+- **Gestão de Viaturas** (CRUD completo)
+- **Gestão de Campanhas** (CRUD completo)
+- **Visualização de Mensagens** de contacto
+- **Upload de Imagens** para Supabase Storage
 
 ---
 
-## 🏃 Quick Start
+## ⚙️ Configuração
 
-### Frontend (React)
+### Variáveis de Ambiente - Backend (`backend/.env`)
 
+```env
+# Supabase
+SUPABASE_URL=https://xxx.supabase.co
+SUPABASE_ANON_KEY=eyJhbGci...
+SUPABASE_SERVICE_KEY=eyJhbGci...
+
+# Database (Transaction Pooler)
+DATABASE_URL=postgresql://postgres.xxx:password@aws-0-eu-central-1.pooler.supabase.com:6543/postgres
+
+# JWT
+JWT_SECRET=your-jwt-secret
+JWT_ALGORITHM=HS256
+```
+
+### Variáveis de Ambiente - Frontend (`frontend/.env`)
+
+```env
+REACT_APP_BACKEND_URL=http://localhost:8001
+REACT_APP_SUPABASE_URL=https://xxx.supabase.co
+REACT_APP_SUPABASE_ANON_KEY=eyJhbGci...
+```
+
+---
+
+## 🗄️ Base de Dados (Supabase)
+
+### Tabelas
+
+| Tabela | Descrição |
+|--------|-----------|
+| `vehicles` | Viaturas do stand |
+| `campaigns` | Campanhas promocionais |
+| `contacts` | Mensagens de contacto |
+| `admin_users` | Utilizadores admin |
+| `newsletter_subscribers` | Subscritores newsletter |
+
+### Storage Buckets
+
+| Bucket | Descrição |
+|--------|-----------|
+| `vehicle-images` | Imagens das viaturas |
+| `campaign-images` | Imagens das campanhas |
+
+---
+
+## 📡 API Endpoints
+
+### Públicos
+```
+GET  /api/health              # Health check
+GET  /api/vehicles            # Listar viaturas
+GET  /api/vehicles/{id}       # Detalhes viatura
+GET  /api/campaigns           # Campanhas ativas
+GET  /api/campaigns/{id}      # Detalhes campanha
+POST /api/contacts            # Enviar mensagem
+POST /api/newsletter          # Subscrever newsletter
+```
+
+### Admin (requer autenticação)
+```
+POST   /api/admin/login       # Login
+POST   /api/admin/register    # Registar admin
+GET    /api/contacts          # Ver mensagens
+GET    /api/campaigns/all     # Todas as campanhas
+POST   /api/vehicles          # Criar viatura
+PUT    /api/vehicles/{id}     # Atualizar viatura
+DELETE /api/vehicles/{id}     # Apagar viatura
+POST   /api/campaigns         # Criar campanha
+PUT    /api/campaigns/{id}    # Atualizar campanha
+DELETE /api/campaigns/{id}    # Apagar campanha
+POST   /api/upload/vehicle-image    # Upload imagem viatura
+POST   /api/upload/campaign-image   # Upload imagem campanha
+```
+
+---
+
+## 🎨 Design System
+
+- **Cores:** Vermelho primário `#E60000`, fundo branco/cinza
+- **Fontes:** Archivo (headings), Inter (body)
+- **Estilo:** Swiss International Style - minimalista e funcional
+- **Componentes:** shadcn/ui personalizados
+
+---
+
+## 🧪 Desenvolvimento Local
+
+### Backend
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn server:app --reload --port 8001
+```
+
+### Frontend
 ```bash
 cd frontend
 yarn install
 yarn start
 ```
 
-Abre em `http://localhost:3000`
-
-### Modo Demo (sem backend)
-
-```bash
-cd frontend
-echo "REACT_APP_USE_MOCK=true" > .env
-yarn start
-```
-
-### Backend (FastAPI)
-
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn server:app --reload
-```
-
-Abre em `http://localhost:8000`
-
 ---
 
-## 🌍 Deploy
+## 📦 Deploy
 
-### Vercel (Frontend)
+### Frontend (Vercel)
+1. Root Directory: `frontend`
+2. Build Command: `yarn build`
+3. Output Directory: `build`
+4. Adicionar variáveis de ambiente
 
-**Configuração:**
-- Root Directory: `frontend`
-- Framework: `Create React App`
-- Build Command: `yarn build`
-- Output Directory: `build`
-
-**Variáveis de Ambiente:**
-```env
-REACT_APP_USE_MOCK=true
-REACT_APP_BACKEND_URL=http://localhost:8000
-```
-
-✅ **Deploy** → Site funciona com dados de demonstração
-
-### Heroku/Railway (Backend)
-
-1. Deploy do backend
-2. Atualizar na Vercel:
-   ```env
-   REACT_APP_USE_MOCK=false
-   REACT_APP_BACKEND_URL=https://seu-backend.herokuapp.com
-   ```
-3. Redesenhar
-
----
-
-## 📚 Documentação
-
-- [`GUIA_RAPIDO_VERCEL.md`](./GUIA_RAPIDO_VERCEL.md) - Deploy rápido (5 minutos)
-- [`RESUMO_ALTERACOES.md`](./RESUMO_ALTERACOES.md) - O que foi alterado
-- [`VERCEL_DEPLOY.md`](./VERCEL_DEPLOY.md) - Guia detalhado de deploy
-- [`TESTES_VERIFICACAO.md`](./TESTES_VERIFICACAO.md) - Checklist completo
-
----
-
-## 🛠️ Tech Stack
-
-### Frontend
-- React 19
-- React Router
-- Axios
-- Tailwind CSS
-- Radix UI
-- Lucide Icons
-- Sonner (Toast)
-
-### Backend
-- FastAPI
-- PostgreSQL (Supabase)
-- SQLAlchemy
-- Alembic
-- Supabase Auth
-- Supabase Storage
-
----
-
-## 🎯 Features
-
-### Público
-- ✅ Catálogo de viaturas com filtros
-- ✅ Detalhes de cada viatura
-- ✅ Campanhas promocionais
-- ✅ Formulário de contacto
-- ✅ Página sobre
-- ✅ Dark mode
-
-### Admin
-- ✅ Dashboard com estatísticas
-- ✅ Gestão de viaturas (CRUD)
-- ✅ Gestão de campanhas (CRUD)
-- ✅ Visualização de mensagens
-- ✅ Upload de imagens
-- ✅ Autenticação JWT
-
----
-
-## 🧪 Testes
-
-```bash
-# Frontend
-cd frontend
-yarn test
-
-# Build
-yarn build
-
-# Verificar erros
-yarn build 2>&1 | grep -i error
-```
-
----
-
-## 📋 Requisitos
-
-### Desenvolvimento
-- Node.js 18+
-- Yarn 1.22+
-- Python 3.10+
-- PostgreSQL (ou Supabase)
-
-### Produção
-- Vercel (frontend)
-- Heroku/Railway (backend - opcional)
-- Supabase (database - opcional)
-
----
-
-## 🔐 Variáveis de Ambiente
-
-### Frontend (`.env`)
-
-```env
-# Backend API
-REACT_APP_BACKEND_URL=http://localhost:8000
-
-# Modo Mock (true = dados fake, false = API real)
-REACT_APP_USE_MOCK=false
-
-# Web Dev Server
-WDS_SOCKET_PORT=443
-ENABLE_HEALTH_CHECK=false
-```
-
-### Backend (`.env`)
-
-```env
-# Supabase
-SUPABASE_URL=https://xxx.supabase.co
-SUPABASE_KEY=xxx
-SUPABASE_SERVICE_KEY=xxx
-
-# Database
-DATABASE_URL=postgresql://user:pass@host:5432/db
-```
-
----
-
-## 🆘 Troubleshooting
-
-### Problema: Tela branca na Vercel
-**Solução:** Adicionar `REACT_APP_USE_MOCK=true`
-
-### Problema: `TypeError: e.data.filter is not a function`
-**Solução:** Já corrigido! Sistema valida arrays automaticamente.
-
-### Problema: API não responde
-**Solução:** 
-1. Verificar `REACT_APP_BACKEND_URL`
-2. Verificar CORS no backend
-3. Usar modo mock como fallback
-
-### Problema: Build falha
-**Solução:**
-1. Verificar Root Directory = `frontend`
-2. Limpar cache: `rm -rf node_modules build && yarn install`
-
----
-
-## 🤝 Contribuir
-
-1. Fork o projeto
-2. Criar branch (`git checkout -b feature/nova-feature`)
-3. Commit (`git commit -m 'Adicionar nova feature'`)
-4. Push (`git push origin feature/nova-feature`)
-5. Pull Request
+### Backend (Railway/Heroku)
+1. Root Directory: `backend`
+2. Start Command: `uvicorn server:app --host 0.0.0.0 --port $PORT`
+3. Adicionar variáveis de ambiente
 
 ---
 
 ## 📄 Licença
 
-Este projeto é privado e proprietário.
-
----
-
-## 📞 Suporte
-
-Para questões técnicas, consulte a documentação:
-- `GUIA_RAPIDO_VERCEL.md` - Deploy
-- `RESUMO_ALTERACOES.md` - Correções
-- `TESTES_VERIFICACAO.md` - Validação
-
----
-
-## ✅ Status
-
-- ✅ Frontend: Pronto para produção
-- ✅ Backend: Funcional (Supabase integrado)
-- ✅ Deploy: Configurado para Vercel
-- ✅ Documentação: Completa
-
-**Última atualização:** Janeiro 2025
-
----
-
-**🚀 Pronto para Deploy na Vercel!**
-
+Projeto privado - dANI.PT © 2025

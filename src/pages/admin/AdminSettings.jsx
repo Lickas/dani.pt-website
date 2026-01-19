@@ -19,12 +19,12 @@ export const AdminSettings = () => {
         about_text: '',
         google_maps_embed: '',
         schedule: {
-            segunda: { open: '09:00', close: '19:00' },
-            terca: { open: '09:00', close: '19:00' },
-            quarta: { open: '09:00', close: '19:00' },
-            quinta: { open: '09:00', close: '19:00' },
-            sexta: { open: '09:00', close: '19:00' },
-            sabado: { open: '09:00', close: '13:00' },
+            segunda: { open: '09:00', close: '20:00' },
+            terca: { open: '09:00', close: '20:00' },
+            quarta: { open: '09:00', close: '20:00' },
+            quinta: { open: '09:00', close: '20:00' },
+            sexta: { open: '09:00', close: '20:00' },
+            sabado: { open: '09:00', close: '20:00' },
             domingo: { open: '', close: '' }
         }
     });

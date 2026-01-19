@@ -21,6 +21,8 @@
     { "src": "/api/upload/(.*)", "dest": "/api/upload.py" },
     { "src": "/api/admin/login", "dest": "/api/admin/login.py" },
     { "src": "/api/admin/register", "dest": "/api/admin/register.py" },
+    { "src": "/api/newsletter/unsubscribe", "dest": "/api/newsletter.py" },
+    { "src": "/api/newsletter/check/(.*)", "dest": "/api/newsletter.py" },
     { "src": "/api/newsletter", "dest": "/api/newsletter.py" },
     { "src": "/(.*)", "dest": "/$1" }
   ],

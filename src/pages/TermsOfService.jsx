@@ -57,7 +57,7 @@ const TermsOfService = () => {
                             <li>• Visualizar o meu catálogo de viaturas disponíveis</li>
                             <li>• Obter informações detalhadas sobre cada veículo</li>
                             <li>• Entrar em contacto comigo para mais informações</li>
-                            <li>• Subscrever a nossa newsletter para receber novidades</li>
+                            <li>• Subscrever a minha newsletter para receber novidades</li>
                             <li>• Consultar campanhas e promoções em vigor</li>
                         </ul>
                     </section>

@@ -218,7 +218,7 @@ export const Vehicles = () => {
                                         className="input-style"
                                     >
                                         <option value="">Todos</option>
-                                        {fuelTypes.map(f => (
+                                        {FUEL_TYPES.map(f => (
                                             <option key={f} value={f}>{f}</option>
                                         ))}
                                     </select>

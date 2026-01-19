@@ -690,8 +690,8 @@ export const Home = () => {
                             <div>
                                 <h4 className="font-semibold text-gray-900 dark:text-white">Horário</h4>
                                 <p className="text-sm text-gray-500 mt-1">
-                                    Seg—Sex: 09h—19h<br/>
-                                    Sábado: 09h—13h
+                                    Seg—Sáb: 09h—20h<br/>
+                                    Domingo: Fechado
                                 </p>
                             </div>
                         </div>

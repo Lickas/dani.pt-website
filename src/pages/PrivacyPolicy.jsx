@@ -198,7 +198,7 @@ const PrivacyPolicy = () => {
                             10. Cancelar Subscrição da Newsletter
                         </h2>
                         <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-                            Se pretende deixar de receber a nossa newsletter, introduza o seu email abaixo. 
+                            Se pretende deixar de receber a minha newsletter, introduza o seu email abaixo. 
                             A sua subscrição será cancelada imediatamente.
                         </p>
                         

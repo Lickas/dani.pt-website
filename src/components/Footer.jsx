@@ -85,11 +85,11 @@ export const Footer = () => {
                             <div className="space-y-1.5 pl-0">
                                 <div className="flex justify-between text-gray-300">
                                     <span>Seg—Sex</span>
-                                    <span className="text-gray-400">09—19h</span>
+                                    <span className="text-gray-400">09—20h</span>
                                 </div>
                                 <div className="flex justify-between text-gray-300">
                                     <span>Sábado</span>
-                                    <span className="text-gray-400">09—13h</span>
+                                    <span className="text-gray-400">09—20h</span>
                                 </div>
                                 <div className="flex justify-between text-gray-500">
                                     <span>Domingo</span>

@@ -152,7 +152,7 @@ export const Home = () => {
                         <div className="flex items-center gap-4 animate-fade-up">
                             <div className="dani-line-short"></div>
                             <span className="text-[11px] font-medium tracking-widest uppercase text-white/60">
-                                Stand de Automóveis · Coimbra
+                                Coimbra · Automóveis
                             </span>
                         </div>
 

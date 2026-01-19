@@ -47,7 +47,8 @@ export const AdminCampaignForm = () => {
             const response = await axios.get(`${API_URL}/campaigns/all`, {
                 headers: getAuthHeaders()
             });
-            const campaign = response.data.find(c => c.id === id);
+            const data = Array.isArray(response.data) ? response.data : [];
+            const campaign = data.find(c => c.id === id);
             if (campaign) {
                 setFormData({
                     ...campaign,

@@ -201,7 +201,7 @@ export const Vehicles = () => {
                                         className="input-style"
                                     >
                                         <option value="">Todas</option>
-                                        {brands.map(b => (
+                                        {BRANDS.map(b => (
                                             <option key={b} value={b}>{b}</option>
                                         ))}
                                     </select>

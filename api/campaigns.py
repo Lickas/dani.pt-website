@@ -1,8 +1,6 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 import uuid
@@ -10,10 +8,8 @@ import sys
 import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '_shared'))
-from database import get_db
-from models import Campaign as CampaignModel
-from auth import verify_admin_token
 from supabase_client import get_admin_supabase
+from auth import verify_token
 
 app = FastAPI()
 
@@ -25,8 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Pydantic Models
-class CampaignBase(BaseModel):
+class CampaignCreate(BaseModel):
     title: str
     description: str
     discount_percentage: Optional[int] = None
@@ -35,14 +30,6 @@ class CampaignBase(BaseModel):
     is_active: bool = True
     image_url: Optional[str] = None
     applicable_vehicle_ids: List[str] = []
-
-class CampaignCreate(CampaignBase):
-    pass
-
-class Campaign(CampaignBase):
-    model_config = ConfigDict(from_attributes=True)
-    id: str
-    created_at: datetime
 
 class CampaignUpdate(BaseModel):
     title: Optional[str] = None
@@ -54,126 +41,107 @@ class CampaignUpdate(BaseModel):
     image_url: Optional[str] = None
     applicable_vehicle_ids: Optional[List[str]] = None
 
-# Routes
-@app.get("/api/campaigns", response_model=List[Campaign])
-async def get_campaigns(db: AsyncSession = Depends(get_db)):
+@app.get("/api/campaigns")
+async def get_campaigns():
     """Get active campaigns"""
-    query = select(CampaignModel).where(CampaignModel.is_active == True).order_by(CampaignModel.created_at.desc())
-    result = await db.execute(query)
-    campaigns = result.scalars().all()
-    return campaigns
+    supabase = get_admin_supabase()
+    result = supabase.table('campaigns').select('*').eq('is_active', True).order('created_at', desc=True).execute()
+    return result.data or []
 
-@app.get("/api/campaigns/all", response_model=List[Campaign])
-async def get_all_campaigns(
-    db: AsyncSession = Depends(get_db),
-    admin: dict = Depends(verify_admin_token)
-):
+@app.get("/api/campaigns/all")
+async def get_all_campaigns(authorization: str = Query(None)):
     """Get all campaigns (admin only)"""
-    query = select(CampaignModel).order_by(CampaignModel.created_at.desc())
-    result = await db.execute(query)
-    campaigns = result.scalars().all()
-    return campaigns
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization required")
+    
+    token = authorization.replace('Bearer ', '')
+    verify_token(token)
+    
+    supabase = get_admin_supabase()
+    result = supabase.table('campaigns').select('*').order('created_at', desc=True).execute()
+    return result.data or []
 
-@app.get("/api/campaigns/public/{campaign_id}", response_model=Campaign)
-async def get_campaign_public(campaign_id: str, db: AsyncSession = Depends(get_db)):
+@app.get("/api/campaigns/public/{campaign_id}")
+async def get_campaign_public(campaign_id: str):
     """Get a specific campaign (public)"""
-    result = await db.execute(
-        select(CampaignModel).where(
-            CampaignModel.id == campaign_id,
-            CampaignModel.is_active == True
-        )
-    )
-    campaign = result.scalar_one_or_none()
+    supabase = get_admin_supabase()
+    result = supabase.table('campaigns').select('*').eq('id', campaign_id).eq('is_active', True).execute()
     
-    if not campaign:
+    if not result.data or len(result.data) == 0:
         raise HTTPException(status_code=404, detail="Campaign not found")
     
-    return campaign
+    return result.data[0]
 
-@app.get("/api/campaigns/{campaign_id}", response_model=Campaign)
-async def get_campaign(
-    campaign_id: str,
-    db: AsyncSession = Depends(get_db),
-    admin: dict = Depends(verify_admin_token)
-):
+@app.get("/api/campaigns/{campaign_id}")
+async def get_campaign(campaign_id: str, authorization: str = Query(None)):
     """Get a specific campaign (admin only)"""
-    result = await db.execute(
-        select(CampaignModel).where(CampaignModel.id == campaign_id)
-    )
-    campaign = result.scalar_one_or_none()
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization required")
     
-    if not campaign:
+    token = authorization.replace('Bearer ', '')
+    verify_token(token)
+    
+    supabase = get_admin_supabase()
+    result = supabase.table('campaigns').select('*').eq('id', campaign_id).execute()
+    
+    if not result.data or len(result.data) == 0:
         raise HTTPException(status_code=404, detail="Campaign not found")
     
-    return campaign
+    return result.data[0]
 
-@app.post("/api/campaigns", response_model=Campaign)
-async def create_campaign(
-    campaign: CampaignCreate,
-    db: AsyncSession = Depends(get_db),
-    admin: dict = Depends(verify_admin_token)
-):
+@app.post("/api/campaigns")
+async def create_campaign(campaign: CampaignCreate, authorization: str = Query(None)):
     """Create a new campaign (admin only)"""
-    new_campaign = CampaignModel(
-        id=str(uuid.uuid4()),
-        **campaign.model_dump()
-    )
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization required")
     
-    db.add(new_campaign)
-    await db.commit()
-    await db.refresh(new_campaign)
+    token = authorization.replace('Bearer ', '')
+    verify_token(token)
     
-    return new_campaign
+    supabase = get_admin_supabase()
+    
+    data = campaign.model_dump()
+    data['id'] = str(uuid.uuid4())
+    data['start_date'] = data['start_date'].isoformat()
+    data['end_date'] = data['end_date'].isoformat()
+    
+    result = supabase.table('campaigns').insert(data).execute()
+    return result.data[0] if result.data else data
 
-@app.put("/api/campaigns/{campaign_id}", response_model=Campaign)
-async def update_campaign(
-    campaign_id: str,
-    campaign_update: CampaignUpdate,
-    db: AsyncSession = Depends(get_db),
-    admin: dict = Depends(verify_admin_token)
-):
+@app.put("/api/campaigns/{campaign_id}")
+async def update_campaign(campaign_id: str, campaign: CampaignUpdate, authorization: str = Query(None)):
     """Update a campaign (admin only)"""
-    result = await db.execute(
-        select(CampaignModel).where(CampaignModel.id == campaign_id)
-    )
-    campaign = result.scalar_one_or_none()
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization required")
     
-    if not campaign:
+    token = authorization.replace('Bearer ', '')
+    verify_token(token)
+    
+    supabase = get_admin_supabase()
+    
+    update_data = {k: v for k, v in campaign.model_dump().items() if v is not None}
+    if 'start_date' in update_data:
+        update_data['start_date'] = update_data['start_date'].isoformat()
+    if 'end_date' in update_data:
+        update_data['end_date'] = update_data['end_date'].isoformat()
+    
+    result = supabase.table('campaigns').update(update_data).eq('id', campaign_id).execute()
+    
+    if not result.data:
         raise HTTPException(status_code=404, detail="Campaign not found")
     
-    update_data = campaign_update.model_dump(exclude_unset=True)
-    for key, value in update_data.items():
-        setattr(campaign, key, value)
-    
-    await db.commit()
-    await db.refresh(campaign)
-    
-    return campaign
+    return result.data[0]
 
 @app.delete("/api/campaigns/{campaign_id}")
-async def delete_campaign(
-    campaign_id: str,
-    db: AsyncSession = Depends(get_db),
-    admin: dict = Depends(verify_admin_token)
-):
+async def delete_campaign(campaign_id: str, authorization: str = Query(None)):
     """Delete a campaign (admin only)"""
-    result = await db.execute(
-        select(CampaignModel).where(CampaignModel.id == campaign_id)
-    )
-    campaign = result.scalar_one_or_none()
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization required")
     
-    if not campaign:
-        raise HTTPException(status_code=404, detail="Campaign not found")
+    token = authorization.replace('Bearer ', '')
+    verify_token(token)
     
-    if campaign.image_url:
-        supabase = get_admin_supabase()
-        try:
-            path = campaign.image_url.split("campaign-images/")[-1]
-            supabase.storage.from_("campaign-images").remove([path])
-        except:
-            pass
-    
-    await db.delete(campaign)
-    await db.commit()
+    supabase = get_admin_supabase()
+    supabase.table('campaigns').delete().eq('id', campaign_id).execute()
     
     return {"message": "Campaign deleted successfully"}

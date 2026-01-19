@@ -1,16 +1,12 @@
-from fastapi import HTTPException, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import HTTPException
 import jwt
 import os
 
 JWT_SECRET = os.environ.get('JWT_SECRET', 'dani-pt-secret-key-2024')
 JWT_ALGORITHM = "HS256"
 
-security = HTTPBearer()
-
-async def verify_admin_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
+def verify_token(token: str) -> dict:
     """Verify JWT token for admin access"""
-    token = credentials.credentials
     try:
         payload = jwt.decode(
             token,

@@ -1,7 +1,5 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 from pydantic import BaseModel
 from datetime import datetime, timezone, timedelta
 import jwt
@@ -10,9 +8,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), '_shared'))
-from database import get_db
-from models import AdminUser as AdminUserModel
-from supabase_client import get_public_supabase
+from supabase_client import get_public_supabase, get_admin_supabase
 
 JWT_SECRET = os.environ.get('JWT_SECRET', 'dani-pt-secret-key-2024')
 JWT_ALGORITHM = "HS256"
@@ -31,12 +27,8 @@ class LoginRequest(BaseModel):
     email: str
     password: str
 
-class TokenResponse(BaseModel):
-    token: str
-    user: dict
-
-@app.post("/api/admin/login", response_model=TokenResponse)
-async def admin_login(login_data: LoginRequest, db: AsyncSession = Depends(get_db)):
+@app.post("/api/admin/login")
+async def admin_login(login_data: LoginRequest):
     """Admin login using Supabase Auth"""
     supabase = get_public_supabase()
     
@@ -49,39 +41,42 @@ async def admin_login(login_data: LoginRequest, db: AsyncSession = Depends(get_d
         if not response.user or not response.session:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
-        result = await db.execute(
-            select(AdminUserModel).where(AdminUserModel.email == login_data.email)
-        )
-        admin_user = result.scalar_one_or_none()
+        # Check/create admin user in database
+        admin_supabase = get_admin_supabase()
+        result = admin_supabase.table('admin_users').select('*').eq('email', login_data.email).execute()
         
-        if not admin_user:
-            admin_user = AdminUserModel(
-                id=str(uuid.uuid4()),
-                email=login_data.email,
-                name=response.user.email.split('@')[0],
-                supabase_user_id=response.user.id
-            )
-            db.add(admin_user)
-            await db.commit()
-            await db.refresh(admin_user)
+        if not result.data or len(result.data) == 0:
+            # Create admin user record
+            admin_id = str(uuid.uuid4())
+            admin_supabase.table('admin_users').insert({
+                'id': admin_id,
+                'email': login_data.email,
+                'name': login_data.email.split('@')[0],
+                'supabase_user_id': response.user.id
+            }).execute()
+            admin_user = {'id': admin_id, 'email': login_data.email, 'name': login_data.email.split('@')[0]}
+        else:
+            admin_user = result.data[0]
         
+        # Create JWT token
         token_payload = {
-            "sub": admin_user.id,
-            "email": admin_user.email,
-            "name": admin_user.name,
+            "sub": admin_user['id'],
+            "email": admin_user['email'],
+            "name": admin_user.get('name', ''),
             "exp": datetime.now(timezone.utc) + timedelta(hours=24),
             "iat": datetime.now(timezone.utc)
         }
         custom_token = jwt.encode(token_payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
         
-        return TokenResponse(
-            token=custom_token,
-            user={
-                "id": admin_user.id,
-                "email": admin_user.email,
-                "name": admin_user.name
+        return {
+            "token": custom_token,
+            "user": {
+                "id": admin_user['id'],
+                "email": admin_user['email'],
+                "name": admin_user.get('name', '')
             }
-        )
+        }
         
     except Exception as e:
+        print(f"Login error: {e}")
         raise HTTPException(status_code=401, detail="Invalid credentials")

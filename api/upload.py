@@ -1,13 +1,12 @@
-from fastapi import FastAPI, HTTPException, Depends, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Query
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 import uuid
 import sys
 import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '_shared'))
-from auth import verify_admin_token
 from supabase_client import get_admin_supabase
+from auth import verify_token
 
 app = FastAPI()
 
@@ -19,16 +18,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class ImageUploadResponse(BaseModel):
-    url: str
-    path: str
-
-@app.post("/api/upload/vehicle-image", response_model=ImageUploadResponse)
-async def upload_vehicle_image(
-    file: UploadFile = File(...),
-    admin: dict = Depends(verify_admin_token)
-):
+@app.post("/api/upload/vehicle-image")
+async def upload_vehicle_image(file: UploadFile = File(...), authorization: str = Query(None)):
     """Upload vehicle image to Supabase Storage"""
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization required")
+    
+    token = authorization.replace('Bearer ', '')
+    verify_token(token)
+    
     if not file.content_type or not file.content_type.startswith('image/'):
         raise HTTPException(status_code=400, detail="Only images allowed")
     
@@ -52,17 +50,20 @@ async def upload_vehicle_image(
         
         public_url = supabase.storage.from_("vehicle-images").get_public_url(path)
         
-        return ImageUploadResponse(url=public_url, path=path)
+        return {"url": public_url, "path": path}
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
 
-@app.post("/api/upload/campaign-image", response_model=ImageUploadResponse)
-async def upload_campaign_image(
-    file: UploadFile = File(...),
-    admin: dict = Depends(verify_admin_token)
-):
+@app.post("/api/upload/campaign-image")
+async def upload_campaign_image(file: UploadFile = File(...), authorization: str = Query(None)):
     """Upload campaign image to Supabase Storage"""
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization required")
+    
+    token = authorization.replace('Bearer ', '')
+    verify_token(token)
+    
     if not file.content_type or not file.content_type.startswith('image/'):
         raise HTTPException(status_code=400, detail="Only images allowed")
     
@@ -86,17 +87,20 @@ async def upload_campaign_image(
         
         public_url = supabase.storage.from_("campaign-images").get_public_url(path)
         
-        return ImageUploadResponse(url=public_url, path=path)
+        return {"url": public_url, "path": path}
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
 
 @app.delete("/api/upload/vehicle-image")
-async def delete_vehicle_image(
-    path: str,
-    admin: dict = Depends(verify_admin_token)
-):
+async def delete_vehicle_image(path: str, authorization: str = Query(None)):
     """Delete vehicle image from storage"""
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization required")
+    
+    token = authorization.replace('Bearer ', '')
+    verify_token(token)
+    
     supabase = get_admin_supabase()
     
     try:

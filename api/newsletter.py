@@ -1,8 +1,6 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 import uuid
@@ -10,8 +8,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '_shared'))
-from database import get_db
-from models import NewsletterSubscriber as NewsletterModel
+from supabase_client import get_admin_supabase
 
 app = FastAPI()
 
@@ -29,82 +26,68 @@ class NewsletterCreate(BaseModel):
 class NewsletterUnsubscribe(BaseModel):
     email: str
 
-class NewsletterResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-    id: str
-    email: str
-    is_active: bool
-    created_at: datetime
-
-class MessageResponse(BaseModel):
-    message: str
-    found: bool = True
-
-@app.post("/api/newsletter", response_model=NewsletterResponse)
-async def subscribe_newsletter(data: NewsletterCreate, db: AsyncSession = Depends(get_db)):
+@app.post("/api/newsletter")
+async def subscribe_newsletter(data: NewsletterCreate):
     """Subscribe to newsletter"""
-    result = await db.execute(
-        select(NewsletterModel).where(NewsletterModel.email == data.email)
-    )
-    existing = result.scalar_one_or_none()
+    supabase = get_admin_supabase()
     
-    if existing:
-        if existing.is_active:
+    # Check if already exists
+    result = supabase.table('newsletter_subscribers').select('*').eq('email', data.email).execute()
+    
+    if result.data and len(result.data) > 0:
+        existing = result.data[0]
+        if existing.get('is_active', True):
             raise HTTPException(status_code=400, detail="Email já subscrito")
         else:
-            existing.is_active = True
-            await db.commit()
-            await db.refresh(existing)
-            return existing
+            # Reactivate
+            supabase.table('newsletter_subscribers').update({'is_active': True}).eq('email', data.email).execute()
+            return {"id": existing['id'], "email": data.email, "is_active": True, "message": "Subscrição reativada"}
     
-    new_subscriber = NewsletterModel(
-        id=str(uuid.uuid4()),
-        email=data.email
-    )
+    # Create new
+    new_id = str(uuid.uuid4())
+    supabase.table('newsletter_subscribers').insert({
+        'id': new_id,
+        'email': data.email,
+        'is_active': True
+    }).execute()
     
-    db.add(new_subscriber)
-    await db.commit()
-    await db.refresh(new_subscriber)
-    
-    return new_subscriber
+    return {"id": new_id, "email": data.email, "is_active": True, "message": "Subscrito com sucesso"}
 
-@app.post("/api/newsletter/unsubscribe", response_model=MessageResponse)
-async def unsubscribe_newsletter(data: NewsletterUnsubscribe, db: AsyncSession = Depends(get_db)):
+@app.post("/api/newsletter/unsubscribe")
+async def unsubscribe_newsletter(data: NewsletterUnsubscribe):
     """Unsubscribe from newsletter"""
-    result = await db.execute(
-        select(NewsletterModel).where(NewsletterModel.email == data.email)
-    )
-    existing = result.scalar_one_or_none()
+    supabase = get_admin_supabase()
     
-    if not existing:
-        return MessageResponse(
-            message="Email não encontrado na nossa lista de subscritores.",
-            found=False
-        )
+    result = supabase.table('newsletter_subscribers').select('*').eq('email', data.email).execute()
     
-    if not existing.is_active:
-        return MessageResponse(
-            message="Este email já foi removido da newsletter anteriormente.",
-            found=True
-        )
+    if not result.data or len(result.data) == 0:
+        return {
+            "message": "Email não encontrado na nossa lista de subscritores.",
+            "found": False
+        }
     
-    existing.is_active = False
-    await db.commit()
+    existing = result.data[0]
+    if not existing.get('is_active', True):
+        return {
+            "message": "Este email já foi removido da newsletter anteriormente.",
+            "found": True
+        }
     
-    return MessageResponse(
-        message="Subscrição cancelada com sucesso. Lamentamos vê-lo partir!",
-        found=True
-    )
+    supabase.table('newsletter_subscribers').update({'is_active': False}).eq('email', data.email).execute()
+    
+    return {
+        "message": "Subscrição cancelada com sucesso. Lamentamos vê-lo partir!",
+        "found": True
+    }
 
 @app.get("/api/newsletter/check/{email}")
-async def check_subscription(email: str, db: AsyncSession = Depends(get_db)):
+async def check_subscription(email: str):
     """Check if email is subscribed"""
-    result = await db.execute(
-        select(NewsletterModel).where(NewsletterModel.email == email)
-    )
-    existing = result.scalar_one_or_none()
+    supabase = get_admin_supabase()
     
-    if not existing:
+    result = supabase.table('newsletter_subscribers').select('*').eq('email', email).execute()
+    
+    if not result.data or len(result.data) == 0:
         return {"subscribed": False, "found": False}
     
-    return {"subscribed": existing.is_active, "found": True}
+    return {"subscribed": result.data[0].get('is_active', False), "found": True}

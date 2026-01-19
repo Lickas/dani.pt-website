@@ -1,19 +1,14 @@
-from fastapi import FastAPI, HTTPException, Depends, Query
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 from typing import List, Optional
-from datetime import datetime, timezone
 import uuid
 import sys
 import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '_shared'))
-from database import get_db
-from models import Vehicle as VehicleModel
-from auth import verify_admin_token
 from supabase_client import get_admin_supabase
+from auth import verify_token
 
 app = FastAPI()
 
@@ -25,8 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Pydantic Models
-class VehicleBase(BaseModel):
+class VehicleCreate(BaseModel):
     brand: str
     model: str
     year: int
@@ -38,18 +32,9 @@ class VehicleBase(BaseModel):
     power: str
     description: str
     features: List[str] = []
+    images: List[str] = []
     is_featured: bool = False
     is_sold: bool = False
-
-class VehicleCreate(VehicleBase):
-    images: List[str] = []
-
-class Vehicle(VehicleBase):
-    model_config = ConfigDict(from_attributes=True)
-    id: str
-    images: List[str] = []
-    created_at: datetime
-    updated_at: datetime
 
 class VehicleUpdate(BaseModel):
     brand: Optional[str] = None
@@ -67,127 +52,101 @@ class VehicleUpdate(BaseModel):
     is_featured: Optional[bool] = None
     is_sold: Optional[bool] = None
 
-# Routes
-@app.get("/api/vehicles", response_model=List[Vehicle])
+@app.get("/api/vehicles")
 async def get_vehicles(
     brand: Optional[str] = None,
     fuel_type: Optional[str] = None,
     min_year: Optional[int] = None,
-    max_price: Optional[float] = None,
-    db: AsyncSession = Depends(get_db)
+    max_price: Optional[float] = None
 ):
     """Get all vehicles with optional filters"""
-    query = select(VehicleModel).where(VehicleModel.is_sold == False)
+    supabase = get_admin_supabase()
+    
+    query = supabase.table('vehicles').select('*').eq('is_sold', False)
     
     if brand:
-        query = query.where(VehicleModel.brand == brand)
+        query = query.eq('brand', brand)
     if fuel_type:
-        query = query.where(VehicleModel.fuel_type == fuel_type)
+        query = query.eq('fuel_type', fuel_type)
     if min_year:
-        query = query.where(VehicleModel.year >= min_year)
+        query = query.gte('year', min_year)
     if max_price:
-        query = query.where(VehicleModel.price <= max_price)
+        query = query.lte('price', max_price)
     
-    query = query.order_by(VehicleModel.created_at.desc())
-    
-    result = await db.execute(query)
-    vehicles = result.scalars().all()
-    return vehicles
+    result = query.order('created_at', desc=True).execute()
+    return result.data or []
 
-@app.get("/api/vehicles/all", response_model=List[Vehicle])
-async def get_all_vehicles(
-    db: AsyncSession = Depends(get_db),
-    admin: dict = Depends(verify_admin_token)
-):
+@app.get("/api/vehicles/all")
+async def get_all_vehicles(authorization: str = Query(None)):
     """Get ALL vehicles including sold ones (admin only)"""
-    query = select(VehicleModel).order_by(VehicleModel.created_at.desc())
-    result = await db.execute(query)
-    vehicles = result.scalars().all()
-    return vehicles
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization required")
+    
+    token = authorization.replace('Bearer ', '')
+    verify_token(token)
+    
+    supabase = get_admin_supabase()
+    result = supabase.table('vehicles').select('*').order('created_at', desc=True).execute()
+    return result.data or []
 
-@app.get("/api/vehicles/{vehicle_id}", response_model=Vehicle)
-async def get_vehicle(vehicle_id: str, db: AsyncSession = Depends(get_db)):
+@app.get("/api/vehicles/{vehicle_id}")
+async def get_vehicle(vehicle_id: str):
     """Get a specific vehicle by ID"""
-    result = await db.execute(
-        select(VehicleModel).where(VehicleModel.id == vehicle_id)
-    )
-    vehicle = result.scalar_one_or_none()
+    supabase = get_admin_supabase()
+    result = supabase.table('vehicles').select('*').eq('id', vehicle_id).execute()
     
-    if not vehicle:
+    if not result.data or len(result.data) == 0:
         raise HTTPException(status_code=404, detail="Vehicle not found")
     
-    return vehicle
+    return result.data[0]
 
-@app.post("/api/vehicles", response_model=Vehicle)
-async def create_vehicle(
-    vehicle: VehicleCreate,
-    db: AsyncSession = Depends(get_db),
-    admin: dict = Depends(verify_admin_token)
-):
+@app.post("/api/vehicles")
+async def create_vehicle(vehicle: VehicleCreate, authorization: str = Query(None)):
     """Create a new vehicle (admin only)"""
-    new_vehicle = VehicleModel(
-        id=str(uuid.uuid4()),
-        **vehicle.model_dump()
-    )
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization required")
     
-    db.add(new_vehicle)
-    await db.commit()
-    await db.refresh(new_vehicle)
+    token = authorization.replace('Bearer ', '')
+    verify_token(token)
     
-    return new_vehicle
+    supabase = get_admin_supabase()
+    
+    data = vehicle.model_dump()
+    data['id'] = str(uuid.uuid4())
+    
+    result = supabase.table('vehicles').insert(data).execute()
+    return result.data[0] if result.data else data
 
-@app.put("/api/vehicles/{vehicle_id}", response_model=Vehicle)
-async def update_vehicle(
-    vehicle_id: str,
-    vehicle_update: VehicleUpdate,
-    db: AsyncSession = Depends(get_db),
-    admin: dict = Depends(verify_admin_token)
-):
+@app.put("/api/vehicles/{vehicle_id}")
+async def update_vehicle(vehicle_id: str, vehicle: VehicleUpdate, authorization: str = Query(None)):
     """Update a vehicle (admin only)"""
-    result = await db.execute(
-        select(VehicleModel).where(VehicleModel.id == vehicle_id)
-    )
-    vehicle = result.scalar_one_or_none()
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization required")
     
-    if not vehicle:
+    token = authorization.replace('Bearer ', '')
+    verify_token(token)
+    
+    supabase = get_admin_supabase()
+    
+    update_data = {k: v for k, v in vehicle.model_dump().items() if v is not None}
+    
+    result = supabase.table('vehicles').update(update_data).eq('id', vehicle_id).execute()
+    
+    if not result.data:
         raise HTTPException(status_code=404, detail="Vehicle not found")
     
-    update_data = vehicle_update.model_dump(exclude_unset=True)
-    for key, value in update_data.items():
-        setattr(vehicle, key, value)
-    
-    vehicle.updated_at = datetime.now(timezone.utc)
-    
-    await db.commit()
-    await db.refresh(vehicle)
-    
-    return vehicle
+    return result.data[0]
 
 @app.delete("/api/vehicles/{vehicle_id}")
-async def delete_vehicle(
-    vehicle_id: str,
-    db: AsyncSession = Depends(get_db),
-    admin: dict = Depends(verify_admin_token)
-):
+async def delete_vehicle(vehicle_id: str, authorization: str = Query(None)):
     """Delete a vehicle (admin only)"""
-    result = await db.execute(
-        select(VehicleModel).where(VehicleModel.id == vehicle_id)
-    )
-    vehicle = result.scalar_one_or_none()
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization required")
     
-    if not vehicle:
-        raise HTTPException(status_code=404, detail="Vehicle not found")
+    token = authorization.replace('Bearer ', '')
+    verify_token(token)
     
-    if vehicle.images:
-        supabase = get_admin_supabase()
-        for image_url in vehicle.images:
-            try:
-                path = image_url.split("vehicle-images/")[-1]
-                supabase.storage.from_("vehicle-images").remove([path])
-            except:
-                pass
-    
-    await db.delete(vehicle)
-    await db.commit()
+    supabase = get_admin_supabase()
+    supabase.table('vehicles').delete().eq('id', vehicle_id).execute()
     
     return {"message": "Vehicle deleted successfully"}

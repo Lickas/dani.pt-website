@@ -19,6 +19,8 @@ import { About } from './pages/About';
 import { Contact } from './pages/Contact';
 import { Campaigns } from './pages/Campaigns';
 import { CampaignDetail } from './pages/CampaignDetail';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 // Admin Pages
 import { AdminLogin } from './pages/admin/AdminLogin';

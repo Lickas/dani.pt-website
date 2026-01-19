@@ -56,19 +56,18 @@ Sistema completo de gestão para stand automóvel - **Estrutura Serverless para 
 - Importa o repositório
 
 ### 2. Configurar Variáveis de Ambiente
-Adiciona estas variáveis no Vercel Dashboard:
+Na Vercel Dashboard > Settings > Environment Variables, adiciona:
 
-```env
-SUPABASE_URL=https://xxx.supabase.co
-SUPABASE_ANON_KEY=eyJhbGci...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGci...
-DATABASE_URL=postgresql://postgres.xxx:password@pooler.supabase.com:6543/postgres
-JWT_SECRET=your-secret-key
+| Variável | Valor | Obrigatório |
+|----------|-------|-------------|
+| `SUPABASE_URL` | `https://xxx.supabase.co` | ✅ |
+| `SUPABASE_ANON_KEY` | `eyJhbGciOi...` (chave completa) | ✅ |
+| `SUPABASE_SERVICE_ROLE_KEY` | `eyJhbGciOi...` (chave completa) | ✅ |
+| `JWT_SECRET` | Qualquer string secreta | ✅ |
+| `REACT_APP_SUPABASE_URL` | Mesmo que SUPABASE_URL | ✅ |
+| `REACT_APP_SUPABASE_ANON_KEY` | Mesmo que SUPABASE_ANON_KEY | ✅ |
 
-# Frontend
-REACT_APP_SUPABASE_URL=https://xxx.supabase.co
-REACT_APP_SUPABASE_ANON_KEY=eyJhbGci...
-```
+⚠️ **IMPORTANTE:** As chaves do Supabase são muito longas (começam com `eyJhbGciOi...`). Copia-as completas do Supabase Dashboard > Settings > API.
 
 ### 3. Deploy
 Clica em **Deploy** - demora ~2 minutos

@@ -29,12 +29,15 @@ CREATE TABLE IF NOT EXISTS vehicles (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Tabela de Campanhas
+-- Tabela de Campanhas (com múltiplos tipos de promoção)
 CREATE TABLE IF NOT EXISTS campaigns (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     description TEXT,
+    campaign_type VARCHAR(50) DEFAULT 'percentage',  -- percentage, fixed_value, trade_in, financing, free_service, extended_warranty, gift, bundle, other
     discount_percentage DECIMAL(5,2),
+    discount_value DECIMAL(10,2),
+    benefit_description TEXT,
     start_date TIMESTAMP WITH TIME ZONE NOT NULL,
     end_date TIMESTAMP WITH TIME ZONE NOT NULL,
     is_active BOOLEAN DEFAULT true,
@@ -87,6 +90,7 @@ CREATE INDEX IF NOT EXISTS idx_vehicles_brand ON vehicles(brand);
 CREATE INDEX IF NOT EXISTS idx_vehicles_is_featured ON vehicles(is_featured);
 CREATE INDEX IF NOT EXISTS idx_vehicles_is_sold ON vehicles(is_sold);
 CREATE INDEX IF NOT EXISTS idx_campaigns_is_active ON campaigns(is_active);
+CREATE INDEX IF NOT EXISTS idx_campaigns_type ON campaigns(campaign_type);
 CREATE INDEX IF NOT EXISTS idx_contacts_is_read ON contacts(is_read);
 
 -- =========================================
@@ -161,31 +165,45 @@ CREATE POLICY "Business info is editable by authenticated users" ON business_inf
 -- 6. DADOS DE TESTE
 -- =========================================
 
--- Inserir Viaturas de Teste
+-- Limpar dados existentes (opcional - comentar se não quiser)
+-- DELETE FROM vehicles;
+-- DELETE FROM campaigns;
+
+-- Inserir Viaturas de Teste (com marcas do stand)
 INSERT INTO vehicles (brand, model, year, price, mileage, fuel_type, transmission, color, power, description, features, images, is_featured, is_sold)
 VALUES 
-('BMW', '320d', 2020, 28500, 45000, 'Diesel', 'Automático', 'Preto', '190cv', 'BMW 320d em excelente estado. Revisões em dia, único dono.', '["GPS", "Cruise Control", "Sensores Estacionamento", "Bluetooth", "Bancos Aquecidos"]', '["https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800", "https://images.unsplash.com/photo-1617531653332-bd46c24f2068?w=800"]', true, false),
+('FIAT', '500', 2022, 18500, 25000, 'Gasolina', 'Manual', 'Branco', '70cv', 'FIAT 500 em excelente estado. Ideal para cidade.', '["Ar Condicionado", "Bluetooth", "Cruise Control", "Sensores Estacionamento"]', '["https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?w=800"]', true, false),
 
-('Mercedes-Benz', 'Classe A 180', 2021, 32000, 25000, 'Gasolina', 'Automático', 'Branco', '136cv', 'Mercedes Classe A como novo. Garantia de fábrica até 2026.', '["MBUX", "LED", "Keyless", "Câmara Traseira", "Apple CarPlay"]', '["https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800", "https://images.unsplash.com/photo-1617654112368-307921291f42?w=800"]', true, false),
+('PEUGEOT', '208', 2023, 22000, 15000, 'Gasolina', 'Automático', 'Cinzento', '100cv', 'PEUGEOT 208 novo modelo. i-Cockpit de série.', '["i-Cockpit", "Apple CarPlay", "Android Auto", "LED", "Câmara Traseira"]', '["https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800"]', true, false),
 
-('Tesla', 'Model 3', 2022, 45000, 15000, 'Elétrico', 'Automático', 'Azul', '283cv', 'Tesla Model 3 Standard Range Plus. Autopilot incluído.', '["Autopilot", "Supercharger", "Vidros Panorâmicos", "App Mobile", "Premium Audio"]', '["https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800", "https://images.unsplash.com/photo-1536700503339-1e4b06520771?w=800"]', true, false),
+('CITROËN', 'C3', 2021, 16500, 35000, 'Gasolina', 'Manual', 'Vermelho', '83cv', 'CITROËN C3 confortável e económico. Design único.', '["Airbump", "Ecrã Tátil 7\"", "Ar Condicionado", "USB"]', '["https://images.unsplash.com/photo-1603386329225-868f9b1ee6b9?w=800"]', false, false),
 
-('Audi', 'A4 Avant', 2019, 26500, 60000, 'Diesel', 'Automático', 'Cinzento', '150cv', 'Audi A4 Avant impecável. Full extras.', '["Virtual Cockpit", "Matrix LED", "Bang & Olufsen", "Teto Panorâmico"]', '["https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800"]', false, false),
+('HYUNDAI', 'i20', 2022, 19500, 20000, 'Híbrido', 'Automático', 'Azul', '100cv', 'HYUNDAI i20 Hybrid. Consumos muito baixos.', '["Híbrido 48V", "Cruise Adaptativo", "Lane Assist", "Ecrã 10.25\""]', '["https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800"]', true, false),
 
-('Volkswagen', 'Golf GTI', 2020, 29000, 35000, 'Gasolina', 'Manual', 'Vermelho', '245cv', 'Golf GTI Mk8. Performance Pack.', '["DCC", "Diff. Eletrónico", "Bancos Desportivos", "Escape Desportivo"]', '["https://images.unsplash.com/photo-1619405399517-d7fce0f13302?w=800"]', false, false),
+('KIA', 'Sportage', 2023, 35000, 10000, 'Híbrido Plug-in', 'Automático', 'Preto', '265cv', 'KIA Sportage PHEV. 7 anos de garantia.', '["PHEV", "Tração Integral", "Teto Panorâmico", "Harman Kardon", "Head-Up Display"]', '["https://images.unsplash.com/photo-1619405399517-d7fce0f13302?w=800"]', true, false),
 
-('Peugeot', '3008 GT', 2021, 31000, 28000, 'Híbrido', 'Automático', 'Preto', '300cv', 'Peugeot 3008 Hybrid4. 4x4, 300cv.', '["i-Cockpit", "Focal", "Massagem", "Night Vision"]', '["https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800"]', false, false),
+('JEEP', 'Renegade', 2021, 28000, 30000, 'Diesel', 'Automático', 'Verde', '130cv', 'JEEP Renegade Limited. Perfeito para aventura.', '["4x4", "Uconnect 8.4\"", "Bancos Aquecidos", "Jantes 18\""]', '["https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800"]', false, false),
 
-('Toyota', 'Corolla Hybrid', 2022, 27500, 18000, 'Híbrido', 'CVT', 'Prata', '122cv', 'Toyota Corolla Hybrid. Consumos de 4L/100km.', '["Toyota Safety Sense", "JBL", "Head-Up Display", "Carregador Wireless"]', '["https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800"]', false, false),
+('OPEL', 'Corsa-e', 2023, 32000, 8000, 'Elétrico', 'Automático', 'Branco', '136cv', 'OPEL Corsa-e 100% elétrico. Autonomia 359km.', '["100% Elétrico", "Carregamento Rápido", "Navi Pro", "Intellilux LED"]', '["https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800"]', false, false),
 
-('Renault', 'Clio RS Line', 2021, 18500, 22000, 'Gasolina', 'Manual', 'Branco', '130cv', 'Renault Clio RS Line. Pack desportivo completo.', '["Easy Link", "Jantes 17", "LED", "Cruise Adaptativo"]', '["https://images.unsplash.com/photo-1603386329225-868f9b1ee6b9?w=800"]', false, false);
+('ALFA ROMEO', 'Tonale', 2024, 45000, 5000, 'Híbrido Plug-in', 'Automático', 'Vermelho', '275cv', 'ALFA ROMEO Tonale PHEV. Design italiano premium.', '["PHEV Q4", "DNA Driving Mode", "Harman Kardon", "19\" Wheels", "Adaptive Suspension"]', '["https://images.unsplash.com/photo-1617531653332-bd46c24f2068?w=800"]', true, false),
 
--- Inserir Campanhas de Teste
-INSERT INTO campaigns (title, description, discount_percentage, start_date, end_date, is_active, image_url)
+('DS AUTOMOBILES', 'DS 3', 2022, 29000, 18000, 'Gasolina', 'Automático', 'Preto', '130cv', 'DS 3 Crossback. Luxo francês acessível.', '["DS Matrix LED", "DS Park Pilot", "Nappa Leather", "Focal Electra"]', '["https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800"]', false, false),
+
+('BYD', 'Atto 3', 2024, 38000, 2000, 'Elétrico', 'Automático', 'Azul', '204cv', 'BYD Atto 3. SUV elétrico com grande autonomia (420km).', '["Blade Battery", "V2L", "Rotating Screen", "Heat Pump", "OTA Updates"]', '["https://images.unsplash.com/photo-1536700503339-1e4b06520771?w=800"]', true, false);
+
+-- Inserir Campanhas de Teste (com diferentes tipos)
+INSERT INTO campaigns (title, description, campaign_type, discount_percentage, discount_value, benefit_description, start_date, end_date, is_active, image_url, terms_conditions)
 VALUES 
-('Verão em Força', 'Descontos até 15% em carros selecionados. Aproveite para renovar o seu carro antes das férias!', 15, '2025-06-01', '2025-08-31', true, 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800'),
+('Verão em Força', 'Descontos até 15% em viaturas selecionadas. Aproveite para renovar o seu carro antes das férias!', 'percentage', 15, NULL, NULL, '2025-06-01', '2025-08-31', true, 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800', 'Válido para viaturas em stock. Não acumulável com outras promoções.'),
 
-('Elétricos com Vantagem', 'Transição para elétrico nunca foi tão fácil. Financiamento com taxa 0% nos primeiros 12 meses.', 10, '2025-05-01', '2025-12-31', true, 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800');
+('Bónus Retoma Especial', 'Traga o seu carro usado e receba um bónus extra de 2000€ na retoma!', 'trade_in', NULL, 2000, NULL, '2025-05-01', '2025-12-31', true, 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800', 'Válido para viaturas até 10 anos. Sujeito a avaliação.'),
+
+('Financiamento 0%', 'Taxa 0% nos primeiros 24 meses em todos os modelos elétricos e híbridos plug-in.', 'financing', NULL, NULL, 'TAEG 0% nos primeiros 24 meses. Entrada mínima de 20%.', '2025-01-01', '2025-06-30', true, 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800', 'Sujeito a aprovação de crédito. Consulte condições em loja.'),
+
+('Pack Inverno Grátis', 'Na compra de qualquer SUV, oferecemos o Pack Inverno completo!', 'gift', NULL, NULL, 'Pack Inverno inclui: 4 pneus de inverno, tapetes de borracha e kit de emergência.', '2025-10-01', '2025-12-31', false, 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800', 'Válido para SUVs novos em stock.'),
+
+('Garantia +3 Anos', 'Compre agora e receba 3 anos de garantia adicional gratuitamente!', 'extended_warranty', NULL, NULL, 'Garantia total de 5 anos ou 150.000km em todas as viaturas usadas.', '2025-01-01', '2025-03-31', true, NULL, 'Não aplicável a viaturas com mais de 100.000km.');
 
 -- Inserir Info do Negócio
 INSERT INTO business_info (id, phone, email, address, whatsapp, schedule)

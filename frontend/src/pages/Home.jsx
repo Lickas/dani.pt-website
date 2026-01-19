@@ -489,7 +489,7 @@ export const Home = () => {
                     <div className="max-w-4xl mx-auto text-center">
                         <div className="w-16 h-1 bg-[#E60000] mx-auto mb-8 glow-bar"></div>
                         <blockquote className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white leading-tight">
-                            "Comprar um carro usado<br/>
+                            "Comprar um carro<br/>
                             não tem de ser uma<br/>
                             <span className="text-glow-red">aventura de risco."</span>
                         </blockquote>

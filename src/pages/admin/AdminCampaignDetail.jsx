@@ -33,7 +33,11 @@ export const AdminCampaignDetail = () => {
                 const response = await axios.get(`${API_URL}/campaigns/${id}`, {
                     headers: getAuthHeaders()
                 });
-                setCampaign(response.data);
+                if (response.data && typeof response.data === 'object') {
+                    setCampaign(response.data);
+                } else {
+                    throw new Error('Dados inválidos');
+                }
             } catch (err) {
                 console.error('Error fetching campaign:', err);
                 toast.error('Campanha não encontrada');

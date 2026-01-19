@@ -140,7 +140,7 @@ export const About = () => {
                             </h2>
                             <p className="text-xl text-[#666] mt-6">
                                 Rua da Casa Meada 12<br/>
-                                Antanhol, 3040-584
+                                Antanhol, 3040-584 Coimbra
                             </p>
                             <div className="mt-8">
                                 <Link to="/contactos" className="btn-secondary">

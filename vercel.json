@@ -1,12 +1,11 @@
 {
   "version": 2,
-  "framework": "vite",
+  "framework": "create-react-app",
   "buildCommand": "yarn build",
-  "outputDirectory": "dist",
+  "outputDirectory": "build",
   "installCommand": "yarn install",
   "functions": {
     "api/**/*.py": {
-      "runtime": "python3.11",
       "maxDuration": 10
     }
   },

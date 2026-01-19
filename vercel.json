@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "framework": "create-react-app",
+  "buildCommand": "yarn build",
+  "outputDirectory": "build",
+  "installCommand": "yarn install",
+  "functions": {
+    "api/**/*.py": {
+      "runtime": "python3.11",
+      "maxDuration": 10
+    }
+  },
+  "routes": [
+    { "src": "/api/health", "dest": "/api/health.py" },
+    { "src": "/api/vehicles/(.*)", "dest": "/api/vehicles.py" },
+    { "src": "/api/vehicles", "dest": "/api/vehicles.py" },
+    { "src": "/api/campaigns/(.*)", "dest": "/api/campaigns.py" },
+    { "src": "/api/campaigns", "dest": "/api/campaigns.py" },
+    { "src": "/api/contacts/(.*)", "dest": "/api/contacts.py" },
+    { "src": "/api/contacts", "dest": "/api/contacts.py" },
+    { "src": "/api/upload/(.*)", "dest": "/api/upload.py" },
+    { "src": "/api/admin/login", "dest": "/api/admin/login.py" },
+    { "src": "/api/admin/register", "dest": "/api/admin/register.py" },
+    { "src": "/api/newsletter", "dest": "/api/newsletter.py" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ],
+  "env": {
+    "SUPABASE_URL": "@supabase_url",
+    "SUPABASE_ANON_KEY": "@supabase_anon_key",
+    "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key",
+    "DATABASE_URL": "@database_url",
+    "JWT_SECRET": "@jwt_secret"
+  }
+}

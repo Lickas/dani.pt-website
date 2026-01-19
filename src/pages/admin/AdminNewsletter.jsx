@@ -21,10 +21,12 @@ export const AdminNewsletter = () => {
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
-            setSubscribers(data || []);
+            // Garantir que é um array
+            setSubscribers(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Error fetching subscribers:', error);
             toast.error('Erro ao carregar subscritores.');
+            setSubscribers([]);
         } finally {
             setLoading(false);
         }

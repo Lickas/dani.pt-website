@@ -1,24 +1,20 @@
 /**
  * Admin Authentication Helpers
  * Shared utilities for admin panel authentication
+ * Using Supabase Auth (Serverless)
  */
 
 import { toast } from 'sonner';
+import { supabase } from '../supabaseClient';
 
-const BASE_URL = process.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_API_URL || '';
-const API_URL = BASE_URL ? `${BASE_URL}/api` : '/api';
-
-// Get authentication headers for API calls
-export const getAuthHeaders = () => {
-    const token = localStorage.getItem('dani_admin_token');
-    if (!token) {
-        return null;
-    }
-    return { Authorization: `Bearer ${token}` };
+// Check if user has valid session
+export const isTokenValid = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    return !!session;
 };
 
-// Check if token is valid (not expired)
-export const isTokenValid = () => {
+// Synchronous check using localStorage (for quick checks)
+export const isTokenValidSync = () => {
     const token = localStorage.getItem('dani_admin_token');
     if (!token) return false;
     
@@ -31,9 +27,9 @@ export const isTokenValid = () => {
     }
 };
 
-// Handle 401 errors and redirect to login
+// Handle auth errors and redirect to login
 export const handleAuthError = (error, navigate) => {
-    if (error.response?.status === 401) {
+    if (error?.status === 401 || error?.message?.includes('JWT')) {
         localStorage.removeItem('dani_admin_token');
         toast.error('Sessão expirada. Por favor faça login novamente.');
         if (navigate) {
@@ -47,14 +43,16 @@ export const handleAuthError = (error, navigate) => {
 };
 
 // Clear token and redirect to login
-export const logout = () => {
+export const logout = async () => {
+    await supabase.auth.signOut();
     localStorage.removeItem('dani_admin_token');
     window.location.href = '/admin';
 };
 
 // Check authentication and redirect if needed
-export const requireAuth = (navigate) => {
-    if (!isTokenValid()) {
+export const requireAuth = async (navigate) => {
+    const isValid = await isTokenValid();
+    if (!isValid) {
         localStorage.removeItem('dani_admin_token');
         toast.error('Por favor faça login para continuar.');
         navigate('/admin');
@@ -62,5 +60,3 @@ export const requireAuth = (navigate) => {
     }
     return true;
 };
-
-export { API_URL };

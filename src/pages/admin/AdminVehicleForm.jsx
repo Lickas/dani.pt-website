@@ -1,5 +1,6 @@
 /**
  * Admin Vehicle Form - Create/Edit - Supabase Direct
+ * Com lista de marcas fixa + opção de adicionar nova marca
  */
 
 import React, { useState, useEffect } from 'react';
@@ -7,6 +8,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, X, Upload, Save, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { vehiclesAPI, uploadAPI } from '../../utils/apiService';
+import { BRANDS, FUEL_TYPES, TRANSMISSIONS, getVehicleYears } from '../../utils/constants';
 
 export const AdminVehicleForm = () => {
     const { id } = useParams();
@@ -15,6 +17,8 @@ export const AdminVehicleForm = () => {
 
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [customBrand, setCustomBrand] = useState('');
+    const [showCustomBrand, setShowCustomBrand] = useState(false);
     const [formData, setFormData] = useState({
         brand: '',
         model: '',
@@ -33,6 +37,8 @@ export const AdminVehicleForm = () => {
     });
     const [newFeature, setNewFeature] = useState('');
 
+    const years = getVehicleYears(30);
+
     useEffect(() => {
         if (isEditing) {
             fetchVehicle();
@@ -43,6 +49,11 @@ export const AdminVehicleForm = () => {
         try {
             const data = await vehiclesAPI.getById(id);
             setFormData(data);
+            // Se a marca não está na lista padrão, mostrar campo customizado
+            if (data.brand && !BRANDS.includes(data.brand)) {
+                setShowCustomBrand(true);
+                setCustomBrand(data.brand);
+            }
         } catch (error) {
             toast.error('Erro ao carregar viatura');
             navigate('/admin/viaturas');
@@ -51,6 +62,22 @@ export const AdminVehicleForm = () => {
 
     const handleChange = (field, value) => {
         setFormData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleBrandChange = (value) => {
+        if (value === '__custom__') {
+            setShowCustomBrand(true);
+            setFormData(prev => ({ ...prev, brand: '' }));
+        } else {
+            setShowCustomBrand(false);
+            setCustomBrand('');
+            setFormData(prev => ({ ...prev, brand: value }));
+        }
+    };
+
+    const handleCustomBrandChange = (value) => {
+        setCustomBrand(value);
+        setFormData(prev => ({ ...prev, brand: value.toUpperCase() }));
     };
 
     const handleAddFeature = () => {
@@ -129,11 +156,6 @@ export const AdminVehicleForm = () => {
         }
     };
 
-    const brands = ['BMW', 'Mercedes-Benz', 'Volkswagen', 'Audi', 'Peugeot', 'Toyota', 'Renault', 'Tesla', 'Ford', 'Volvo', 'Opel', 'Fiat', 'Citroen', 'Seat', 'Skoda', 'Hyundai', 'Kia', 'Nissan', 'Honda', 'Mazda'];
-    const fuelTypes = ['Gasolina', 'Diesel', 'Híbrido', 'Elétrico'];
-    const transmissions = ['Manual', 'Automático'];
-    const years = Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i);
-
     return (
         <div className="max-w-4xl">
             <header className="mb-8">
@@ -155,17 +177,42 @@ export const AdminVehicleForm = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">Marca *</label>
-                            <select
-                                value={formData.brand}
-                                onChange={(e) => handleChange('brand', e.target.value)}
-                                required
-                                className="w-full px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
-                            >
-                                <option value="">Selecionar marca</option>
-                                {brands.map((brand) => (
-                                    <option key={brand} value={brand}>{brand}</option>
-                                ))}
-                            </select>
+                            {!showCustomBrand ? (
+                                <select
+                                    value={formData.brand}
+                                    onChange={(e) => handleBrandChange(e.target.value)}
+                                    required={!showCustomBrand}
+                                    className="w-full px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
+                                >
+                                    <option value="">Selecionar marca</option>
+                                    {BRANDS.map((brand) => (
+                                        <option key={brand} value={brand}>{brand}</option>
+                                    ))}
+                                    <option value="__custom__">➕ Adicionar outra marca...</option>
+                                </select>
+                            ) : (
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        value={customBrand}
+                                        onChange={(e) => handleCustomBrandChange(e.target.value)}
+                                        required
+                                        className="flex-1 px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
+                                        placeholder="Nome da marca"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setShowCustomBrand(false);
+                                            setCustomBrand('');
+                                            setFormData(prev => ({ ...prev, brand: '' }));
+                                        }}
+                                        className="px-3 py-2 border border-[#E5E5E5] dark:border-[#333] text-[#666] dark:text-gray-400 rounded-[2px] hover:bg-[#F4F4F4] dark:hover:bg-[#333]"
+                                    >
+                                        <X size={18} />
+                                    </button>
+                                </div>
+                            )}
                         </div>
                         <div>
                             <label className="block text-xs font-mono uppercase tracking-widest text-[#999999] mb-2">Modelo *</label>
@@ -175,7 +222,7 @@ export const AdminVehicleForm = () => {
                                 onChange={(e) => handleChange('model', e.target.value)}
                                 required
                                 className="w-full px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
-                                placeholder="Ex: Serie 3 320d"
+                                placeholder="Ex: 500, Panda, C3, etc."
                             />
                         </div>
                         <div>
@@ -214,7 +261,7 @@ export const AdminVehicleForm = () => {
                                 onChange={(e) => handleChange('fuel_type', e.target.value)}
                                 className="w-full px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
                             >
-                                {fuelTypes.map((fuel) => (
+                                {FUEL_TYPES.map((fuel) => (
                                     <option key={fuel} value={fuel}>{fuel}</option>
                                 ))}
                             </select>
@@ -237,7 +284,7 @@ export const AdminVehicleForm = () => {
                                 onChange={(e) => handleChange('transmission', e.target.value)}
                                 className="w-full px-4 py-3 border border-[#E5E5E5] dark:border-[#333] bg-white dark:bg-[#222] text-[#1A1A1A] dark:text-white rounded-[2px] focus:outline-none focus:border-[#1A1A1A] dark:focus:border-[#555]"
                             >
-                                {transmissions.map((t) => (
+                                {TRANSMISSIONS.map((t) => (
                                     <option key={t} value={t}>{t}</option>
                                 ))}
                             </select>

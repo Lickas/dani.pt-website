@@ -87,6 +87,8 @@ Clica em **Deploy** - demora ~2 minutos
 | GET | `/api/campaigns/public/{id}` | Detalhes campanha |
 | POST | `/api/contacts` | Enviar mensagem |
 | POST | `/api/newsletter` | Subscrever newsletter |
+| POST | `/api/newsletter/unsubscribe` | Cancelar subscrição newsletter |
+| GET | `/api/newsletter/check/{email}` | Verificar subscrição |
 
 ### Admin (requer autenticação)
 | Método | Endpoint | Descrição |

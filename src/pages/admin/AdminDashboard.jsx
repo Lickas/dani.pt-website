@@ -1,10 +1,5 @@
 /**
  * Admin Dashboard
- * 
- * TODO: Adicionar gráficos de vendas mensais
- * TODO: Implementar widgets arrastáveis
- * TODO: Adicionar notificações em tempo real
- * TODO: Melhorar estatísticas com dados históricos
  */
 
 import React, { useState, useEffect } from 'react';
@@ -12,11 +7,16 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Car, Megaphone, Mail, MailOpen, TrendingUp, Plus } from 'lucide-react';
 
-const BASE_URL = process.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_API_URL || '';
+const BASE_URL = process.env.REACT_APP_BACKEND_URL || '';
 const API_URL = BASE_URL ? `${BASE_URL}/api` : '/api';
 
 export const AdminDashboard = () => {
-    const [stats, setStats] = useState(null);
+    const [stats, setStats] = useState({
+        available_vehicles: 0,
+        sold_vehicles: 0,
+        active_campaigns: 0,
+        unread_messages: 0
+    });
     const [recentMessages, setRecentMessages] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -29,59 +29,75 @@ export const AdminDashboard = () => {
         const headers = { Authorization: `Bearer ${token}` };
 
         try {
-            const [statsRes, messagesRes] = await Promise.all([
-                axios.get(`${API_URL}/stats`, { headers }),
-                axios.get(`${API_URL}/contacts`, { headers })
+            // Fetch vehicles, campaigns, and contacts separately
+            const [vehiclesRes, campaignsRes, contactsRes] = await Promise.all([
+                axios.get(`${API_URL}/vehicles`, { headers }).catch(() => ({ data: [] })),
+                axios.get(`${API_URL}/campaigns`, { headers }).catch(() => ({ data: [] })),
+                axios.get(`${API_URL}/contacts`, { headers }).catch(() => ({ data: [] }))
             ]);
             
-            setStats(statsRes.data);
-            setRecentMessages(messagesRes.data.slice(0, 5));
+            // Ensure arrays
+            const vehicles = Array.isArray(vehiclesRes.data) ? vehiclesRes.data : [];
+            const campaigns = Array.isArray(campaignsRes.data) ? campaignsRes.data : [];
+            const contacts = Array.isArray(contactsRes.data) ? contactsRes.data : [];
+            
+            // Calculate stats
+            setStats({
+                available_vehicles: vehicles.filter(v => !v.is_sold).length,
+                sold_vehicles: vehicles.filter(v => v.is_sold).length,
+                active_campaigns: campaigns.filter(c => c.is_active).length,
+                unread_messages: contacts.filter(c => !c.read).length
+            });
+            
+            // Get recent messages (last 5)
+            setRecentMessages(contacts.slice(0, 5));
         } catch (error) {
             console.error('Error fetching dashboard data:', error);
+            // Keep default empty stats
         } finally {
             setLoading(false);
         }
     };
 
     // Stat cards configuration
-    const statCards = stats ? [
+    const statCards = [
         {
             label: 'Viaturas Disponíveis',
             value: stats.available_vehicles,
             icon: Car,
-            color: 'text-green-600 bg-green-50',
+            color: 'text-green-600 bg-green-50 dark:bg-green-900/20 dark:text-green-400',
             link: '/admin/viaturas'
         },
         {
             label: 'Viaturas Vendidas',
             value: stats.sold_vehicles,
             icon: TrendingUp,
-            color: 'text-blue-600 bg-blue-50',
+            color: 'text-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400',
             link: '/admin/viaturas'
         },
         {
             label: 'Campanhas Ativas',
             value: stats.active_campaigns,
             icon: Megaphone,
-            color: 'text-purple-600 bg-purple-50',
+            color: 'text-purple-600 bg-purple-50 dark:bg-purple-900/20 dark:text-purple-400',
             link: '/admin/campanhas'
         },
         {
             label: 'Mensagens Não Lidas',
             value: stats.unread_messages,
             icon: MailOpen,
-            color: 'text-red-600 bg-red-50',
+            color: 'text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400',
             link: '/admin/mensagens'
         }
-    ] : [];
+    ];
 
     if (loading) {
         return (
             <div className="space-y-6">
-                <div className="h-8 w-48 bg-gray-200 rounded animate-pulse" />
+                <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className="h-32 bg-gray-200 rounded-[4px] animate-pulse" />
+                        <div key={i} className="h-32 bg-gray-200 dark:bg-gray-700 rounded-[4px] animate-pulse" />
                     ))}
                 </div>
             </div>
@@ -92,10 +108,10 @@ export const AdminDashboard = () => {
         <div className="space-y-8">
             {/* Page Header */}
             <header>
-                <h1 className="text-2xl md:text-3xl font-bold text-[#1A1A1A]">
+                <h1 className="text-2xl md:text-3xl font-bold text-[#1A1A1A] dark:text-white">
                     Dashboard
                 </h1>
-                <p className="text-[#666666] mt-1">
+                <p className="text-[#666666] dark:text-gray-400 mt-1">
                     Bem-vindo ao painel de administração dANI.PT
                 </p>
             </header>
@@ -107,15 +123,15 @@ export const AdminDashboard = () => {
                         <Link
                             key={card.label}
                             to={card.link}
-                            className="bg-white border border-[#E5E5E5] rounded-[4px] p-6 hover:border-[#1A1A1A] transition-colors group"
+                            className="bg-white dark:bg-[#1A1A1A] border border-[#E5E5E5] dark:border-[#333] rounded-[4px] p-6 hover:border-[#1A1A1A] dark:hover:border-[#555] transition-colors group"
                             data-testid={`stat-${card.label.toLowerCase().replace(/ /g, '-')}`}
                         >
                             <div className="flex items-start justify-between">
                                 <div>
-                                    <span className="text-xs font-mono uppercase tracking-widest text-[#999999]">
+                                    <span className="text-xs font-mono uppercase tracking-widest text-[#999999] dark:text-gray-500">
                                         {card.label}
                                     </span>
-                                    <p className="text-4xl font-bold text-[#1A1A1A] mt-2">
+                                    <p className="text-4xl font-bold text-[#1A1A1A] dark:text-white mt-2">
                                         {card.value}
                                     </p>
                                 </div>
@@ -130,7 +146,7 @@ export const AdminDashboard = () => {
 
             {/* Quick Actions */}
             <section aria-label="Ações Rápidas">
-                <h2 className="text-lg font-bold text-[#1A1A1A] mb-4">
+                <h2 className="text-lg font-bold text-[#1A1A1A] dark:text-white mb-4">
                     Ações Rápidas
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -144,7 +160,7 @@ export const AdminDashboard = () => {
                     </Link>
                     <Link
                         to="/admin/campanhas/nova"
-                        className="flex items-center justify-center gap-2 p-4 bg-[#1A1A1A] text-white rounded-[2px] font-semibold hover:bg-black transition-colors"
+                        className="flex items-center justify-center gap-2 p-4 bg-[#1A1A1A] dark:bg-white text-white dark:text-[#1A1A1A] rounded-[2px] font-semibold hover:bg-black dark:hover:bg-gray-100 transition-colors"
                         data-testid="quick-add-campaign"
                     >
                         <Plus size={18} />
@@ -152,7 +168,7 @@ export const AdminDashboard = () => {
                     </Link>
                     <Link
                         to="/admin/mensagens"
-                        className="flex items-center justify-center gap-2 p-4 bg-white border border-[#E5E5E5] text-[#1A1A1A] rounded-[2px] font-semibold hover:border-[#1A1A1A] transition-colors"
+                        className="flex items-center justify-center gap-2 p-4 bg-white dark:bg-[#1A1A1A] border border-[#E5E5E5] dark:border-[#333] text-[#1A1A1A] dark:text-white rounded-[2px] font-semibold hover:border-[#1A1A1A] dark:hover:border-[#555] transition-colors"
                         data-testid="quick-messages"
                     >
                         <Mail size={18} />
@@ -164,7 +180,7 @@ export const AdminDashboard = () => {
             {/* Recent Messages */}
             <section aria-label="Mensagens Recentes">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-bold text-[#1A1A1A]">
+                    <h2 className="text-lg font-bold text-[#1A1A1A] dark:text-white">
                         Mensagens Recentes
                     </h2>
                     <Link 
@@ -175,51 +191,38 @@ export const AdminDashboard = () => {
                     </Link>
                 </div>
                 
-                <div className="bg-white border border-[#E5E5E5] rounded-[4px] divide-y divide-[#E5E5E5]">
+                <div className="bg-white dark:bg-[#1A1A1A] border border-[#E5E5E5] dark:border-[#333] rounded-[4px] divide-y divide-[#E5E5E5] dark:divide-[#333]">
                     {recentMessages.length > 0 ? (
                         recentMessages.map((msg) => (
-                            <div key={msg.id} className="p-4 hover:bg-[#F9F9F9] transition-colors">
+                            <div key={msg.id} className="p-4 hover:bg-[#F9F9F9] dark:hover:bg-[#222] transition-colors">
                                 <div className="flex items-start justify-between gap-4">
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2">
-                                            {!msg.is_read && (
+                                            {!msg.read && (
                                                 <span className="w-2 h-2 bg-[#E60000] rounded-full flex-shrink-0" />
                                             )}
-                                            <span className="font-semibold text-[#1A1A1A] truncate">
+                                            <span className="font-semibold text-[#1A1A1A] dark:text-white truncate">
                                                 {msg.name}
                                             </span>
                                         </div>
-                                        <p className="text-sm text-[#666666] truncate mt-1">
+                                        <p className="text-sm text-[#666666] dark:text-gray-400 truncate mt-1">
                                             {msg.message}
                                         </p>
                                     </div>
-                                    <span className="text-xs text-[#999999] flex-shrink-0">
-                                        {new Date(msg.created_at).toLocaleDateString('pt-PT')}
+                                    <span className="text-xs text-[#999999] dark:text-gray-500 flex-shrink-0">
+                                        {msg.created_at ? new Date(msg.created_at).toLocaleDateString('pt-PT') : '-'}
                                     </span>
                                 </div>
                             </div>
                         ))
                     ) : (
-                        <div className="p-8 text-center text-[#666666]">
+                        <div className="p-8 text-center text-[#666666] dark:text-gray-400">
                             <Mail size={32} className="mx-auto mb-2 opacity-30" />
                             <p>Nenhuma mensagem recebida</p>
                         </div>
                     )}
                 </div>
             </section>
-
-            {/* TODO Section - For Development Reference */}
-            {/* 
-            <section className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-[4px]">
-                <h3 className="font-bold text-yellow-800 mb-2">Próximos Desenvolvimentos:</h3>
-                <ul className="text-sm text-yellow-700 space-y-1">
-                    <li>• Gráfico de vendas por mês</li>
-                    <li>• Widget de previsão de stock</li>
-                    <li>• Integração com Google Analytics</li>
-                    <li>• Notificações push</li>
-                </ul>
-            </section>
-            */}
         </div>
     );
 };

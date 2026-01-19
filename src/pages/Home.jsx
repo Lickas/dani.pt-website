@@ -27,7 +27,6 @@ export const Home = () => {
     const [searchMaxPrice, setSearchMaxPrice] = useState('');
     const [searchMinYear, setSearchMinYear] = useState('');
 
-    const brands = ['BMW', 'Mercedes-Benz', 'Volkswagen', 'Audi', 'Peugeot', 'Toyota', 'Renault', 'Tesla', 'Ford', 'Volvo'];
     const priceRanges = [
         { label: 'Até 10.000€', value: '10000' },
         { label: 'Até 15.000€', value: '15000' },

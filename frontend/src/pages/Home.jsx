@@ -157,14 +157,15 @@ export const Home = () => {
                         </div>
 
                         {/* Headline */}
-                        <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-[9rem] text-white mt-6 animate-fade-up delay-100">
-                            Encontre<br/>
-                            <span className="text-glow-red">o seu.</span>
+                        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-white mt-6 animate-fade-up delay-100 leading-tight">
+                            Procura uma solução de<br/>
+                            <span className="text-glow-red">mobilidade?</span>
                         </h1>
 
                         {/* Tagline única */}
-                        <p className="text-white/60 mt-6 md:mt-8 max-w-md text-base md:text-lg leading-relaxed animate-fade-up delay-200">
-                            Escolhidos um a um. Sem ruído, sem promessas vazias. Só carros de qualidade comprovada.
+                        <p className="text-white/80 mt-6 md:mt-8 max-w-2xl text-lg md:text-xl leading-relaxed animate-fade-up delay-200 font-light">
+                            Térmica, Hybrid, Plug-in ou Elétrica. <span className="text-white font-medium">Novo, Usado ou Semi-novo.</span>
+                            <br/>Quer financiamento? <strong className="text-[#E60000]">Tenho a solução.</strong>
                         </p>
 
                         {/* ================================

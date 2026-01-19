@@ -174,7 +174,7 @@ export const Campaigns = () => {
                                 Nenhuma campanha disponível
                             </h3>
                             <p className="text-[#666]">
-                                Volte mais tarde para ver as nossas ofertas especiais
+                                Volte mais tarde para ver as minhas ofertas especiais
                             </p>
                         </div>
                     )}

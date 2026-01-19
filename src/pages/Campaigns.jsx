@@ -190,13 +190,13 @@ export const Campaigns = () => {
                         Interessado numa oferta?
                     </h2>
                     <p className="text-[#999] mb-8 max-w-2xl mx-auto">
-                        Entre em contacto connosco para saber mais sobre as nossas campanhas e encontrar a viatura perfeita para si.
+                        Entre em contacto comigo para saber mais sobre as minhas campanhas e encontrar a viatura perfeita para si.
                     </p>
                     <a
                         href="/contactos"
                         className="inline-block px-8 py-4 bg-[#E60000] text-white font-semibold hover:bg-[#CC0000] transition-colors"
                     >
-                        Falar Connosco
+                        Falar Comigo
                     </a>
                 </div>
             </section>

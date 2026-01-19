@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { toast } from 'sonner';
-import { supabase } from '../supabaseClient';
+import { newsletterAPI } from '../utils/apiService';
 import { Loader2, ArrowRight, Mail } from 'lucide-react';
 
 export const NewsletterSection = () => {
@@ -15,25 +14,18 @@ export const NewsletterSection = () => {
 
         setLoading(true);
         try {
-            const { error } = await supabase
-                .from('newsletter_subscribers')
-                .insert([{ email, is_active: true }]);
-
-            if (error) {
-                if (error.code === '23505') { // Unique violation
-                    toast.info('Este email já está subscrito.');
-                } else {
-                    throw error;
-                }
-            } else {
-                toast.success('Subscrição efetuada com sucesso!');
-                setEmail('');
-            }
+            await newsletterAPI.subscribe(email);
+            toast.success('Subscrição efetuada com sucesso!');
+            setEmail('');
         } catch (error) {
-            console.error('Newsletter error details:', error);
-            // Show more specific error message if available
+            console.error('Newsletter error:', error);
             const errorMessage = error.message || 'Erro ao subscrever. Tente novamente.';
-            toast.error(`Erro: ${errorMessage}`);
+            
+            if (errorMessage.includes('já está subscrito')) {
+                toast.info(errorMessage);
+            } else {
+                toast.error(errorMessage);
+            }
         } finally {
             setLoading(false);
         }
@@ -86,7 +78,10 @@ export const NewsletterSection = () => {
                         </form>
                         
                         <p className="mt-4 text-[10px] text-gray-400 dark:text-gray-600 uppercase tracking-wider">
-                            Pode cancelar a subscrição a qualquer momento.
+                            Pode cancelar a subscrição a qualquer momento na nossa{' '}
+                            <a href="/privacidade" className="underline hover:text-[#E60000]">
+                                política de privacidade
+                            </a>.
                         </p>
                     </div>
                 </div>

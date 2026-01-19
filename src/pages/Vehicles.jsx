@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Search, X, SlidersHorizontal, Grid, List } from 'lucide-react';
 import { VehicleCard } from '../components/VehicleCard';
 import { vehiclesAPI } from '../utils/apiService';
+import { BRANDS, FUEL_TYPES } from '../utils/constants';
 
 // Custom Price Slider Component
 const PriceSlider = ({ value, onChange, min = 5000, max = 100000, step = 1000 }) => {

@@ -78,7 +78,7 @@ const PrivacyPolicy = () => {
                         <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                             A dANI.PT está comprometida em proteger a sua privacidade. Esta Política de Privacidade 
                             explica como recolhemos, utilizamos e protegemos as suas informações pessoais quando 
-                            utiliza o nosso website.
+                            utiliza o meu website.
                         </p>
                     </section>
 

@@ -1,6 +1,6 @@
 # 🚗 dANI.PT - Stand Automóvel
 
-Sistema completo de gestão para stand automóvel - **Estrutura Serverless para Vercel**.
+Sistema completo de gestão para stand - **Estrutura Serverless para Vercel**.
 
 ---
 

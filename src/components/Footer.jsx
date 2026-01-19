@@ -30,7 +30,7 @@ export const Footer = () => {
                             </p>
                             <div className="flex items-center gap-3 text-xs text-gray-500">
                                 <div className="w-8 h-[1px] bg-[#E60000]"></div>
-                                <span>Stand de automóveis · Coimbra</span>
+                                <span>Coimbra · Automóveis</span>
                             </div>
                         </div>
                     </div>

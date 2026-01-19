@@ -100,12 +100,8 @@ export const Contact = () => {
                                     <span className="label-style text-[#999]">Horário</span>
                                     <div className="mt-2 space-y-1 text-[#1A1A1A]">
                                         <div className="flex justify-between max-w-[200px]">
-                                            <span>Seg—Sex</span>
-                                            <span>09:00—19:00</span>
-                                        </div>
-                                        <div className="flex justify-between max-w-[200px]">
-                                            <span>Sábado</span>
-                                            <span>09:00—13:00</span>
+                                            <span>Seg—Sáb</span>
+                                            <span>09:00—20:00</span>
                                         </div>
                                         <div className="flex justify-between max-w-[200px] text-[#999]">
                                             <span>Domingo</span>

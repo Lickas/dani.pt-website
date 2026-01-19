@@ -4,6 +4,7 @@ import { ArrowRight, Search, ChevronRight, ChevronLeft, ChevronUp, Shield, Check
 import { VehicleCard } from '../components/VehicleCard';
 import { vehiclesAPI, campaignsAPI } from '../utils/apiService';
 import { BrandMarquee } from '../components/BrandMarquee';
+import { BRANDS } from '../utils/constants';
 
 // Hero background image
 const HERO_BG = "https://images.unsplash.com/photo-1701241966709-5371c9bf0f1d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzF8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBjYXIlMjBzaG93cm9vbXxlbnwwfHx8YmxhY2t8MTc2ODQyODQ3M3ww&ixlib=rb-4.1.0&q=85&w=1920";

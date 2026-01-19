@@ -1,18 +1,14 @@
 import axios from 'axios';
 import { mockVehicles, mockCampaigns, mockContacts } from './mockData';
 
-// Configuração da API com fallback para localhost
-const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_API_URL || 'http://localhost:8000';
-const API_URL = `${API_BASE_URL}/api`;
+// Configuração da API - URLs relativas para serverless
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || '';
+const API_URL = API_BASE_URL ? `${API_BASE_URL}/api` : '/api';
 
-// Flag para controlar se estamos em modo mock (pode ser configurado via env)
+// Flag para controlar se estamos em modo mock
 const USE_MOCK_DATA = process.env.REACT_APP_USE_MOCK === 'true';
 
-console.log('API Configuration:', {
-  baseUrl: API_BASE_URL,
-  apiUrl: API_URL,
-  useMock: USE_MOCK_DATA
-});
+console.log('API Configuration:', { apiUrl: API_URL, useMock: USE_MOCK_DATA });
 
 // Helper para simular delay de rede
 const simulateDelay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));

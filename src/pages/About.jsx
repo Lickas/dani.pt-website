@@ -57,11 +57,11 @@ export const About = () => {
                         {/* Right - Large */}
                         <div className="lg:col-span-8 lg:pt-12">
                             <p className="dani-quote text-lg leading-relaxed">
-                                Na dANI.PT não aceitamos qualquer viatura. Cada carro que entra no nosso stand 
+                                Na dANI.PT não aceito qualquer viatura. Cada carro que entra no meu stand 
                                 passa por seleção criteriosa e revisão completa.
                             </p>
                             <p className="dani-quote text-lg leading-relaxed mt-6">
-                                Sem promessas vazias. Só honestidade. Quando compra uma viatura connosco, 
+                                Sem promessas vazias. Só honestidade. Quando compra uma viatura comigo, 
                                 sabe exatamente o que está a levar.
                             </p>
                             <div className="mt-12 flex items-center gap-8">

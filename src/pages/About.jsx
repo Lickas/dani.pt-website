@@ -21,7 +21,7 @@ export const About = () => {
                     <div className="flex items-start gap-6">
                         <div className="hidden md:block w-[2px] h-32 bg-[#E60000]"></div>
                         <div>
-                            <span className="label-style text-white/30">Quem somos</span>
+                            <span className="label-style text-white/30">Quem sou</span>
                             <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl text-white mt-4 max-w-4xl">
                                 Confiança<br/>
                                 não se<br/>

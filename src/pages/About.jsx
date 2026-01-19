@@ -99,7 +99,7 @@ export const About = () => {
                 <div className="container-site">
                     <span className="label-style text-[#999]">Valores</span>
                     <h2 className="font-display text-5xl md:text-6xl text-[#1A1A1A] mt-2 mb-16">
-                        O que nos define
+                        O que me define
                     </h2>
 
                     <div className="space-y-0">

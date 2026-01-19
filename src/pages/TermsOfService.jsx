@@ -51,7 +51,7 @@ const TermsOfService = () => {
                         </h2>
                         <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                             A dANI.PT é um stand automóvel que oferece serviços de venda de veículos usados e seminovos. 
-                            O nosso website permite:
+                            O meu website permite:
                         </p>
                         <ul className="text-gray-600 dark:text-gray-400 mt-4 space-y-2">
                             <li>• Visualizar o nosso catálogo de viaturas disponíveis</li>

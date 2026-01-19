@@ -41,7 +41,7 @@ const TermsOfService = () => {
                         </h2>
                         <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                             Ao aceder e utilizar o website dANI.PT, concorda em ficar vinculado a estes Termos de Serviço. 
-                            Se não concordar com qualquer parte destes termos, não deverá utilizar o nosso website.
+                            Se não concordar com qualquer parte destes termos, não deverá utilizar o meu website.
                         </p>
                     </section>
 

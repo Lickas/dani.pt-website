@@ -103,32 +103,52 @@ export const Footer = () => {
 
             {/* Bottom Bar */}
             <div className="border-t border-gray-800">
-                <div className="container-site py-5 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-gray-500 text-xs">
-                        © {currentYear} dANI.PT — Todos os direitos reservados
-                    </p>
-                    
-                    <div className="flex items-center gap-6">
-                        <Link 
-                            to="/termos"
-                            className="text-gray-600 hover:text-gray-400 text-xs transition-colors"
-                        >
-                            Termos de Serviço
-                        </Link>
-                        
-                        <Link 
-                            to="/privacidade"
-                            className="text-gray-600 hover:text-gray-400 text-xs transition-colors"
-                        >
-                            Política de Privacidade
-                        </Link>
-                        
-                        <Link 
-                            to="/admin"
-                            className="text-gray-600 hover:text-gray-400 text-xs transition-colors"
-                        >
-                            Área reservada
-                        </Link>
+                <div className="container-site py-6 md:py-5">
+                    {/* Links - Mobile: Stacked, Desktop: Row */}
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                        {/* Legal Links */}
+                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 md:gap-6 order-2 md:order-1">
+                            <Link 
+                                to="/termos"
+                                className="text-gray-400 hover:text-white text-xs transition-colors"
+                            >
+                                Termos de Serviço
+                            </Link>
+                            
+                            <Link 
+                                to="/privacidade"
+                                className="text-gray-400 hover:text-white text-xs transition-colors"
+                            >
+                                Política de Privacidade
+                            </Link>
+                            
+                            <Link 
+                                to="/admin"
+                                className="text-gray-400 hover:text-white text-xs transition-colors"
+                            >
+                                Área reservada
+                            </Link>
+                        </div>
+
+                        {/* Copyright */}
+                        <p className="text-gray-500 text-xs text-center md:text-right order-1 md:order-2">
+                            © {currentYear} dANI.PT — Todos os direitos reservados
+                        </p>
+                    </div>
+
+                    {/* Made with love */}
+                    <div className="mt-6 pt-4 border-t border-gray-800/50 text-center">
+                        <p className="text-gray-600 text-xs">
+                            Made with <span className="text-[#E60000]">♥</span> by{' '}
+                            <a 
+                                href="https://leandroxws.dev" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-gray-400 hover:text-white transition-colors"
+                            >
+                                Oxiria Studios
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>

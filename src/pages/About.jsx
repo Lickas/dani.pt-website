@@ -136,7 +136,7 @@ export const About = () => {
                         <div>
                             <span className="label-style text-[#999]">Localização</span>
                             <h2 className="font-display text-5xl md:text-6xl text-[#1A1A1A] mt-2">
-                                Estamos em<br/>Coimbra
+                                Estou em<br/>Coimbra
                             </h2>
                             <p className="text-xl text-[#666] mt-6">
                                 Rua da Casa Meada 12<br/>

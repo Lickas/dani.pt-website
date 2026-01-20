@@ -1,13 +1,3 @@
--- =========================================
--- SUPABASE SETUP - dANI.PT Stand Automóvel
--- =========================================
--- Execute este SQL no Supabase SQL Editor
--- Dashboard > SQL Editor > New Query
-
--- =========================================
--- 1. CRIAR TABELAS
--- =========================================
-
 -- Tabela de Viaturas
 CREATE TABLE IF NOT EXISTS vehicles (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -210,7 +200,7 @@ INSERT INTO business_info (id, phone, email, address, whatsapp, schedule)
 VALUES (
     1,
     '+351 919 190 993',
-    'daniel.henriques@dani.pt',
+    'daniel.henriques@rodda.pt',
     'Rua da Casa Meada 12, Antanhol, 3040-584 Coimbra',
     '+351919190993',
     '{"segunda": {"open": "09:00", "close": "20:00"}, "terca": {"open": "09:00", "close": "20:00"}, "quarta": {"open": "09:00", "close": "20:00"}, "quinta": {"open": "09:00", "close": "20:00"}, "sexta": {"open": "09:00", "close": "20:00"}, "sabado": {"open": "09:00", "close": "20:00"}, "domingo": {"open": "", "close": ""}}'
@@ -220,14 +210,5 @@ VALUES (
     address = EXCLUDED.address,
     whatsapp = EXCLUDED.whatsapp,
     schedule = EXCLUDED.schedule;
-
--- =========================================
--- 7. CRIAR UTILIZADOR ADMIN
--- =========================================
--- NOTA: Criar utilizador via Supabase Dashboard
--- Authentication > Users > Add User
--- Email: admin@dani.pt
--- Password: admin123
--- =========================================
 
 SELECT 'Setup completo! Agora cria um utilizador admin no Supabase Dashboard.' AS status;

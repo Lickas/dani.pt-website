@@ -299,8 +299,8 @@ export const Home = () => {
                             A Diferença dANI.PT
                         </span>
                         <h2 className="font-display text-4xl md:text-5xl text-gray-900 dark:text-white">
-                            Não vendemos apenas carros.<br/>
-                            <span className="text-glow-red">Entregamos soluções.</span>
+                            Não vendo apenas carros.<br/>
+                            <span className="text-glow-red">Entrego soluções.</span>
                         </h2>
                         <p className="text-gray-500 mt-4 text-base md:text-lg">
                             Seja novo, usado ou semi-novo, cada viatura é uma promessa de mobilidade cumprida.
@@ -649,7 +649,7 @@ export const Home = () => {
                             ) : (
                                 <div className="w-full text-center py-12">
                                     <p className="text-white/70">
-                                        Estamos a preparar ofertas especiais para si. Fique atento!
+                                        Estou a preparar ofertas especiais para si. Fique atento!
                                     </p>
                                     <a 
                                         href="tel:+351919190993"
@@ -703,7 +703,7 @@ export const Home = () => {
                                 <h4 className="font-semibold text-gray-900 dark:text-white">Contacto</h4>
                                 <p className="text-sm text-gray-500 mt-1">
                                     <a href="tel:+351919190993" className="hover:text-[#E60000] transition-colors">+351 919 190 993</a><br/>
-                                    <a href="mailto:daniel.henriques@dani.pt" className="hover:text-[#E60000] transition-colors">daniel.henriques@dani.pt</a>
+                                    <a href="mailto:daniel.henriques@rodda.pt" className="hover:text-[#E60000] transition-colors">daniel.henriques@rodda.pt</a>
                                 </p>
                             </div>
                         </div>
@@ -727,7 +727,7 @@ export const Home = () => {
                                     Vamos<br/><span className="text-glow-red">conversar.</span>
                                 </h2>
                                 <p className="text-gray-500 mt-4 md:mt-6 text-sm md:text-base">
-                                    Sem pressão, sem compromisso. Estamos aqui para ajudar a encontrar o carro ideal para si.
+                                    Sem pressão, sem compromisso. Estou aqui para ajudar a encontrar o carro ideal para si.
                                 </p>
                             </div>
                         </div>

@@ -280,7 +280,7 @@ export const CampaignDetail = () => {
                                     Interessado?
                                 </h3>
                                 <p className="text-white/80 text-sm mb-6">
-                                    Contacte-nos para saber mais sobre esta campanha e as viaturas disponíveis.
+                                    Contacte-me para saber mais sobre esta campanha e as viaturas disponíveis.
                                 </p>
                                 <div className="space-y-3">
                                     <a 

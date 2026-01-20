@@ -176,7 +176,7 @@ const PrivacyPolicy = () => {
                             <li>• <strong className="text-gray-900 dark:text-white">Portabilidade:</strong> Receber os seus dados em formato estruturado</li>
                         </ul>
                         <p className="text-gray-600 dark:text-gray-400 mt-4">
-                            Para exercer estes direitos, contacte-nos através do email: geral@dani.pt
+                            Para exercer estes direitos, contacte-nos através do email: rgpd@leandroxws.dev
                         </p>
                     </section>
 
@@ -276,8 +276,8 @@ const PrivacyPolicy = () => {
                         </p>
                         <div className="mt-4 p-6 bg-gray-50 dark:bg-[#1A1A1A] rounded-sm">
                             <p className="text-gray-900 dark:text-white font-medium">dANI.PT - Stand Automóvel</p>
-                            <p className="text-gray-600 dark:text-gray-400 mt-2">Email: geral@dani.pt</p>
-                            <p className="text-gray-600 dark:text-gray-400">Telefone: +351 XXX XXX XXX</p>
+                            <p className="text-gray-600 dark:text-gray-400 mt-2">Email: daniel.henriques@rodda.pt</p>
+                            <p className="text-gray-600 dark:text-gray-400">Telefone: +351 919 190 993</p>
                         </div>
                     </section>
 

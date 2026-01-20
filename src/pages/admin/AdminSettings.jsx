@@ -13,7 +13,7 @@ export const AdminSettings = () => {
     
     const [formData, setFormData] = useState({
         phone: '+351 919 190 993',
-        email: 'daniel.henriques@dani.pt',
+        email: 'daniel.henriques@rodda.pt',
         address: 'Rua da Casa Meada 12, Antanhol, 3040-584 Coimbra',
         whatsapp: '+351919190993',
         about_text: '',

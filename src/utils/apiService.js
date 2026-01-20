@@ -1,7 +1,6 @@
 /**
  * API Service - dANI.PT
  * Direct Supabase integration (Serverless)
- * No backend required - all data flows through Supabase
  */
 
 import { supabase } from '../supabaseClient';

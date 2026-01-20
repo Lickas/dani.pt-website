@@ -24,7 +24,7 @@ const TermsOfService = () => {
                                 Termos de Serviço
                             </h1>
                             <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-                                Última atualização: Janeiro 2025
+                                Última atualização: Janeiro 2026
                             </p>
                         </div>
                     </div>
@@ -148,8 +148,8 @@ const TermsOfService = () => {
                         </p>
                         <div className="mt-4 p-6 bg-gray-50 dark:bg-[#1A1A1A] rounded-sm">
                             <p className="text-gray-900 dark:text-white font-medium">dANI.PT - Stand Automóvel</p>
-                            <p className="text-gray-600 dark:text-gray-400 mt-2">Email: geral@dani.pt</p>
-                            <p className="text-gray-600 dark:text-gray-400">Telefone: +351 XXX XXX XXX</p>
+                            <p className="text-gray-600 dark:text-gray-400 mt-2">Email: rgpd@leandroxws.dev</p>
+                            <p className="text-gray-600 dark:text-gray-400">Telefone: +351 919 190 993</p>
                         </div>
                     </section>
 

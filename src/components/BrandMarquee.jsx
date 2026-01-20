@@ -38,7 +38,7 @@ export const BrandMarquee = () => {
             
             <div className="container-site mb-6">
                 <p className="text-center text-xs font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500">
-                    Marcas que comercializamos
+                    Marcas que comercializo
                 </p>
             </div>
 

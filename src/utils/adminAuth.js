@@ -1,7 +1,6 @@
 /**
  * Admin Authentication Helpers
  * Shared utilities for admin panel authentication
- * Using Supabase Auth (Serverless)
  */
 
 import { toast } from 'sonner';

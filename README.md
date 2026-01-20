@@ -1,20 +1,6 @@
 # 🚗 dANI.PT - Stand Automóvel
 
-Sistema completo de gestão para stand - **Arquitetura 100% Serverless (Frontend + Supabase)**.
-
----
-
-## 🛠️ Stack Tecnológico
-
-| Componente | Tecnologia |
-|------------|------------|
-| **Frontend** | React 18 + Tailwind CSS + shadcn/ui |
-| **Database** | Supabase (PostgreSQL) |
-| **Auth** | Supabase Auth (JWT) |
-| **Storage** | Supabase Storage (imagens) |
-| **Hosting** | Vercel (Static) |
-
----
+Sistema completo de gestão para stand
 
 ## 📁 Estrutura do Projeto
 
@@ -31,27 +17,6 @@ Sistema completo de gestão para stand - **Arquitetura 100% Serverless (Frontend
 ├── vercel.json                 # Configuração Vercel
 └── package.json                # Dependências Node.js
 ```
-
----
-
-## 🚀 Deploy na Vercel
-
-### 1. Conectar Repositório
-- Vai a [vercel.com](https://vercel.com)
-- Importa o repositório
-
-### 2. Configurar Variáveis de Ambiente
-Na Vercel Dashboard > Settings > Environment Variables, adiciona:
-
-| Variável | Valor | Obrigatório |
-|----------|-------|
-| `REACT_APP_SUPABASE_URL` | `https://xxx.supabase.co` | ✅ |
-| `REACT_APP_SUPABASE_ANON_KEY` | `eyJhbGciOi...` | ✅ |
-
-### 3. Deploy
-Clica em **Deploy** - demora ~2 minutos
-
----
 
 ## 🗄️ Base de Dados (Supabase)
 
@@ -123,10 +88,10 @@ yarn start
 
 ## 📝 SQL para Criar Tabelas no Supabase
 
-Ver ficheiro `SUPABASE_SETUP.sql` para scripts de criação de tabelas e dados de teste.
+Ver ficheiro `SUPABASE_SETUP_BACKUP.sql` para scripts de criação de tabelas e dados de teste.
 
 ---
 
 ## 📄 Licença
 
-Projeto privado - dANI.PT © 2025
+dANI.PT © 2025

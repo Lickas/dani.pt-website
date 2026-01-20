@@ -103,7 +103,7 @@ export const Footer = () => {
 
             {/* Bottom Bar */}
             <div className="border-t border-gray-800">
-                <div className="container-site py-6 md:py-5">
+                <div className="container-site py-6 md:py-5 pb-20 md:pb-5">
                     {/* Links - Mobile: Stacked, Desktop: Row */}
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                         {/* Legal Links */}

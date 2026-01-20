@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
-import { useEffect } from 'react';
 
 // Layout Components
 import { Navbar } from './components/Navbar';
@@ -92,8 +91,16 @@ const PublicLayout = ({ children }) => (
     </>
 );
 
-// Admin Layout Component
+// Admin Layout Component (Com Menu Mobile Otimizado)
 const AdminLayoutWrapper = ({ children }) => {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const location = useLocation();
+
+    // Fecha o menu mobile sempre que a rota mudar
+    useEffect(() => {
+        setIsMobileMenuOpen(false);
+    }, [location]);
+
     const navItems = [
         { href: '/admin/dashboard', label: 'Dashboard' },
         { href: '/admin/viaturas', label: 'Viaturas' },
@@ -108,47 +115,96 @@ const AdminLayoutWrapper = ({ children }) => {
         window.location.href = '/admin';
     };
 
+    // Conteúdo da Navegação (Reutilizável)
+    const NavContent = () => (
+        <>
+            <div className="h-20 flex items-center px-6 border-b border-[#E5E5E5] dark:border-[#222]">
+                <a href="/admin/dashboard" className="flex flex-col">
+                    <span className="font-display text-2xl text-[#E60000]">dANI.PT</span>
+                    <span className="text-xs text-[#999] dark:text-[#666]">Painel Admin</span>
+                </a>
+            </div>
+            <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+                {navItems.map((item) => (
+                    <a
+                        key={item.href}
+                        href={item.href}
+                        className={`block px-4 py-3 text-sm font-medium transition-colors ${
+                            window.location.pathname.startsWith(item.href)
+                                ? 'bg-[#E60000] text-white'
+                                : 'text-[#666] dark:text-[#999] hover:bg-[#F4F4F4] dark:hover:bg-[#1A1A1A]'
+                        }`}
+                    >
+                        {item.label}
+                    </a>
+                ))}
+            </nav>
+            <div className="p-4 border-t border-[#E5E5E5] dark:border-[#222]">
+                <a href="/" className="block w-full py-2 px-4 text-center text-sm text-[#666] dark:text-[#999] hover:bg-[#F4F4F4] dark:hover:bg-[#1A1A1A] mb-2">
+                    Ver Site
+                </a>
+                <button onClick={handleLogout} className="w-full py-2 px-4 text-sm text-[#E60000] hover:bg-red-50 dark:hover:bg-red-900/20">
+                    Terminar Sessão
+                </button>
+            </div>
+        </>
+    );
+
     return (
         <div className="min-h-screen bg-[#F4F4F4] dark:bg-[#0A0A0A]">
-            <aside className="fixed top-0 left-0 bottom-0 w-64 bg-white dark:bg-[#111] border-r border-[#E5E5E5] dark:border-[#222] hidden lg:block">
-                <div className="h-full flex flex-col">
-                    <div className="h-20 flex items-center px-6 border-b border-[#E5E5E5] dark:border-[#222]">
-                        <a href="/admin/dashboard" className="flex flex-col">
-                            <span className="font-display text-2xl text-[#E60000]">dANI.PT</span>
-                            <span className="text-xs text-[#999] dark:text-[#666]">Painel Admin</span>
-                        </a>
-                    </div>
-                    <nav className="flex-1 p-4 space-y-1">
-                        {navItems.map((item) => (
-                            <a
-                                key={item.href}
-                                href={item.href}
-                                className={`block px-4 py-3 text-sm font-medium transition-colors ${
-                                    window.location.pathname.startsWith(item.href)
-                                        ? 'bg-[#E60000] text-white'
-                                        : 'text-[#666] dark:text-[#999] hover:bg-[#F4F4F4] dark:hover:bg-[#1A1A1A]'
-                                }`}
+            {/* SIDEBAR DESKTOP (Visível apenas em LG+) */}
+            <aside className="fixed top-0 left-0 bottom-0 w-64 bg-white dark:bg-[#111] border-r border-[#E5E5E5] dark:border-[#222] hidden lg:flex flex-col">
+                <NavContent />
+            </aside>
+
+            {/* HEADER MOBILE (Visível apenas abaixo de LG) */}
+            <header className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-[#111] border-b border-[#E5E5E5] dark:border-[#222] h-16 flex items-center justify-between px-4">
+                <div className="flex items-center gap-4">
+                    {/* Botão Hamburger */}
+                    <button 
+                        onClick={() => setIsMobileMenuOpen(true)}
+                        className="p-2 text-[#666] dark:text-[#999] hover:bg-gray-100 dark:hover:bg-[#222]"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
+                    <a href="/admin/dashboard">
+                        <span className="font-display text-xl text-[#E60000]">dANI.PT</span>
+                    </a>
+                </div>
+            </header>
+
+            {/* SIDEBAR MOBILE OVERLAY */}
+            {isMobileMenuOpen && (
+                <div className="relative z-50 lg:hidden">
+                    {/* Fundo Escuro (Backdrop) */}
+                    <div 
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                    />
+
+                    {/* Menu Gaveta */}
+                    <div className="fixed inset-y-0 left-0 w-64 bg-white dark:bg-[#111] shadow-xl flex flex-col transform transition-transform duration-300 ease-in-out h-full">
+                        {/* Botão Fechar */}
+                        <div className="absolute top-4 right-4 z-10">
+                            <button 
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="p-2 text-[#666] dark:text-[#999]"
                             >
-                                {item.label}
-                            </a>
-                        ))}
-                    </nav>
-                    <div className="p-4 border-t border-[#E5E5E5] dark:border-[#222]">
-                        <a href="/" className="block w-full py-2 px-4 text-center text-sm text-[#666] dark:text-[#999] hover:bg-[#F4F4F4] dark:hover:bg-[#1A1A1A] mb-2">
-                            Ver Site
-                        </a>
-                        <button onClick={handleLogout} className="w-full py-2 px-4 text-sm text-[#E60000] hover:bg-red-50 dark:hover:bg-red-900/20">
-                            Terminar Sessão
-                        </button>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        {/* Conteúdo do Menu */}
+                        <NavContent />
                     </div>
                 </div>
-            </aside>
-            <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#111] border-b border-[#E5E5E5] dark:border-[#222] h-16 flex items-center justify-between px-4">
-                <a href="/admin/dashboard">
-                    <span className="font-display text-xl text-[#E60000]">dANI.PT</span>
-                </a>
-                <button onClick={handleLogout} className="text-sm text-[#E60000]">Sair</button>
-            </header>
+            )}
+
+            {/* CONTEÚDO PRINCIPAL */}
             <main className="lg:ml-64 pt-16 lg:pt-0 min-h-screen">
                 <div className="p-6 md:p-8 lg:p-12">{children}</div>
             </main>

@@ -702,7 +702,7 @@ export const Home = () => {
                                 <h4 className="font-semibold text-gray-900 dark:text-white">Contacto</h4>
                                 <p className="text-sm text-gray-500 mt-1">
                                     <a href="tel:+351919190993" className="hover:text-[#E60000] transition-colors">+351 919 190 993</a><br/>
-                                    <a href="mailto:daniel.henriques@rodda.pt" className="hover:text-[#E60000] transition-colors">daniel.henriques@rodda.pt</a>
+                                    <a href="mailto:daniel.henriques@rodda.pt" className="hover:text-[#E60000] transition-colors">daniel.henriques@rodda.pt</a><br/>
                                     <a href="mailto:daniel.henriques@dani.pt" className="hover:text-[#E60000] transition-colors">daniel.henriques@dani.pt</a>
                                 </p>
                             </div>

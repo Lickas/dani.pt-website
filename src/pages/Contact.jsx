@@ -85,6 +85,15 @@ export const Contact = () => {
                                         daniel.henriques@rodda.pt
                                     </a>
                                 </div>
+                                <div>
+                                    <span className="label-style text-[#999]">Email</span>
+                                    <a 
+                                        href="mailto:daniel.henriques@dani.pt"
+                                        className="block text-lg text-[#1A1A1A] mt-2 hover:text-[#E60000] transition-colors"
+                                    >
+                                        daniel.henriques@dani.pt
+                                    </a>
+                                </div>
 
                                 {/* Address */}
                                 <div>

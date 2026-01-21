@@ -295,8 +295,7 @@ export const Home = () => {
                 <div className="container-site">
                     <div className="text-center max-w-3xl mx-auto mb-12">
                         <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#E60000]/10 text-[#E60000] text-xs font-semibold tracking-wider uppercase rounded-full mb-4 hover-glow-red">
-                            <Sparkles size={14} />
-                            A Diferença dANI.PT
+                            dANI.PT
                         </span>
                         <h2 className="font-display text-4xl md:text-5xl text-gray-900 dark:text-white">
                             Não vendo apenas carros.<br/>

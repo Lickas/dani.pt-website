@@ -276,7 +276,7 @@ const PrivacyPolicy = () => {
                         </p>
                         <div className="mt-4 p-6 bg-gray-50 dark:bg-[#1A1A1A] rounded-sm">
                             <p className="text-gray-900 dark:text-white font-medium">dANI.PT - Stand Automóvel</p>
-                            <p className="text-gray-600 dark:text-gray-400 mt-2">Email: daniel.henriques@rodda.pt</p>
+                            <p className="text-gray-600 dark:text-gray-400 mt-2">Email: daniel.henriques@dani.pt</p>
                             <p className="text-gray-600 dark:text-gray-400">Telefone: +351 919 190 993</p>
                         </div>
                     </section>

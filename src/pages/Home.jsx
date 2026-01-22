@@ -164,7 +164,7 @@ export const Home = () => {
 
                         {/* Tagline única */}
                         <p className="text-white/80 mt-6 md:mt-8 max-w-2xl text-lg md:text-xl leading-relaxed animate-fade-up delay-200 font-light">
-                            Térmica, Hybrid, Plug-in ou Elétrica. <span className="text-white font-medium">Novo, Usado ou Semi-novo.</span>
+                            Térmica, Hybrid, Plug-in ou Elétrica. <span className="text-white font-medium">novo, semi-novo ou usado.</span>
                             <br/>Quer financiamento? <strong className="text-[#E60000]">Tenho a solução.</strong>
                         </p>
 
@@ -302,7 +302,7 @@ export const Home = () => {
                             <span className="text-glow-red">Entrego soluções.</span>
                         </h2>
                         <p className="text-gray-500 mt-4 text-base md:text-lg">
-                            Seja novo, usado ou semi-novo, cada viatura é uma promessa de mobilidade cumprida.
+                            Seja novo, semi-novo ou usado, cada viatura é uma promessa de mobilidade cumprida.
                         </p>
                     </div>
 
@@ -702,8 +702,8 @@ export const Home = () => {
                                 <h4 className="font-semibold text-gray-900 dark:text-white">Contacto</h4>
                                 <p className="text-sm text-gray-500 mt-1">
                                     <a href="tel:+351919190993" className="hover:text-[#E60000] transition-colors">+351 919 190 993</a><br/>
-                                    <a href="mailto:daniel.henriques@rodda.pt" className="hover:text-[#E60000] transition-colors">daniel.henriques@rodda.pt</a><br/>
-                                    <a href="mailto:daniel.henriques@dani.pt" className="hover:text-[#E60000] transition-colors">daniel.henriques@dani.pt</a>
+                                    <a href="mailto:daniel.henriques@dani.pt" className="hover:text-[#E60000] transition-colors">daniel.henriques@dani.pt</a><br/>
+                                    <a href="mailto:daniel.henriques@rodda.pt" className="hover:text-[#E60000] transition-colors">daniel.henriques@rodda.pt</a>
                                 </p>
                             </div>
                         </div>

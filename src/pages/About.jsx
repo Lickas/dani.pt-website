@@ -56,26 +56,28 @@ export const About = () => {
 
                         {/* Right - Large */}
                         <div className="lg:col-span-8 lg:pt-12">
-                            <p className="dani-quote text-lg leading-relaxed">
-                                Na dANI.PT não aceito qualquer viatura. Cada carro que entra no meu stand 
-                                passa por seleção criteriosa e revisão completa.
-                            </p>
-                            <p className="dani-quote text-lg leading-relaxed mt-6">
-                                Sem promessas vazias. Só honestidade. Quando compra uma viatura comigo, 
-                                sabe exatamente o que está a levar.
-                            </p>
-                            <div className="mt-12 flex items-center gap-8">
-                                <div>
-                                    <span className="font-display text-5xl text-[#E60000]">100%</span>
-                                    <span className="block text-sm text-[#999] mt-1">Revistos</span>
-                                </div>
-                                <div className="w-px h-16 bg-[#E8E8E8]"></div>
-                                <div>
-                                    <span className="font-display text-5xl text-[#1A1A1A]">Garantia</span>
-                                    <span className="block text-sm text-[#999] mt-1">Incluída</span>
-                                </div>
-                            </div>
-                        </div>
+    <p className="dani-quote text-lg leading-relaxed">
+        Em dANI.PT, cada carro passa por uma seleção criteriosa e revisão completa. 
+        Não é apenas uma venda; é o resultado de uma experiência técnica iniciada em 1992.
+    </p>
+    <p className="dani-quote text-lg leading-relaxed mt-6">
+        São mais de 33 anos a distinguir o excelente do apenas "bom". 
+        Sem promessas vazias, trago a segurança de um percurso comprovado. 
+        Quando compra uma viatura comigo, leva a certeza de um negócio transparente, apoiado por quem conhece o setor automóvel de uma vida inteira.
+    </p>
+    
+    <div className="mt-12 flex items-center gap-8">
+        <div>
+            <span className="font-display text-5xl text-[#E60000]">100%</span>
+            <span className="block text-sm text-[#999] mt-1">Revistos</span>
+        </div>
+        <div className="w-px h-16 bg-[#E8E8E8]"></div>
+        <div>
+            <span className="font-display text-5xl text-[#1A1A1A]">+33</span>
+            <span className="block text-sm text-[#999] mt-1">Anos de Experiência</span>
+        </div>
+    </div>
+</div>
                     </div>
                 </div>
             </section>
@@ -107,6 +109,8 @@ export const About = () => {
                             { title: 'Transparência', desc: 'Histórico completo. Sem letras pequenas. Sem surpresas.' },
                             { title: 'Qualidade', desc: 'Cada viatura inspecionada ao detalhe antes de chegar ao cliente.' },
                             { title: 'Respeito', desc: 'Pelo seu tempo, pelo seu dinheiro, pela sua decisão.' },
+                            // NOVO TÓPICO ADICIONADO AQUI:
+                            { title: 'Experiência', desc: 'Desde 1992 na estrada. Um olhar treinado para distinguir o excelente do apenas bom.' },
                         ].map((value, index) => (
                             <div 
                                 key={value.title}

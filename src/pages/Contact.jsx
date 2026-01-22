@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Send, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { contactsAPI } from '../utils/apiService';
+import emailjs from '@emailjs/browser'; // <--- IMPORTADO AQUI
 
 export const Contact = () => {
     const [formData, setFormData] = useState({
@@ -20,11 +21,34 @@ export const Contact = () => {
         e.preventDefault();
         setLoading(true);
 
+        // --- DADOS DO EMAILJS (PREENCHER AQUI) ---
+        const serviceId = "service_broc3lo";   // Ex: service_x9s...
+        const templateId = "template_76j3pz8"; // Ex: template_a8z...
+        const publicKey = "INbSKmzMapekzuclK";   // Ex: user_9s8... (encontras em Account > API Keys)
+        // -----------------------------------------
+
         try {
+            // 1. Guardar na Base de Dados (mantém o que já tinhas)
             await contactsAPI.create(formData);
+
+            // 2. Enviar notificação por Email via EmailJS
+            // Estes nomes (from_name, etc) devem bater certo com as variáveis no teu Template no site do EmailJS
+            const templateParams = {
+                from_name: formData.name,
+                from_email: formData.email,
+                phone: formData.phone,
+                message: formData.message,
+            };
+
+            await emailjs.send(serviceId, templateId, templateParams, publicKey);
+
+            // Sucesso total
             toast.success('Mensagem enviada! Responderemos brevemente.');
             setFormData({ name: '', email: '', phone: '', message: '' });
+
         } catch (error) {
+            console.error('Erro no envio:', error);
+            // Se falhar a BD ou o Email, mostra erro
             toast.error('Erro ao enviar. Tente novamente.');
         } finally {
             setLoading(false);
@@ -79,16 +103,16 @@ export const Contact = () => {
                                 <div>
                                     <span className="label-style text-[#999]">Email</span>
                                     <a 
-                                        href="mailto:daniel.henriques@rodda.pt"
-                                        className="block text-lg text-[#1A1A1A] mt-2 hover:text-[#E60000] transition-colors"
-                                    >
-                                        daniel.henriques@rodda.pt
-                                    </a>
-                                    <a 
                                         href="mailto:daniel.henriques@dani.pt"
                                         className="block text-lg text-[#1A1A1A] mt-2 hover:text-[#E60000] transition-colors"
                                     >
                                         daniel.henriques@dani.pt
+                                    </a>
+                                    <a 
+                                        href="mailto:daniel.henriques@rodda.pt"
+                                        className="block text-lg text-[#1A1A1A] mt-2 hover:text-[#E60000] transition-colors"
+                                    >
+                                        daniel.henriques@rodda.pt
                                     </a>
                                 </div>
 

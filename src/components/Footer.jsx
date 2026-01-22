@@ -49,18 +49,18 @@ export const Footer = () => {
                                 +351 919 190 993
                             </a>
                             <a 
-                                href="mailto:daniel.henriques@rodda.pt"
+                                href="mailto:daniel.henriques@dani.pt"
                                 className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors text-sm group"
                             >
                                 <Mail size={16} className="text-gray-500 group-hover:text-[#E60000] transition-colors" />
-                                daniel.henriques@rodda.pt
+                                daniel.henriques@dani.pt
                             </a>
                             <a 
                                 href="mailto:daniel.henriques@rodda.pt"
                                 className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors text-sm group"
                             >
                                 <Mail size={16} className="text-gray-500 group-hover:text-[#E60000] transition-colors" />
-                                daniel.henriques@dani.pt
+                                daniel.henriques@rodda.pt
                             </a>
                         </div>
                     </div>

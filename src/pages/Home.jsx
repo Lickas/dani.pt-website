@@ -164,7 +164,7 @@ export const Home = () => {
 
                         {/* Tagline única */}
                         <p className="text-white/80 mt-6 md:mt-8 max-w-2xl text-lg md:text-xl leading-relaxed animate-fade-up delay-200 font-light">
-                            Térmica, Hybrid, Plug-in ou Elétrica. <span className="text-white font-medium">novo, semi-novo ou usado.</span>
+                            Térmica, Hybrid, Plug-in ou Elétrica. <span className="text-white font-medium">Novo, semi-novo ou usado.</span>
                             <br/>Quer financiamento? <strong className="text-[#E60000]">Tenho a solução.</strong>
                         </p>
 

@@ -305,6 +305,7 @@ export const contactsAPI = {
 
 export const uploadAPI = {
   // Upload de imagem de viatura
+  // Usa o bucket 'vehicle-images'
   uploadVehicleImage: async (file) => {
     try {
       const fileExt = file.name.split('.').pop();
@@ -329,6 +330,7 @@ export const uploadAPI = {
   },
 
   // Upload de imagem de campanha
+  // Usa o bucket 'campaign-images'
   uploadCampaignImage: async (file) => {
     try {
       const fileExt = file.name.split('.').pop();
@@ -352,7 +354,7 @@ export const uploadAPI = {
     }
   },
 
-  // Delete image from storage
+  // Delete image from storage (genérico)
   deleteImage: async (bucket, path) => {
     try {
       const { error } = await supabase.storage

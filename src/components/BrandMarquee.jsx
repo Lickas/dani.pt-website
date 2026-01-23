@@ -36,17 +36,14 @@ export const BrandMarquee = () => {
                 }
             `}</style>
             
-            {/* AJUSTE FINAL: 
-                Usei mb-12 (3rem / 48px). 
-                Isto é o dobro do que tinhas no início, mas metade do buraco gigante de agora.
-            */}
+            {/* SOLUÇÃO FINAL: mb-12.
+                Removemos a div gigante.
+                mb-12 dá exatamente 48px de espaço. Não cola, nem flutua. */}
             <div className="container-site mb-12">
                 <p className="text-center text-xs font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500">
                     Marcas que comercializo
                 </p>
             </div>
-
-            {/* Removi a DIV espaçadora gigante daqui */}
 
             <div className="flex w-full overflow-hidden mask-gradient-x">
                 <div className="flex items-center gap-8 md:gap-12 animate-marquee whitespace-nowrap px-4">

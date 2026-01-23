@@ -22,7 +22,7 @@ const brands = [
 
 export const BrandMarquee = () => {
     return (
-        <section className="pt-8 pb-12 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 overflow-hidden">
+        <section className="py-12 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 overflow-hidden">
             <style>{`
                 @keyframes marquee {
                     0% { transform: translateX(0); }
@@ -36,18 +36,17 @@ export const BrandMarquee = () => {
                 }
             `}</style>
             
-            {/* Removi o mb daqui porque não estava a funcionar */}
-            <div className="container-site">
+            {/* AJUSTE FINAL: 
+                Usei mb-12 (3rem / 48px). 
+                Isto é o dobro do que tinhas no início, mas metade do buraco gigante de agora.
+            */}
+            <div className="container-site mb-12">
                 <p className="text-center text-xs font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500">
                     Marcas que comercializo
                 </p>
             </div>
 
-            {/* --- BLOCO SEPARADOR (A FORÇA BRUTA) --- */}
-            {/* Isto funciona como vários <br>. h-16 dá 4rem (64px) de espaço puro.
-                Podes mudar para h-20 ou h-24 se quiseres ainda mais buraco. */}
-            <div className="w-full h-16 md:h-20"></div> 
-            {/* --------------------------------------- */}
+            {/* Removi a DIV espaçadora gigante daqui */}
 
             <div className="flex w-full overflow-hidden mask-gradient-x">
                 <div className="flex items-center gap-8 md:gap-12 animate-marquee whitespace-nowrap px-4">

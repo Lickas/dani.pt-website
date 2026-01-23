@@ -74,6 +74,7 @@ export const AdminCampaignForm = () => {
         setLoading(true);
 
         try {
+            // 1. Prepara os dados
             const payload = {
                 ...formData,
                 discount_percentage: formData.discount_percentage ? parseFloat(formData.discount_percentage) : null,
@@ -81,6 +82,13 @@ export const AdminCampaignForm = () => {
                 start_date: new Date(formData.start_date).toISOString(),
                 end_date: new Date(formData.end_date).toISOString()
             };
+
+            // 2. CORREÇÃO CRÍTICA AQUI:
+            // Se estamos a CRIAR (não editar), removemos o ID para o Supabase gerar um novo.
+            if (!isEditing) {
+                delete payload.id;
+                delete payload.created_at; // Remove também a data de criação para ser automática
+            }
 
             if (isEditing) {
                 await campaignsAPI.update(id, payload);
@@ -91,6 +99,7 @@ export const AdminCampaignForm = () => {
             }
             navigate('/admin/campanhas');
         } catch (error) {
+            console.error(error); // Bom para veres o erro na consola
             toast.error('Erro ao guardar campanha');
         } finally {
             setLoading(false);

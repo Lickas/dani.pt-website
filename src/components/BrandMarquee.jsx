@@ -22,7 +22,7 @@ const brands = [
 
 export const BrandMarquee = () => {
     return (
-        <section className="py-12 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 overflow-hidden">
+        <section className="py-8 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col gap-8">
             <style>{`
                 @keyframes marquee {
                     0% { transform: translateX(0); }
@@ -39,7 +39,7 @@ export const BrandMarquee = () => {
             {/* SOLUÇÃO FINAL: mb-12.
                 Removemos a div gigante.
                 mb-12 dá exatamente 48px de espaço. Não cola, nem flutua. */}
-            <div className="container-site mb-12">
+            <div className="container-site">
                 <p className="text-center text-xs font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500">
                     Marcas que comercializo
                 </p>

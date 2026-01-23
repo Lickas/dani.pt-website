@@ -37,7 +37,7 @@ export const BrandMarquee = () => {
             `}</style>
             
             {/* Aumentei mb-6 para mb-10 para dar mais distanciamento do carrossel */}
-            <div className="container-site mb-10">
+            <div className="container-site mb-12">
                 <p className="text-center text-xs font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500">
                     Marcas que comercializo
                 </p>
@@ -45,7 +45,7 @@ export const BrandMarquee = () => {
 
             <div className="flex w-full overflow-hidden mask-gradient-x">
                 {/* Reduzi o gap-12 md:gap-20 para gap-8 md:gap-12 */}
-                <div className="flex items-center gap-8 md:gap-12 animate-marquee whitespace-nowrap px-4">
+                <div className="flex items-center gap-6 md:gap-10 animate-marquee whitespace-nowrap px-4">
                     {/* First set of logos */}
                     {brands.map((brand, index) => (
                         <div 

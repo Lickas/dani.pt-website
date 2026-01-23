@@ -22,8 +22,7 @@ const brands = [
 
 export const BrandMarquee = () => {
     return (
-        /* Alteração 1: Mudei 'py-12' para 'pt-8 pb-12'. 
-           Isto reduz o espaço no topo (pt-8) mantendo o espaço em baixo da secção (pb-12) */
+        /* Mantive o pt-8 (curto em cima) */
         <section className="pt-8 pb-12 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 overflow-hidden">
             <style>{`
                 @keyframes marquee {
@@ -38,16 +37,16 @@ export const BrandMarquee = () => {
                 }
             `}</style>
             
-            {/* Alteração 2: Aumentei para mb-14 (era mb-10). 
-               Isto empurra os logos para baixo, afastando-os do texto. */ }
-            <div className="container-site mb-14">
+            {/* AQUI ESTÁ A MUDANÇA GRANDE: Mudei de mb-14 para mb-24. 
+                Isto vai criar um espaço muito maior entre o texto e os logos. */}
+            <div className="container-site mb-24">
                 <p className="text-center text-xs font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500">
                     Marcas que comercializo
                 </p>
             </div>
 
             <div className="flex w-full overflow-hidden mask-gradient-x">
-                {/* Mantive o gap reduzido como pediste anteriormente (gap-8) */}
+                {/* Mantive o gap-8 para os logos ficarem mais juntinhos entre si */}
                 <div className="flex items-center gap-8 md:gap-12 animate-marquee whitespace-nowrap px-4">
                     {/* First set of logos */}
                     {brands.map((brand, index) => (

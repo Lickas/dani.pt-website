@@ -19,8 +19,14 @@ export const AdminMessages = () => {
 
     const fetchMessages = async () => {
         try {
-            const data = await contactsAPI.getAll();
-            setMessages(data);
+            // Ordenar por data (mais recente primeiro)
+            const { data, error } = await supabase
+                .from('contacts')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+            setMessages(data || []);
         } catch (error) {
             console.error('Error fetching messages:', error);
             setMessages([]);
@@ -31,16 +37,27 @@ export const AdminMessages = () => {
 
     const handleMarkRead = async (id) => {
         try {
-            await supabase
+            // 1. Atualizar no Supabase e verificar erro
+            const { error } = await supabase
                 .from('contacts')
                 .update({ is_read: true })
                 .eq('id', id);
+
+            if (error) throw error;
             
+            // 2. Atualizar estado local da lista
             setMessages(prev => prev.map(m => 
                 m.id === id ? { ...m, is_read: true } : m
             ));
+
+            // 3. Atualizar mensagem selecionada se for a mesma
+            if (selectedMessage?.id === id) {
+                setSelectedMessage(prev => ({ ...prev, is_read: true }));
+            }
+
         } catch (error) {
             console.error('Error marking read:', error);
+            toast.error('Erro ao atualizar estado');
         }
     };
 
@@ -48,11 +65,18 @@ export const AdminMessages = () => {
         if (!window.confirm('Eliminar esta mensagem?')) return;
 
         try {
-            await contactsAPI.delete(id);
+            const { error } = await supabase
+                .from('contacts')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+
             toast.success('Mensagem eliminada');
             setMessages(prev => prev.filter(m => m.id !== id));
             if (selectedMessage?.id === id) setSelectedMessage(null);
         } catch (error) {
+            console.error('Erro delete:', error);
             toast.error('Erro ao eliminar');
         }
     };
@@ -96,6 +120,7 @@ export const AdminMessages = () => {
                                     key={message.id}
                                     onClick={() => {
                                         setSelectedMessage(message);
+                                        // Só marca como lida se ainda não estiver
                                         if (!message.is_read) handleMarkRead(message.id);
                                     }}
                                     className={`w-full text-left p-4 hover:bg-[#F9F9F9] dark:hover:bg-[#222] transition-colors ${

@@ -51,7 +51,22 @@ export const AdminSettings = () => {
                 .single();
 
             if (data && !error) {
-                setFormData(prev => ({ ...prev, ...data }));
+                // CORREÇÃO AQUI:
+                // Se data.schedule for null, mantemos o prev.schedule (que tem os dias todos)
+                // Se data.schedule for string (às vezes acontece), tentamos fazer parse
+                let safeSchedule = data.schedule;
+                
+                if (!safeSchedule) {
+                    safeSchedule = formData.schedule; // Usa o padrão
+                } else if (typeof safeSchedule === 'string') {
+                     try { safeSchedule = JSON.parse(safeSchedule); } catch(e) {}
+                }
+
+                setFormData(prev => ({
+                    ...prev,
+                    ...data,
+                    schedule: safeSchedule || prev.schedule
+                }));
             }
         } catch (error) {
             console.error('Error fetching business info:', error);

@@ -3,7 +3,7 @@ import { Phone, Mail, MapPin, Send, MessageCircle, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import { contactsAPI } from '../utils/apiService';
 import emailjs from '@emailjs/browser';
-import { supabase } from '../supabaseClient'; // Importar o cliente Supabase
+import { supabase } from '../supabaseClient';
 
 export const Contact = () => {
     // 1. Estado para o Formulário
@@ -15,9 +15,9 @@ export const Contact = () => {
     });
     const [loading, setLoading] = useState(false);
 
-    // 2. Estado para as Informações do Stand (Vêm da BD)
+    // 2. Estado para as Informações do Stand
     const [info, setInfo] = useState({
-        phone: '+351 919 190 993', // Valores padrão/fallback enquanto carrega
+        phone: '+351 919 190 993',
         email: 'daniel.henriques@dani.pt',
         address: 'Rua da Casa Meada 12, Antanhol, 3040-584 Coimbra',
         whatsapp: '+351919190993',
@@ -25,7 +25,7 @@ export const Contact = () => {
         schedule: null
     });
 
-    // 3. Buscar dados ao Supabase ao carregar a página
+    // 3. Buscar dados ao Supabase
     useEffect(() => {
         fetchBusinessInfo();
     }, []);
@@ -38,7 +38,6 @@ export const Contact = () => {
                 .single();
 
             if (data && !error) {
-                // Se o schedule vier como string JSON, fazemos o parse
                 let safeSchedule = data.schedule;
                 if (typeof safeSchedule === 'string') {
                     try { safeSchedule = JSON.parse(safeSchedule); } catch (e) { }
@@ -54,7 +53,6 @@ export const Contact = () => {
         }
     };
 
-    // Auxiliar para limpar numero whatsapp (remover espaços e +)
     const cleanPhoneForLink = (phone) => {
         if (!phone) return '';
         return phone.replace(/[^0-9]/g, '');
@@ -95,7 +93,6 @@ export const Contact = () => {
         }
     };
 
-    // Ordem dos dias para renderizar o horário
     const daysOrder = [
         { key: 'segunda', label: 'Segunda' },
         { key: 'terca', label: 'Terça' },
@@ -131,11 +128,11 @@ export const Contact = () => {
                 <div className="container-site">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
                         
-                        {/* LEFT - Contact Info (Agora Dinâmico) */}
+                        {/* LEFT - Contact Info */}
                         <div className="lg:col-span-5">
                             <div className="space-y-8">
                                 
-                                {/* Telefone Dinâmico */}
+                                {/* Telefone */}
                                 <div>
                                     <span className="label-style text-[#999] flex items-center gap-2">
                                         <Phone size={14} /> Telefone
@@ -148,20 +145,30 @@ export const Contact = () => {
                                     </a>
                                 </div>
 
-                                {/* Email Dinâmico */}
+                                {/* Emails (MUDANÇA AQUI: Mostra os dois) */}
                                 <div>
                                     <span className="label-style text-[#999] flex items-center gap-2">
                                         <Mail size={14} /> Email
                                     </span>
+                                    
+                                    {/* 1. Email Principal (da Base de Dados - dani.pt) */}
                                     <a 
                                         href={`mailto:${info.email}`}
                                         className="block text-lg text-[#1A1A1A] mt-2 hover:text-[#E60000] transition-colors"
                                     >
                                         {info.email}
                                     </a>
+
+                                    {/* 2. Email Secundário (Rodda - Fixo) */}
+                                    <a 
+                                        href="mailto:daniel.henriques@rodda.pt"
+                                        className="block text-lg text-[#1A1A1A] mt-1 hover:text-[#E60000] transition-colors"
+                                    >
+                                        daniel.henriques@rodda.pt
+                                    </a>
                                 </div>
 
-                                {/* Morada Dinâmica */}
+                                {/* Morada */}
                                 <div>
                                     <span className="label-style text-[#999] flex items-center gap-2">
                                         <MapPin size={14} /> Morada
@@ -171,7 +178,7 @@ export const Contact = () => {
                                     </p>
                                 </div>
 
-                                {/* Horário Dinâmico */}
+                                {/* Horário */}
                                 <div>
                                     <span className="label-style text-[#999] flex items-center gap-2">
                                         <Clock size={14} /> Horário
@@ -199,7 +206,7 @@ export const Contact = () => {
                                     </div>
                                 </div>
 
-                                {/* WhatsApp Button Dinâmico */}
+                                {/* WhatsApp Button */}
                                 {info.whatsapp && (
                                     <a
                                         href={`https://wa.me/${cleanPhoneForLink(info.whatsapp)}?text=Olá! Gostava de saber mais informações.`}
@@ -214,7 +221,7 @@ export const Contact = () => {
                             </div>
                         </div>
 
-                        {/* RIGHT - Form (Mantido igual) */}
+                        {/* RIGHT - Form */}
                         <div className="lg:col-span-7">
                             <div className="bg-[#FAFAFA] p-8 md:p-12">
                                 <h2 className="font-display text-3xl text-[#1A1A1A] mb-8">
@@ -297,7 +304,7 @@ export const Contact = () => {
                 </div>
             </section>
 
-            {/* MAP - Dinâmico */}
+            {/* MAP */}
             <section className="h-[400px] md:h-[500px] bg-[#F5F5F5]">
                 {info.google_maps_embed ? (
                     <iframe

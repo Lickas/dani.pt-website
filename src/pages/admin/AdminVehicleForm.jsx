@@ -106,8 +106,9 @@ export const AdminVehicleForm = () => {
         const uploadedUrls = [];
 
         try {
-            // Verifica se o bucket existe (geralmente tratado no SQL, mas bom ter feedback)
             for (const file of files) {
+                // Aqui removemos qualquer verificação de tamanho (file.size)
+                
                 const result = await uploadAPI.uploadVehicleImage(file);
                 if (result && result.url) {
                     uploadedUrls.push(result.url);
@@ -120,8 +121,9 @@ export const AdminVehicleForm = () => {
             }));
             toast.success('Imagens carregadas com sucesso');
         } catch (error) {
-            console.error(error);
-            toast.error('Erro ao carregar imagens. Verifique se o tamanho é menor que 2MB.');
+            console.error('Erro detalhado:', error);
+            // AGORA MOSTRA O ERRO REAL (Ex: "Bucket not found" ou "Permission denied")
+            toast.error(`Erro no upload: ${error.message || 'Erro desconhecido'}`);
         } finally {
             setUploading(false);
         }

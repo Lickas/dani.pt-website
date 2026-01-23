@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Send, MessageCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Phone, Mail, MapPin, Send, MessageCircle, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import { contactsAPI } from '../utils/apiService';
-import emailjs from '@emailjs/browser'; // <--- IMPORTADO AQUI
+import emailjs from '@emailjs/browser';
+import { supabase } from '../supabaseClient'; // Importar o cliente Supabase
 
 export const Contact = () => {
+    // 1. Estado para o Formulário
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -12,6 +14,51 @@ export const Contact = () => {
         message: ''
     });
     const [loading, setLoading] = useState(false);
+
+    // 2. Estado para as Informações do Stand (Vêm da BD)
+    const [info, setInfo] = useState({
+        phone: '+351 919 190 993', // Valores padrão/fallback enquanto carrega
+        email: 'daniel.henriques@dani.pt',
+        address: 'Rua da Casa Meada 12, Antanhol, 3040-584 Coimbra',
+        whatsapp: '+351919190993',
+        google_maps_embed: '',
+        schedule: null
+    });
+
+    // 3. Buscar dados ao Supabase ao carregar a página
+    useEffect(() => {
+        fetchBusinessInfo();
+    }, []);
+
+    const fetchBusinessInfo = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('business_info')
+                .select('*')
+                .single();
+
+            if (data && !error) {
+                // Se o schedule vier como string JSON, fazemos o parse
+                let safeSchedule = data.schedule;
+                if (typeof safeSchedule === 'string') {
+                    try { safeSchedule = JSON.parse(safeSchedule); } catch (e) { }
+                }
+                
+                setInfo({
+                    ...data,
+                    schedule: safeSchedule
+                });
+            }
+        } catch (error) {
+            console.error('Erro ao carregar informações:', error);
+        }
+    };
+
+    // Auxiliar para limpar numero whatsapp (remover espaços e +)
+    const cleanPhoneForLink = (phone) => {
+        if (!phone) return '';
+        return phone.replace(/[^0-9]/g, '');
+    };
 
     const handleChange = (e) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -21,18 +68,13 @@ export const Contact = () => {
         e.preventDefault();
         setLoading(true);
 
-        // --- DADOS DO EMAILJS (PREENCHER AQUI) ---
-        const serviceId = "service_broc3lo";   // Ex: service_x9s...
-        const templateId = "template_76j3pz8"; // Ex: template_a8z...
-        const publicKey = "INbSKmzMapekzuclK";   // Ex: user_9s8... (encontras em Account > API Keys)
-        // -----------------------------------------
+        const serviceId = "service_broc3lo";   
+        const templateId = "template_76j3pz8"; 
+        const publicKey = "INbSKmzMapekzuclK";   
 
         try {
-            // 1. Guardar na Base de Dados (mantém o que já tinhas)
             await contactsAPI.create(formData);
 
-            // 2. Enviar notificação por Email via EmailJS
-            // Estes nomes (from_name, etc) devem bater certo com as variáveis no teu Template no site do EmailJS
             const templateParams = {
                 from_name: formData.name,
                 from_email: formData.email,
@@ -42,24 +84,31 @@ export const Contact = () => {
 
             await emailjs.send(serviceId, templateId, templateParams, publicKey);
 
-            // Sucesso total
             toast.success('Mensagem enviada! Responderemos brevemente.');
             setFormData({ name: '', email: '', phone: '', message: '' });
 
         } catch (error) {
             console.error('Erro no envio:', error);
-            // Se falhar a BD ou o Email, mostra erro
             toast.error('Erro ao enviar. Tente novamente.');
         } finally {
             setLoading(false);
         }
     };
 
+    // Ordem dos dias para renderizar o horário
+    const daysOrder = [
+        { key: 'segunda', label: 'Segunda' },
+        { key: 'terca', label: 'Terça' },
+        { key: 'quarta', label: 'Quarta' },
+        { key: 'quinta', label: 'Quinta' },
+        { key: 'sexta', label: 'Sexta' },
+        { key: 'sabado', label: 'Sábado' },
+        { key: 'domingo', label: 'Domingo' }
+    ];
+
     return (
         <main className="pt-20">
-            {/* ============================================
-                HEADER
-                ============================================ */}
+            {/* HEADER */}
             <section className="bg-[#FAFAFA] py-16 md:py-24">
                 <div className="container-site">
                     <div className="flex items-start gap-6">
@@ -67,7 +116,7 @@ export const Contact = () => {
                         <div>
                             <span className="label-style text-[#999]">Contacto</span>
                             <h1 className="font-display text-6xl md:text-7xl lg:text-8xl text-[#1A1A1A] mt-2">
-                                Fale<br/>comigo
+                                Fale<br />comigo
                             </h1>
                             <p className="dani-quote mt-4">
                                 Perguntas diretas. Respostas diretas.
@@ -77,85 +126,95 @@ export const Contact = () => {
                 </div>
             </section>
 
-            {/* ============================================
-                CONTENT
-                ============================================ */}
+            {/* CONTENT */}
             <section className="py-16 md:py-24">
                 <div className="container-site">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-                        {/* ================================
-                            LEFT - Contact Info
-                            ================================ */}
+                        
+                        {/* LEFT - Contact Info (Agora Dinâmico) */}
                         <div className="lg:col-span-5">
                             <div className="space-y-8">
-                                {/* Phone */}
+                                
+                                {/* Telefone Dinâmico */}
                                 <div>
-                                    <span className="label-style text-[#999]">Telefone</span>
+                                    <span className="label-style text-[#999] flex items-center gap-2">
+                                        <Phone size={14} /> Telefone
+                                    </span>
                                     <a 
-                                        href="tel:+351919190993"
+                                        href={`tel:${info.phone}`}
                                         className="block text-2xl font-semibold text-[#1A1A1A] mt-2 hover:text-[#E60000] transition-colors"
                                     >
-                                        +351 919 190 993
+                                        {info.phone}
                                     </a>
                                 </div>
 
-                                {/* Email */}
+                                {/* Email Dinâmico */}
                                 <div>
-                                    <span className="label-style text-[#999]">Email</span>
+                                    <span className="label-style text-[#999] flex items-center gap-2">
+                                        <Mail size={14} /> Email
+                                    </span>
                                     <a 
-                                        href="mailto:daniel.henriques@dani.pt"
+                                        href={`mailto:${info.email}`}
                                         className="block text-lg text-[#1A1A1A] mt-2 hover:text-[#E60000] transition-colors"
                                     >
-                                        daniel.henriques@dani.pt
-                                    </a>
-                                    <a 
-                                        href="mailto:daniel.henriques@rodda.pt"
-                                        className="block text-lg text-[#1A1A1A] mt-2 hover:text-[#E60000] transition-colors"
-                                    >
-                                        daniel.henriques@rodda.pt
+                                        {info.email}
                                     </a>
                                 </div>
 
-                                {/* Address */}
+                                {/* Morada Dinâmica */}
                                 <div>
-                                    <span className="label-style text-[#999]">Morada</span>
+                                    <span className="label-style text-[#999] flex items-center gap-2">
+                                        <MapPin size={14} /> Morada
+                                    </span>
                                     <p className="text-lg text-[#1A1A1A] mt-2">
-                                        Rua da Casa Meada 12<br/>
-                                        Antanhol, 3040-584 Coimbra
+                                        {info.address}
                                     </p>
                                 </div>
 
-                                {/* Hours */}
+                                {/* Horário Dinâmico */}
                                 <div>
-                                    <span className="label-style text-[#999]">Horário</span>
-                                    <div className="mt-2 space-y-1 text-[#1A1A1A]">
-                                        <div className="flex justify-between max-w-[200px]">
-                                            <span>Seg—Sáb</span>
-                                            <span>09:00—20:00</span>
-                                        </div>
-                                        <div className="flex justify-between max-w-[200px] text-[#999]">
-                                            <span>Domingo</span>
-                                            <span>Fechado</span>
-                                        </div>
+                                    <span className="label-style text-[#999] flex items-center gap-2">
+                                        <Clock size={14} /> Horário
+                                    </span>
+                                    <div className="mt-2 space-y-1 text-[#1A1A1A] text-sm">
+                                        {info.schedule ? (
+                                            daysOrder.map((day) => {
+                                                const hours = info.schedule[day.key];
+                                                if (!hours) return null;
+                                                return (
+                                                    <div key={day.key} className="flex justify-between max-w-[250px] border-b border-gray-100 pb-1 mb-1 last:border-0">
+                                                        <span className="font-medium text-gray-500">{day.label}</span>
+                                                        <span>
+                                                            {hours.open && hours.close 
+                                                                ? `${hours.open} - ${hours.close}`
+                                                                : <span className="text-[#E60000] text-xs font-bold uppercase">Fechado</span>
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                );
+                                            })
+                                        ) : (
+                                            <p>A carregar horário...</p>
+                                        )}
                                     </div>
                                 </div>
 
-                                {/* WhatsApp Button */}
-                                <a
-                                    href="https://wa.me/351919190993?text=Olá! Gostava de saber mais informações."
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 px-6 py-3 bg-[#25D366] text-white font-semibold hover:bg-[#1DA851] transition-colors"
-                                >
-                                    <MessageCircle size={18} />
-                                    WhatsApp
-                                </a>
+                                {/* WhatsApp Button Dinâmico */}
+                                {info.whatsapp && (
+                                    <a
+                                        href={`https://wa.me/${cleanPhoneForLink(info.whatsapp)}?text=Olá! Gostava de saber mais informações.`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-2 px-6 py-3 bg-[#25D366] text-white font-semibold hover:bg-[#1DA851] transition-colors rounded-[2px]"
+                                    >
+                                        <MessageCircle size={18} />
+                                        WhatsApp
+                                    </a>
+                                )}
                             </div>
                         </div>
 
-                        {/* ================================
-                            RIGHT - Form
-                            ================================ */}
+                        {/* RIGHT - Form (Mantido igual) */}
                         <div className="lg:col-span-7">
                             <div className="bg-[#FAFAFA] p-8 md:p-12">
                                 <h2 className="font-display text-3xl text-[#1A1A1A] mb-8">
@@ -165,9 +224,7 @@ export const Contact = () => {
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     {/* Name */}
                                     <div>
-                                        <label className="label-style text-[#999] mb-2 block">
-                                            Nome
-                                        </label>
+                                        <label className="label-style text-[#999] mb-2 block">Nome</label>
                                         <input
                                             type="text"
                                             name="name"
@@ -182,9 +239,7 @@ export const Contact = () => {
                                     {/* Email & Phone */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <label className="label-style text-[#999] mb-2 block">
-                                                Email
-                                            </label>
+                                            <label className="label-style text-[#999] mb-2 block">Email</label>
                                             <input
                                                 type="email"
                                                 name="email"
@@ -196,9 +251,7 @@ export const Contact = () => {
                                             />
                                         </div>
                                         <div>
-                                            <label className="label-style text-[#999] mb-2 block">
-                                                Telefone
-                                            </label>
+                                            <label className="label-style text-[#999] mb-2 block">Telefone</label>
                                             <input
                                                 type="tel"
                                                 name="phone"
@@ -212,9 +265,7 @@ export const Contact = () => {
 
                                     {/* Message */}
                                     <div>
-                                        <label className="label-style text-[#999] mb-2 block">
-                                            Mensagem
-                                        </label>
+                                        <label className="label-style text-[#999] mb-2 block">Mensagem</label>
                                         <textarea
                                             name="message"
                                             value={formData.message}
@@ -246,19 +297,23 @@ export const Contact = () => {
                 </div>
             </section>
 
-            {/* ============================================
-                MAP
-                ============================================ */}
+            {/* MAP - Dinâmico */}
             <section className="h-[400px] md:h-[500px] bg-[#F5F5F5]">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3046.8!2d-8.4!3d40.2!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDEyJzAwLjAiTiA4wrAyNCcwMC4wIlc!5e0!3m2!1spt-PT!2spt!4v1234567890"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen=""
-                    loading="lazy"
-                    title="Localização dANI.PT"
-                />
+                {info.google_maps_embed ? (
+                    <iframe
+                        src={info.google_maps_embed}
+                        width="100%"
+                        height="100%"
+                        style={{ border: 0 }}
+                        allowFullScreen=""
+                        loading="lazy"
+                        title="Localização dANI.PT"
+                    />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <p>Mapa indisponível</p>
+                    </div>
+                )}
             </section>
         </main>
     );

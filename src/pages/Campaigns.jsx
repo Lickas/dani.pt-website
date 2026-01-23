@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Percent, Tag, ChevronRight } from 'lucide-react';
+import { Calendar, Percent, Tag, ChevronRight, Euro } from 'lucide-react'; // Adicionei Euro
 import { campaignsAPI } from '../utils/apiService';
 
 export const Campaigns = () => {
@@ -15,8 +15,6 @@ export const Campaigns = () => {
         setLoading(true);
         try {
             const data = await campaignsAPI.getAll();
-            
-            // PROGRAMA\u00c7\u00c3O DEFENSIVA: Garantir que \u00e9 um array
             const safeData = Array.isArray(data) ? data : [];
             setCampaigns(safeData);
         } catch (error) {
@@ -44,9 +42,7 @@ export const Campaigns = () => {
 
     return (
         <main className="pt-20">
-            {/* ============================================
-                PAGE HEADER
-                ============================================ */}
+            {/* PAGE HEADER */}
             <section className="bg-[#FAFAFA] py-16 md:py-24">
                 <div className="container-site">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -69,9 +65,7 @@ export const Campaigns = () => {
                 </div>
             </section>
 
-            {/* ============================================
-                CAMPAIGNS GRID
-                ============================================ */}
+            {/* CAMPAIGNS GRID */}
             <section className="py-12 md:py-16">
                 <div className="container-site">
                     {loading ? (
@@ -94,14 +88,14 @@ export const Campaigns = () => {
                                     className="group animate-fade-up block"
                                     style={{ animationDelay: `${index * 0.05}s` }}
                                 >
-                                    {/* Image Container */}
-                                    {campaign.image_url && (
+                                    {/* Image Container - CORRIGIDO 'image_url' PARA 'image' */}
+                                    {campaign.image && (
                                         <div className="aspect-video bg-[#F5F5F5] mb-4 overflow-hidden relative">
-                                            {/* Linha vermelha superior - assinatura dANI */}
+                                            {/* Linha vermelha superior */}
                                             <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#E60000] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
                                             
                                             <img
-                                                src={campaign.image_url}
+                                                src={campaign.image}
                                                 alt={campaign.title}
                                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                             />
@@ -118,14 +112,23 @@ export const Campaigns = () => {
                                     {/* Campaign Info */}
                                     <div className="space-y-3">
                                         {/* Discount Badge */}
-                                        {campaign.discount_percentage && (
-                                            <div className="flex items-center gap-2">
-                                                <Percent size={20} className="text-[#E60000]" />
-                                                <span className="text-4xl font-bold text-[#E60000]">
-                                                    -{campaign.discount_percentage}%
-                                                </span>
-                                            </div>
-                                        )}
+                                        <div className="flex items-center gap-2">
+                                            {campaign.discount_percentage ? (
+                                                <>
+                                                    <Percent size={20} className="text-[#E60000]" />
+                                                    <span className="text-4xl font-bold text-[#E60000]">
+                                                        -{campaign.discount_percentage}%
+                                                    </span>
+                                                </>
+                                            ) : campaign.discount_value ? (
+                                                <>
+                                                    <Euro size={20} className="text-[#E60000]" />
+                                                    <span className="text-4xl font-bold text-[#E60000]">
+                                                        -{campaign.discount_value}€
+                                                    </span>
+                                                </>
+                                            ) : null}
+                                        </div>
 
                                         {/* Title */}
                                         <h2 className="text-2xl font-display text-[#1A1A1A] group-hover:text-[#E60000] transition-colors">
@@ -133,7 +136,7 @@ export const Campaigns = () => {
                                         </h2>
 
                                         {/* Description */}
-                                        <p className="text-[#666] leading-relaxed">
+                                        <p className="text-[#666] leading-relaxed line-clamp-2">
                                             {campaign.description}
                                         </p>
 
@@ -144,16 +147,6 @@ export const Campaigns = () => {
                                                 {formatDate(campaign.start_date)} — {formatDate(campaign.end_date)}
                                             </span>
                                         </div>
-
-                                        {/* Applicable Vehicles */}
-                                        {campaign.applicable_vehicle_ids && campaign.applicable_vehicle_ids.length > 0 && (
-                                            <div className="flex items-center gap-2 text-sm text-[#666]">
-                                                <Tag size={16} />
-                                                <span>
-                                                    Aplicável a {campaign.applicable_vehicle_ids.length} {campaign.applicable_vehicle_ids.length === 1 ? 'viatura' : 'viaturas'}
-                                                </span>
-                                            </div>
-                                        )}
 
                                         {/* View Details Link */}
                                         <div className="flex items-center gap-1 text-[#E60000] font-semibold text-sm pt-2 group-hover:underline">
@@ -181,9 +174,7 @@ export const Campaigns = () => {
                 </div>
             </section>
 
-            {/* ============================================
-                CTA SECTION
-                ============================================ */}
+            {/* CTA SECTION */}
             <section className="py-16 md:py-24 bg-[#1A1A1A]">
                 <div className="container-site text-center">
                     <h2 className="font-display text-4xl md:text-5xl text-white mb-6">
@@ -192,12 +183,12 @@ export const Campaigns = () => {
                     <p className="text-[#999] mb-8 max-w-2xl mx-auto">
                         Entre em contacto comigo para saber mais sobre as minhas campanhas e encontrar a viatura perfeita para si.
                     </p>
-                    <a
-                        href="/contactos"
+                    <Link
+                        to="/contactos"
                         className="inline-block px-8 py-4 bg-[#E60000] text-white font-semibold hover:bg-[#CC0000] transition-colors"
                     >
                         Falar Comigo
-                    </a>
+                    </Link>
                 </div>
             </section>
         </main>

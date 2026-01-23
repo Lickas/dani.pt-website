@@ -1,6 +1,6 @@
 /**
  * Admin Vehicle Form - Create/Edit - Supabase Direct
- * Com lista de marcas fixa + opção de adicionar nova marca
+ * Com correção de ID e upload
  */
 
 import React, { useState, useEffect } from 'react';
@@ -19,6 +19,7 @@ export const AdminVehicleForm = () => {
     const [uploading, setUploading] = useState(false);
     const [customBrand, setCustomBrand] = useState('');
     const [showCustomBrand, setShowCustomBrand] = useState(false);
+    
     const [formData, setFormData] = useState({
         brand: '',
         model: '',
@@ -35,8 +36,8 @@ export const AdminVehicleForm = () => {
         is_featured: false,
         is_sold: false
     });
+    
     const [newFeature, setNewFeature] = useState('');
-
     const years = getVehicleYears(30);
 
     useEffect(() => {
@@ -49,7 +50,7 @@ export const AdminVehicleForm = () => {
         try {
             const data = await vehiclesAPI.getById(id);
             setFormData(data);
-            // Se a marca não está na lista padrão, mostrar campo customizado
+            
             if (data.brand && !BRANDS.includes(data.brand)) {
                 setShowCustomBrand(true);
                 setCustomBrand(data.brand);
@@ -105,18 +106,22 @@ export const AdminVehicleForm = () => {
         const uploadedUrls = [];
 
         try {
+            // Verifica se o bucket existe (geralmente tratado no SQL, mas bom ter feedback)
             for (const file of files) {
                 const result = await uploadAPI.uploadVehicleImage(file);
-                uploadedUrls.push(result.url);
+                if (result && result.url) {
+                    uploadedUrls.push(result.url);
+                }
             }
 
             setFormData(prev => ({
                 ...prev,
                 images: [...(prev.images || []), ...uploadedUrls]
             }));
-            toast.success('Imagens carregadas');
+            toast.success('Imagens carregadas com sucesso');
         } catch (error) {
-            toast.error('Erro ao carregar imagens');
+            console.error(error);
+            toast.error('Erro ao carregar imagens. Verifique se o tamanho é menor que 2MB.');
         } finally {
             setUploading(false);
         }
@@ -134,12 +139,19 @@ export const AdminVehicleForm = () => {
         setLoading(true);
 
         try {
+            // Prepara o payload
             const payload = {
                 ...formData,
                 year: parseInt(formData.year),
                 price: parseFloat(formData.price),
                 mileage: parseInt(formData.mileage) || 0
             };
+
+            // FIX CRÍTICO: Se estivermos a CRIAR, removemos o ID para o Supabase gerar um novo
+            if (!isEditing) {
+                delete payload.id;
+                delete payload.created_at;
+            }
 
             if (isEditing) {
                 await vehiclesAPI.update(id, payload);
@@ -150,7 +162,13 @@ export const AdminVehicleForm = () => {
             }
             navigate('/admin/viaturas');
         } catch (error) {
-            toast.error('Erro ao guardar viatura');
+            console.error('Erro submit:', error);
+            // Mensagem de erro mais amigável
+            if (error.message?.includes('violates not-null constraint')) {
+                toast.error('Erro de sistema: ID da viatura não foi gerado.');
+            } else {
+                toast.error('Erro ao guardar viatura');
+            }
         } finally {
             setLoading(false);
         }

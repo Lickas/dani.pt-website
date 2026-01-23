@@ -1,8 +1,3 @@
-/**
- * Campaign Detail Page - dANI.PT
- * Shows full details of a specific campaign
- */
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, Tag, Clock, Phone, MessageCircle, CheckCircle } from 'lucide-react';
@@ -90,24 +85,28 @@ export const CampaignDetail = () => {
                 </div>
             </div>
 
-            {/* Hero Image */}
-            {campaign.image_url && (
+            {/* Hero Image - CORRIGIDO 'image_url' PARA 'image' */}
+            {campaign.image && (
                 <div className="relative aspect-[21/9] md:aspect-[3/1] bg-gray-900 overflow-hidden">
                     <img 
-                        src={campaign.image_url} 
+                        src={campaign.image} 
                         alt={campaign.title}
                         className="w-full h-full object-cover opacity-80"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
                     
                     {/* Discount Badge */}
-                    {campaign.discount_percentage && (
-                        <div className="absolute top-6 right-6 md:top-10 md:right-10">
+                    <div className="absolute top-6 right-6 md:top-10 md:right-10">
+                        {campaign.discount_percentage ? (
                             <div className="bg-[#E60000] text-white px-6 py-3 rounded-sm shadow-lg">
                                 <span className="text-3xl md:text-5xl font-bold">-{campaign.discount_percentage}%</span>
                             </div>
-                        </div>
-                    )}
+                        ) : campaign.discount_value ? (
+                            <div className="bg-[#E60000] text-white px-6 py-3 rounded-sm shadow-lg">
+                                <span className="text-3xl md:text-5xl font-bold">-{campaign.discount_value}€</span>
+                            </div>
+                        ) : null}
+                    </div>
                     
                     {/* Title overlay */}
                     <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
@@ -129,14 +128,18 @@ export const CampaignDetail = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-16">
                     {/* Main Content */}
                     <div className="lg:col-span-2">
-                        {/* Title (if no image) */}
-                        {!campaign.image_url && (
+                        {/* Title (se não houver imagem) - CORRIGIDO */}
+                        {!campaign.image && (
                             <div className="mb-8">
-                                {campaign.discount_percentage && (
+                                {campaign.discount_percentage ? (
                                     <span className="inline-block px-4 py-2 bg-[#E60000] text-white text-lg font-bold rounded-sm mb-4">
                                         -{campaign.discount_percentage}%
                                     </span>
-                                )}
+                                ) : campaign.discount_value ? (
+                                    <span className="inline-block px-4 py-2 bg-[#E60000] text-white text-lg font-bold rounded-sm mb-4">
+                                        -{campaign.discount_value}€
+                                    </span>
+                                ) : null}
                                 <h1 className="font-display text-4xl md:text-5xl text-gray-900 dark:text-white">
                                     {campaign.title}
                                 </h1>
@@ -167,42 +170,36 @@ export const CampaignDetail = () => {
                             </div>
                         )}
 
-                        {/* Campaign Benefits */}
+                        {/* Campaign Benefits (Estáticos por enquanto, ou podes ligar ao benefit_description) */}
                         <div className="mt-10">
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                                 <div className="w-8 h-[2px] bg-[#E60000]"></div>
                                 O que está incluído
                             </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="flex items-start gap-3 p-4 bg-white dark:bg-gray-800 rounded-sm border border-gray-100 dark:border-gray-700">
+                            {campaign.benefit_description ? (
+                                <div className="p-4 bg-white dark:bg-gray-800 rounded-sm border border-gray-100 dark:border-gray-700 flex items-start gap-3">
                                     <CheckCircle size={20} className="text-green-500 flex-shrink-0 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-semibold text-gray-900 dark:text-white">Desconto Direto</h4>
-                                        <p className="text-sm text-gray-500">Aplicado no preço final da viatura</p>
+                                    <p className="text-gray-700 dark:text-gray-300">{campaign.benefit_description}</p>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* Default benefits se não houver descrição específica */}
+                                    <div className="flex items-start gap-3 p-4 bg-white dark:bg-gray-800 rounded-sm border border-gray-100 dark:border-gray-700">
+                                        <CheckCircle size={20} className="text-green-500 flex-shrink-0 mt-0.5" />
+                                        <div>
+                                            <h4 className="font-semibold text-gray-900 dark:text-white">Condições Especiais</h4>
+                                            <p className="text-sm text-gray-500">Oportunidade limitada ao stock</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start gap-3 p-4 bg-white dark:bg-gray-800 rounded-sm border border-gray-100 dark:border-gray-700">
+                                        <CheckCircle size={20} className="text-green-500 flex-shrink-0 mt-0.5" />
+                                        <div>
+                                            <h4 className="font-semibold text-gray-900 dark:text-white">Garantia Incluída</h4>
+                                            <p className="text-sm text-gray-500">Mínimo 12 meses de garantia</p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="flex items-start gap-3 p-4 bg-white dark:bg-gray-800 rounded-sm border border-gray-100 dark:border-gray-700">
-                                    <CheckCircle size={20} className="text-green-500 flex-shrink-0 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-semibold text-gray-900 dark:text-white">Financiamento Facilitado</h4>
-                                        <p className="text-sm text-gray-500">Condições especiais de crédito</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-3 p-4 bg-white dark:bg-gray-800 rounded-sm border border-gray-100 dark:border-gray-700">
-                                    <CheckCircle size={20} className="text-green-500 flex-shrink-0 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-semibold text-gray-900 dark:text-white">Garantia Incluída</h4>
-                                        <p className="text-sm text-gray-500">Mínimo 12 meses de garantia</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-3 p-4 bg-white dark:bg-gray-800 rounded-sm border border-gray-100 dark:border-gray-700">
-                                    <CheckCircle size={20} className="text-green-500 flex-shrink-0 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-semibold text-gray-900 dark:text-white">Revisão Completa</h4>
-                                        <p className="text-sm text-gray-500">Viatura 100% verificada</p>
-                                    </div>
-                                </div>
-                            </div>
+                            )}
                         </div>
                     </div>
 
@@ -216,7 +213,7 @@ export const CampaignDetail = () => {
                                 </h3>
                                 
                                 <div className="space-y-4">
-                                    {campaign.discount_percentage && (
+                                    {campaign.discount_percentage ? (
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 bg-[#E60000]/10 rounded-full flex items-center justify-center">
                                                 <Tag size={18} className="text-[#E60000]" />
@@ -228,7 +225,19 @@ export const CampaignDetail = () => {
                                                 </p>
                                             </div>
                                         </div>
-                                    )}
+                                    ) : campaign.discount_value ? (
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 bg-[#E60000]/10 rounded-full flex items-center justify-center">
+                                                <Tag size={18} className="text-[#E60000]" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-gray-500">Desconto</p>
+                                                <p className="font-bold text-gray-900 dark:text-white text-lg">
+                                                    {campaign.discount_value}€
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ) : null}
                                     
                                     {campaign.start_date && (
                                         <div className="flex items-center gap-3">

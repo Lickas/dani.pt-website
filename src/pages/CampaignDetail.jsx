@@ -87,11 +87,11 @@ export const CampaignDetail = () => {
 
             {/* Hero Image - CORRIGIDO 'image_url' PARA 'image' */}
             {campaign.image && (
-                <div className="relative aspect-[21/9] md:aspect-[3/1] bg-gray-900 overflow-hidden">
+                <div className="relative w-full bg-gray-900 overflow-hidden">
                     <img 
                         src={campaign.image} 
                         alt={campaign.title}
-                        className="w-full h-full object-cover opacity-80"
+                        className="w-full h-auto max-h-[80vh] object-contain mx-auto opacity-80"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
                     

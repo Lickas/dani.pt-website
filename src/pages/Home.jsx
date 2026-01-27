@@ -615,11 +615,11 @@ export const Home = () => {
                                     >
                                         {/* AQUI ESTÁ A CORREÇÃO: campaign.image em vez de campaign.image_url */}
                                         {campaign.image && (
-                                            <div className="aspect-[16/9] overflow-hidden">
+                                            <div className="w-full bg-gray-100 overflow-hidden">
                                                 <img 
                                                     src={campaign.image} 
                                                     alt={campaign.title}
-                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                    className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
                                                 />
                                             </div>
                                         )}

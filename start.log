@@ -105,3 +105,36 @@ src/pages/admin/AdminVehicleForm.jsx
   Line 47:8:  React Hook useEffect has missing dependencies: 'fetchVehicle' and 'isEditing'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
 
 webpack compiled with 1 warning
+Compiling...
+Compiled with warnings.
+
+[eslint]
+src/pages/Vehicles.jsx
+  Line 75:8:  React Hook useEffect has a missing dependency: 'fetchVehicles'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/pages/admin/AdminCampaignForm.jsx
+  Line 59:8:  React Hook useEffect has missing dependencies: 'fetchCampaign' and 'isEditing'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+src/pages/admin/AdminSettings.jsx
+  Line 44:8:  React Hook useEffect has a missing dependency: 'fetchBusinessInfo'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/pages/admin/AdminVehicleForm.jsx
+  Line 47:8:  React Hook useEffect has missing dependencies: 'fetchVehicle' and 'isEditing'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+Search for the keywords to learn more about each warning.
+To ignore, add // eslint-disable-next-line to the line before.
+
+WARNING in [eslint]
+src/pages/Vehicles.jsx
+  Line 75:8:  React Hook useEffect has a missing dependency: 'fetchVehicles'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/pages/admin/AdminCampaignForm.jsx
+  Line 59:8:  React Hook useEffect has missing dependencies: 'fetchCampaign' and 'isEditing'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+src/pages/admin/AdminSettings.jsx
+  Line 44:8:  React Hook useEffect has a missing dependency: 'fetchBusinessInfo'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+src/pages/admin/AdminVehicleForm.jsx
+  Line 47:8:  React Hook useEffect has missing dependencies: 'fetchVehicle' and 'isEditing'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+webpack compiled with 1 warning

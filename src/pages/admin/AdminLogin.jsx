@@ -187,15 +187,6 @@ export const AdminLogin = () => {
                         </button>
                     </form>
 
-                    {/* Test Credentials Notice */}
-                    <div className="mt-8 p-4 bg-gray-100 dark:bg-gray-800 rounded-sm border border-gray-200 dark:border-gray-700">
-                        <p className="text-xs text-gray-500 dark:text-gray-400 text-center leading-relaxed">
-                            <strong className="text-gray-700 dark:text-gray-300">Credenciais de teste:</strong><br />
-                            Email: <code className="text-[#E60000]">admin@dani.pt</code><br />
-                            Password: <code className="text-[#E60000]">admin123</code>
-                        </p>
-                    </div>
-
                     {/* Back to site */}
                     <div className="mt-8 text-center">
                         <Link 

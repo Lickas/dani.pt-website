@@ -90,14 +90,14 @@ export const Campaigns = () => {
                                 >
                                     {/* Image Container - CORRIGIDO 'image_url' PARA 'image' */}
                                     {campaign.image && (
-                                        <div className="aspect-video bg-[#F5F5F5] mb-4 overflow-hidden relative">
+                                        <div className="w-full bg-[#F5F5F5] mb-4 overflow-hidden relative">
                                             {/* Linha vermelha superior */}
                                             <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#E60000] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
                                             
                                             <img
                                                 src={campaign.image}
                                                 alt={campaign.title}
-                                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                className="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-105"
                                             />
                                             {isActive(campaign) && (
                                                 <div className="absolute top-4 right-4">

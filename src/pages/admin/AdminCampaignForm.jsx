@@ -178,8 +178,8 @@ export const AdminCampaignForm = () => {
                     <h2 className="font-bold text-lg text-[#1A1A1A] dark:text-white mb-4">Imagem de Capa</h2>
                     
                     {formData.image ? (
-                        <div className="relative w-full h-48 md:h-64 bg-gray-100 rounded-[2px] overflow-hidden group">
-                            <img src={formData.image} alt="Capa da campanha" className="w-full h-full object-cover" />
+                        <div className="relative w-full bg-gray-100 rounded-[2px] overflow-hidden group">
+                            <img src={formData.image} alt="Capa da campanha" className="w-full h-auto object-contain" />
                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <button
                                     type="button"

@@ -92,7 +92,7 @@ export const AdminRenting = () => {
                             {/* Image */}
                             <div className="w-full md:w-24 h-24 md:h-16 bg-gray-100 dark:bg-gray-900 rounded-sm overflow-hidden flex-shrink-0">
                                 <img
-                                    src={offer.image_url}
+                                    src={offer.images?.[0] || offer.image_url || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800'}
                                     alt={offer.title}
                                     className="w-full h-full object-cover"
                                 />

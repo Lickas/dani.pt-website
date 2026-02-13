@@ -8,6 +8,7 @@ export const RentingDetail = () => {
     const { id } = useParams();
     const [offer, setOffer] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [selectedImage, setSelectedImage] = useState(0);
 
     // Selection state
     const [duration, setDuration] = useState(null);
@@ -56,14 +57,17 @@ export const RentingDetail = () => {
         if (match) {
             setPrice(match.price);
         } else {
-            // If exact match not found, we don't reset immediately,
-            // maybe we could find the closest match or just show unavailable
             setPrice(null);
         }
     }, [duration, mileage, upfront, offer]);
 
     if (loading) return <div className="pt-32 text-center">Carregando...</div>;
     if (!offer) return <div className="pt-32 text-center">Oferta não encontrada.</div>;
+
+    // Handle images (backward compatibility)
+    const images = offer.images && offer.images.length > 0
+        ? offer.images
+        : [offer.image_url || 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800'];
 
     // Extract unique options for dropdowns
     const durations = [...new Set(offer.pricing_matrix.map(p => p.duration))].sort((a, b) => a - b);
@@ -94,9 +98,10 @@ export const RentingDetail = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {/* Left Column: Image & Info */}
                     <div className="space-y-8">
+                        {/* Main Image */}
                         <div className="aspect-[4/3] bg-gray-100 dark:bg-gray-800 rounded-sm overflow-hidden relative border border-gray-100 dark:border-gray-800">
                              <img
-                                src={offer.image_url}
+                                src={images[selectedImage]}
                                 alt={offer.title}
                                 className="w-full h-full object-contain p-4"
                             />
@@ -106,6 +111,29 @@ export const RentingDetail = () => {
                                 </div>
                             )}
                         </div>
+
+                        {/* Thumbnails */}
+                        {images.length > 1 && (
+                            <div className="grid grid-cols-4 gap-2">
+                                {images.map((img, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setSelectedImage(index)}
+                                        className={`aspect-[4/3] overflow-hidden rounded-sm border ${
+                                            selectedImage === index
+                                                ? 'border-[#E60000] ring-1 ring-[#E60000]'
+                                                : 'border-transparent opacity-60 hover:opacity-100'
+                                        } transition-all bg-gray-50 dark:bg-gray-900`}
+                                    >
+                                        <img
+                                            src={img}
+                                            alt={`Imagem ${index + 1}`}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
 
                         {/* Description */}
                         <div>

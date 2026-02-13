@@ -16,7 +16,7 @@ export const AdminRentingForm = () => {
         title: '',
         subtitle: '',
         description: '',
-        image_url: '',
+        images: [], // Changed from image_url to images array
         is_active: true,
         category: 'private',
         features: [],
@@ -47,7 +47,13 @@ export const AdminRentingForm = () => {
     const fetchOffer = async () => {
         try {
             const data = await rentingAPI.getById(id);
-            setFormData(data);
+            // Handle migration from old image_url to images array if necessary
+            let images = data.images || [];
+            if (data.image_url && images.length === 0) {
+                images = [data.image_url];
+            }
+
+            setFormData({ ...data, images });
         } catch (error) {
             toast.error('Erro ao carregar oferta');
             navigate('/admin/renting');
@@ -118,23 +124,41 @@ export const AdminRentingForm = () => {
         }));
     };
 
-    // Image Upload
+    // Image Upload (Multi-file)
     const handleImageUpload = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+        const files = e.target.files;
+        if (!files?.length) return;
 
         setUploading(true);
+        const uploadedUrls = [];
+
         try {
-            // Reusing vehicle image upload as it's a car
-            const result = await uploadAPI.uploadVehicleImage(file);
-            setFormData(prev => ({ ...prev, image_url: result.url }));
-            toast.success('Imagem carregada com sucesso');
+            for (const file of files) {
+                // Reusing vehicle image upload bucket/logic
+                const result = await uploadAPI.uploadVehicleImage(file);
+                if (result && result.url) {
+                    uploadedUrls.push(result.url);
+                }
+            }
+
+            setFormData(prev => ({
+                ...prev,
+                images: [...(prev.images || []), ...uploadedUrls]
+            }));
+            toast.success('Imagens carregadas com sucesso');
         } catch (error) {
             console.error('Erro upload:', error);
-            toast.error(`Erro no upload: ${error.message}`);
+            toast.error(`Erro no upload: ${error.message || 'Erro desconhecido'}`);
         } finally {
             setUploading(false);
         }
+    };
+
+    const handleRemoveImage = (index) => {
+        setFormData(prev => ({
+            ...prev,
+            images: prev.images.filter((_, i) => i !== index)
+        }));
     };
 
     const handleSubmit = async (e) => {
@@ -143,6 +167,12 @@ export const AdminRentingForm = () => {
 
         try {
             const payload = { ...formData };
+
+            // Ensure images is saved as JSONB array
+            if (!payload.images) payload.images = [];
+
+            // Remove legacy field if present in state
+            delete payload.image_url;
 
             if (!isEditing) {
                 delete payload.id;
@@ -243,39 +273,39 @@ export const AdminRentingForm = () => {
                     </div>
                 </section>
 
-                {/* Image */}
+                {/* Images - Multi-upload similar to VehicleForm */}
                 <section className="bg-white dark:bg-[#1A1A1A] border border-[#E5E5E5] dark:border-[#333] rounded-[4px] p-6">
-                    <h2 className="font-bold text-lg text-[#1A1A1A] dark:text-white mb-4">Imagem Principal</h2>
-                    <div className="flex flex-col md:flex-row gap-6">
-                        <div className="flex-1">
-                            <label className="label-style">URL da Imagem</label>
-                            <div className="flex gap-2 mb-2">
-                                <input
-                                    type="text"
-                                    value={formData.image_url}
-                                    onChange={(e) => handleChange('image_url', e.target.value)}
-                                    className="input-style"
-                                    placeholder="https://..."
-                                />
-                            </div>
-                            <label className="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-[#E5E5E5] dark:border-[#333] rounded-[4px] cursor-pointer hover:border-[#1A1A1A] dark:hover:border-[#555] transition-colors">
-                                {uploading ? <Loader2 size={20} className="animate-spin" /> : <Upload size={20} />}
-                                <span className="text-sm">Upload Imagem</span>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
-                                    className="hidden"
-                                    disabled={uploading}
-                                />
-                            </label>
+                    <h2 className="font-bold text-lg text-[#1A1A1A] dark:text-white mb-4">Imagens</h2>
+                    <label className="flex items-center justify-center gap-2 p-8 border-2 border-dashed border-[#E5E5E5] dark:border-[#333] rounded-[4px] cursor-pointer hover:border-[#1A1A1A] dark:hover:border-[#555] transition-colors mb-4">
+                        {uploading ? <Loader2 size={24} className="text-[#999999] animate-spin" /> : <Upload size={24} className="text-[#999999]" />}
+                        <span className="text-[#666666] dark:text-gray-400">
+                            {uploading ? 'A carregar...' : 'Clique para carregar imagens'}
+                        </span>
+                        <input
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="hidden"
+                            disabled={uploading}
+                        />
+                    </label>
+                    {(formData.images || []).length > 0 && (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            {formData.images.map((url, index) => (
+                                <div key={index} className="relative aspect-[4/3] bg-[#F4F4F4] dark:bg-[#333] rounded-[2px] overflow-hidden">
+                                    <img src={url} alt={`Imagem ${index + 1}`} className="w-full h-full object-cover" />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveImage(index)}
+                                        className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-red-50"
+                                    >
+                                        <X size={14} className="text-[#E60000]" />
+                                    </button>
+                                </div>
+                            ))}
                         </div>
-                        {formData.image_url && (
-                            <div className="w-40 h-32 bg-gray-100 dark:bg-gray-900 rounded-sm overflow-hidden border border-gray-200 dark:border-gray-700">
-                                <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
-                            </div>
-                        )}
-                    </div>
+                    )}
                 </section>
 
                 {/* Features */}

@@ -540,6 +540,118 @@ export const newsletterAPI = {
   }
 };
 
+// ==============================================
+// RENTING API - Supabase Direct
+// ==============================================
+
+export const rentingAPI = {
+  // Listar todas as ofertas (públicas - apenas ativas)
+  getAll: async (onlyActive = true) => {
+    try {
+      let query = supabase
+        .from('renting_offers')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (onlyActive) {
+        query = query.eq('is_active', true);
+      }
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Erro ao buscar ofertas de renting:', error.message);
+      return [];
+    }
+  },
+
+  // Listar todas as ofertas (admin - todas)
+  getAllAdmin: async () => {
+    try {
+      const { data, error } = await supabase
+        .from('renting_offers')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Erro ao buscar ofertas de renting:', error.message);
+      return [];
+    }
+  },
+
+  // Obter detalhes de uma oferta específica
+  getById: async (id) => {
+    try {
+      const { data, error } = await supabase
+        .from('renting_offers')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error(`Erro ao buscar oferta ${id}:`, error.message);
+      throw new Error('Oferta não encontrada');
+    }
+  },
+
+  // Criar nova oferta (apenas admin)
+  create: async (data) => {
+    try {
+      const { data: offer, error } = await supabase
+        .from('renting_offers')
+        .insert([data])
+        .select()
+        .single();
+
+      if (error) throw error;
+      return offer;
+    } catch (error) {
+      console.error('Erro ao criar oferta:', error);
+      throw error;
+    }
+  },
+
+  // Atualizar oferta (apenas admin)
+  update: async (id, data) => {
+    try {
+      const { data: offer, error } = await supabase
+        .from('renting_offers')
+        .update(data)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return offer;
+    } catch (error) {
+      console.error('Erro ao atualizar oferta:', error);
+      throw error;
+    }
+  },
+
+  // Deletar oferta (apenas admin)
+  delete: async (id) => {
+    try {
+      const { error } = await supabase
+        .from('renting_offers')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      return { message: 'Oferta removida com sucesso' };
+    } catch (error) {
+      console.error('Erro ao deletar oferta:', error);
+      throw error;
+    }
+  }
+};
+
 // Export default com todas as APIs
 export default {
   vehicles: vehiclesAPI,
@@ -547,5 +659,6 @@ export default {
   contacts: contactsAPI,
   upload: uploadAPI,
   auth: authAPI,
-  newsletter: newsletterAPI
+  newsletter: newsletterAPI,
+  renting: rentingAPI
 };

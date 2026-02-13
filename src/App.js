@@ -14,6 +14,8 @@ import { ThemeProvider } from './context/ThemeContext';
 import { Home } from './pages/Home';
 import { Vehicles } from './pages/Vehicles';
 import { VehicleDetail } from './pages/VehicleDetail';
+import { Renting } from './pages/Renting';
+import { RentingDetail } from './pages/RentingDetail';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
 import { Campaigns } from './pages/Campaigns';
@@ -26,6 +28,8 @@ import { AdminLogin } from './pages/admin/AdminLogin';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { AdminVehicles } from './pages/admin/AdminVehicles';
 import { AdminVehicleForm } from './pages/admin/AdminVehicleForm';
+import { AdminRenting } from './pages/admin/AdminRenting';
+import { AdminRentingForm } from './pages/admin/AdminRentingForm';
 import { AdminCampaigns } from './pages/admin/AdminCampaigns';
 import { AdminCampaignForm } from './pages/admin/AdminCampaignForm';
 import { AdminCampaignDetail } from './pages/admin/AdminCampaignDetail';
@@ -104,6 +108,7 @@ const AdminLayoutWrapper = ({ children }) => {
     const navItems = [
         { href: '/admin/dashboard', label: 'Dashboard' },
         { href: '/admin/viaturas', label: 'Viaturas' },
+        { href: '/admin/renting', label: 'Renting' },
         { href: '/admin/campanhas', label: 'Campanhas' },
         { href: '/admin/mensagens', label: 'Mensagens' },
         { href: '/admin/newsletter', label: 'Newsletter' },
@@ -232,6 +237,8 @@ function App() {
                     <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
                     <Route path="/viaturas" element={<PublicLayout><Vehicles /></PublicLayout>} />
                     <Route path="/viaturas/:id" element={<PublicLayout><VehicleDetail /></PublicLayout>} />
+                    <Route path="/renting" element={<PublicLayout><Renting /></PublicLayout>} />
+                    <Route path="/renting/:id" element={<PublicLayout><RentingDetail /></PublicLayout>} />
                     <Route path="/campanhas" element={<PublicLayout><Campaigns /></PublicLayout>} />
                     <Route path="/campanhas/:id" element={<PublicLayout><CampaignDetail /></PublicLayout>} />
                     <Route path="/sobre" element={<PublicLayout><About /></PublicLayout>} />
@@ -245,6 +252,9 @@ function App() {
                     <Route path="/admin/viaturas" element={<ProtectedRoute><AdminLayoutWrapper><AdminVehicles /></AdminLayoutWrapper></ProtectedRoute>} />
                     <Route path="/admin/viaturas/nova" element={<ProtectedRoute><AdminLayoutWrapper><AdminVehicleForm /></AdminLayoutWrapper></ProtectedRoute>} />
                     <Route path="/admin/viaturas/:id" element={<ProtectedRoute><AdminLayoutWrapper><AdminVehicleForm /></AdminLayoutWrapper></ProtectedRoute>} />
+                    <Route path="/admin/renting" element={<ProtectedRoute><AdminLayoutWrapper><AdminRenting /></AdminLayoutWrapper></ProtectedRoute>} />
+                    <Route path="/admin/renting/nova" element={<ProtectedRoute><AdminLayoutWrapper><AdminRentingForm /></AdminLayoutWrapper></ProtectedRoute>} />
+                    <Route path="/admin/renting/editar/:id" element={<ProtectedRoute><AdminLayoutWrapper><AdminRentingForm /></AdminLayoutWrapper></ProtectedRoute>} />
                     <Route path="/admin/campanhas" element={<ProtectedRoute><AdminLayoutWrapper><AdminCampaigns /></AdminLayoutWrapper></ProtectedRoute>} />
                     <Route path="/admin/campanhas/nova" element={<ProtectedRoute><AdminLayoutWrapper><AdminCampaignForm /></AdminLayoutWrapper></ProtectedRoute>} />
                     <Route path="/admin/campanhas/ver/:id" element={<ProtectedRoute><AdminLayoutWrapper><AdminCampaignDetail /></AdminLayoutWrapper></ProtectedRoute>} />

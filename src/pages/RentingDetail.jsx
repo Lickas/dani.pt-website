@@ -157,6 +157,23 @@ export const RentingDetail = () => {
                                 </div>
                             </div>
                         )}
+
+                        {/* Services Included (Moved here to avoid sticky overlap issues) */}
+                        {offer.features && offer.features.length > 0 && (
+                            <div className="bg-gray-50 dark:bg-gray-900 p-6 rounded-sm border border-gray-100 dark:border-gray-800">
+                                <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Serviços Incluídos</h3>
+                                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    {offer.features.map((feature, idx) => (
+                                        <li key={idx} className="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-300">
+                                            <div className="mt-0.5 min-w-[16px] text-[#E60000]">
+                                                <Check size={16} />
+                                            </div>
+                                            {feature}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                     </div>
 
                     {/* Right Column: Calculator & Features */}
@@ -286,22 +303,6 @@ export const RentingDetail = () => {
                             </div>
                         </div>
 
-                        {/* Services Included */}
-                        {offer.features && offer.features.length > 0 && (
-                            <div className="bg-gray-50 dark:bg-gray-900 p-6 rounded-sm">
-                                <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Serviços Incluídos</h3>
-                                <ul className="space-y-3">
-                                    {offer.features.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-300">
-                                            <div className="mt-0.5 min-w-[16px] text-[#E60000]">
-                                                <Check size={16} />
-                                            </div>
-                                            {feature}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
                     </div>
                 </div>
             </div>

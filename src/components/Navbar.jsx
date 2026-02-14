@@ -28,6 +28,7 @@ export const Navbar = () => {
     const navLinks = [
         { href: '/', label: 'Início' },
         { href: '/viaturas', label: 'Viaturas' },
+        { href: '/renting', label: 'Renting' },
         { href: '/campanhas', label: 'Campanhas' },
         { href: '/sobre', label: 'Sobre' },
         { href: '/contactos', label: 'Contacto' },

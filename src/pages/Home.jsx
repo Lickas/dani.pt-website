@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Search, ChevronRight, ChevronLeft, ChevronUp, Shield, CheckCircle, Star, Phone, MessageCircle, MapPin, Clock, Calendar, Car, Sparkles, Award, ThumbsUp, Zap, Tag } from 'lucide-react';
 import { VehicleCard } from '../components/VehicleCard';
-import { vehiclesAPI, campaignsAPI } from '../utils/apiService';
+import { RentingCard } from '../components/RentingCard';
+import { vehiclesAPI, campaignsAPI, rentingAPI } from '../utils/apiService';
 import { BrandMarquee } from '../components/BrandMarquee';
 import { BRANDS } from '../utils/constants';
 
@@ -12,6 +13,7 @@ const HERO_BG = "https://images.unsplash.com/photo-1701241966709-5371c9bf0f1d?cr
 export const Home = () => {
     const [vehicles, setVehicles] = useState([]);
     const [campaigns, setCampaigns] = useState([]);
+    const [rentingOffers, setRentingOffers] = useState([]);
     const [featuredVehicles, setFeaturedVehicles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showScrollTop, setShowScrollTop] = useState(false);
@@ -41,18 +43,21 @@ export const Home = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Buscar viaturas e campanhas com fallback automático para mock data
-                const [vehiclesData, campaignsData] = await Promise.all([
+                // Buscar viaturas, campanhas e renting com fallback automático para mock data
+                const [vehiclesData, campaignsData, rentingData] = await Promise.all([
                     vehiclesAPI.getAll(),
-                    campaignsAPI.getAll()
+                    campaignsAPI.getAll(),
+                    rentingAPI.getAll(true)
                 ]);
                 
                 // PROGRAMAÇÃO DEFENSIVA: Garantir que sempre temos arrays válidos
                 const safeVehicles = Array.isArray(vehiclesData) ? vehiclesData : [];
                 const safeCampaigns = Array.isArray(campaignsData) ? campaignsData : [];
+                const safeRenting = Array.isArray(rentingData) ? rentingData : [];
                 
                 setVehicles(safeVehicles);
                 setCampaigns(safeCampaigns);
+                setRentingOffers(safeRenting);
                 
                 // Filtrar viaturas em destaque com segurança
                 const featured = safeVehicles
@@ -65,6 +70,7 @@ export const Home = () => {
                 // Em caso de erro crítico, garantir arrays vazios
                 setVehicles([]);
                 setCampaigns([]);
+                setRentingOffers([]);
                 setFeaturedVehicles([]);
             } finally {
                 setLoading(false);
@@ -468,6 +474,51 @@ export const Home = () => {
             </section>
 
             {/* ============================================
+                RENTING OFFERS - Section 01B (NEW)
+                ============================================ */}
+            {!loading && rentingOffers.length > 0 && (
+                <section className="py-20 md:py-28 bg-gray-50 dark:bg-gray-800 border-t border-gray-100 dark:border-gray-800">
+                    <div className="container-site">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 md:mb-14">
+                            <div className="flex items-start gap-5 md:gap-6">
+                                <span className="section-number pt-2">02</span>
+                                <div>
+                                    <span className="text-[11px] font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500">
+                                        Mobilidade Flexível
+                                    </span>
+                                    <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-gray-900 dark:text-white mt-2">
+                                        Ofertas <span className="text-glow-red">Renting</span>
+                                    </h2>
+                                    <p className="text-gray-500 mt-3 text-sm md:text-base">
+                                        Tudo incluído. Sem preocupações.
+                                    </p>
+                                </div>
+                            </div>
+                            <Link
+                                to="/renting"
+                                className="group inline-flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white hover:text-[#E60000] transition-colors"
+                            >
+                                Ver todas as ofertas
+                                <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                            {rentingOffers.slice(0, 3).map((offer, index) => (
+                                <div
+                                    key={offer.id}
+                                    className="animate-fade-up"
+                                    style={{ animationDelay: `${index * 0.1}s` }}
+                                >
+                                    <RentingCard offer={offer} />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            {/* ============================================
                 TESTIMONIAL / BRAND STATEMENT - Section 02
                 ============================================ */}
             <section className="bg-gray-900 dark:bg-black py-20 md:py-28 relative overflow-hidden">
@@ -479,7 +530,7 @@ export const Home = () => {
                 
                 <div className="container-site relative z-10">
                     <div className="flex items-start gap-5 md:gap-6 mb-8">
-                        <span className="section-number text-white/20 pt-2">02</span>
+                        <span className="section-number text-white/20 pt-2">03</span>
                     </div>
                     <div className="max-w-4xl mx-auto text-center">
                         <div className="w-16 h-1 bg-[#E60000] mx-auto mb-8 glow-bar"></div>
@@ -502,7 +553,7 @@ export const Home = () => {
                 <div className="container-site">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 md:mb-14">
                         <div className="flex items-start gap-5 md:gap-6">
-                            <span className="section-number pt-2">03</span>
+                            <span className="section-number pt-2">04</span>
                             <div>
                                 <span className="text-[11px] font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500">
                                     Stock Atual
@@ -555,7 +606,7 @@ export const Home = () => {
                 <div className="container-site relative z-10">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
                         <div className="flex items-start gap-5 md:gap-6">
-                            <span className="section-number text-white/30 pt-2">04</span>
+                            <span className="section-number text-white/30 pt-2">05</span>
                             <div>
                                 <span className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 text-white text-xs font-semibold tracking-wider uppercase rounded-full mb-4">
                                     <Tag size={12} />
@@ -715,7 +766,7 @@ export const Home = () => {
                 <div className="container-site">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10 lg:gap-16">
                         <div className="lg:max-w-xl flex items-start gap-5 md:gap-6">
-                            <span className="section-number pt-2">05</span>
+                            <span className="section-number pt-2">06</span>
                             <div>
                                 <span className="text-[11px] font-medium tracking-widest uppercase text-gray-400 dark:text-gray-500">
                                     Pronto?

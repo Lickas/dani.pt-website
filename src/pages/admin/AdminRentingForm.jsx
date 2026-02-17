@@ -24,6 +24,13 @@ export const AdminRentingForm = () => {
         pricing_matrix: []
     });
 
+    // Ensure technical_details is an object if it comes back as null/undefined
+    useEffect(() => {
+        if (!formData.technical_details) {
+            setFormData(prev => ({ ...prev, technical_details: {} }));
+        }
+    }, [formData.technical_details]);
+
     const [newFeature, setNewFeature] = useState('');
 
     // Technical Details State
@@ -396,7 +403,7 @@ export const AdminRentingForm = () => {
                             />
                         </div>
                         <div>
-                            <label className="label-style">Km/Ano</label>
+                            <label className="label-style">Km Total</label>
                             <input
                                 type="number"
                                 value={matrixRow.mileage}
@@ -436,7 +443,7 @@ export const AdminRentingForm = () => {
                             <thead className="text-xs text-gray-500 uppercase bg-gray-50 dark:bg-[#333]">
                                 <tr>
                                     <th className="px-4 py-3">Duração</th>
-                                    <th className="px-4 py-3">Km/Ano</th>
+                                    <th className="px-4 py-3">Km Total</th>
                                     <th className="px-4 py-3">Entrada</th>
                                     <th className="px-4 py-3">Mensalidade</th>
                                     <th className="px-4 py-3 text-right">Ações</th>

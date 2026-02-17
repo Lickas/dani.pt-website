@@ -79,7 +79,7 @@ export const RentingDetail = () => {
     const formatKm = (k) => new Intl.NumberFormat('pt-PT').format(k);
 
     const whatsappText = encodeURIComponent(
-        `Olá! Estou interessado no Renting do ${offer.title}. Configuração: ${duration} meses, ${formatKm(mileage)}km/ano, Entrada ${upfront}€.`
+        `Olá! Estou interessado no Renting do ${offer.title}. Configuração: ${duration} meses, ${formatKm(mileage)}km total, Entrada ${upfront}€.`
     );
 
     return (
@@ -220,7 +220,7 @@ export const RentingDetail = () => {
                                 {/* Mileage */}
                                 <div>
                                     <label className="text-xs font-bold uppercase text-gray-400 mb-3 flex items-center gap-2">
-                                        <Gauge size={14} /> Km incluídos (ano)
+                                        <Gauge size={14} /> Km incluídos (total)
                                     </label>
                                     <div className="grid grid-cols-3 gap-3">
                                         {mileages.map(m => (

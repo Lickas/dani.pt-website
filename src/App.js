@@ -9,6 +9,10 @@ import { NewsletterSection } from './components/NewsletterSection';
 import { MobileContactBar } from './components/MobileContactBar';
 import { DemoModeBanner } from './components/DemoModeBanner';
 import { ThemeProvider } from './context/ThemeContext';
+import { initClarity } from './utils/clarity';
+
+// Initialize Clarity
+initClarity();
 
 // Public Pages
 import { Home } from './pages/Home';
